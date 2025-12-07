@@ -1,0 +1,52 @@
+/*-- scss:defaults --*/
+
+// Paleta de Cores UFPA
+$blue-ufpa: #002C6F;
+$red-ufpa: #E4002B;
+$yellow-ufpa: #FFD700;
+$black-ufpa: #231F20;
+$white: #FFFFFF;
+
+// Configuração do Tema Bootstrap
+$primary: $blue-ufpa;
+$secondary: $red-ufpa;
+$navbar-dark-bg: $blue-ufpa; 
+$navbar-dark-color: $white; 
+$body-bg: $white; 
+
+// Cores Específicas para Componentes do Quarto
+$body-color: $black-ufpa; 
+$link-color: $blue-ufpa;
+// Valor fixo em Hex para substituir lighten($black-ufpa, 70%)
+$code-bg: #EAEAEA; 
+$code-color: $black-ufpa; 
+
+/*-- scss:rules --*/
+
+// --- Customizações Gerais ---
+h1, h2, h3, h4, h5, h6 {
+    color: $black-ufpa !important; 
+}
+
+// --- Customização da Apresentação (Reveal.js) ---
+
+// 1. Título da Capa da Apresentação (field 'title:' no YAML)
+// Este é o principal ajuste para controlar o tamanho do título na capa.
+.title {
+  font-size: 0.5em !important; /* Ajuste aqui o tamanho desejado */
+  line-height: 1.0;
+}
+
+// 2. Títulos de slides internos (Cabeçalho #)
+.reveal h1 {
+  font-size: 0.5em !important; 
+}
+
+// --- Customização da Barra Lateral do Site ---
+
+// Estilo para o item ativo na barra lateral
+.sidebar-item.active > a {
+  // Valor fixo em Hex para substituir lighten($blue-ufpa, 50%)
+   background-color: #CCCCE5; 
+   color: $blue-ufpa !important; font-weight: bold;   
+}

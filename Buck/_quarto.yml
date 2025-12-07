@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: _site
+
+website:
+  title: "Apresentações UFPA"
+  
+  # Configuração da Barra Lateral (Sidebar)
+  sidebar:
+    style: "docked"
+    search: true
+    collapse-level: 2
+    contents:
+      - index.qmd 
+
+# --------------------------
+# Opções de Estilo e Formato
+# --------------------------
+format:
+  html:
+    theme: default # Base de onde partem as customizações
+    # Inclui o SCSS customizado (foi movido para dentro de format:html)
+    css: TemaRTx.scss
+    toc: true # Habilita Sumário nas páginas HTML (se aplicável)

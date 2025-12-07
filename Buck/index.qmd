@@ -1,0 +1,13 @@
+---
+title: "Apresentações"
+subtitle: "Templates"
+
+---
+
+
+
+## Conteúdo
+
+
+* [Modelagem do Conversor Buck](01ModelagemBuck.qmd){.internal}
+
