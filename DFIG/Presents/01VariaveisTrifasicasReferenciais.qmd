@@ -1,0 +1,52 @@
+---
+title: "Variáveis Trifásicas e Referenciais"
+subtitle: "Identificação e Controle DFIG"
+institute: "Universidade Federal do Pará"
+author: "Prof. Dr. Raphael Teixeira"
+date: ""
+editor:
+  render-on-save: false
+format: 
+  revealjs:
+    slide-number: true
+    transition: fade
+---
+
+## Espaço vetorial trifásico
+
+Tensões (correntes, fluxos) trifásicas  em espaço vetorial:
+
+$$v_{abc} = \frac{2}{3}\begin{bmatrix} v_a, av_b, a^2v_c \end{bmatrix}$$
+
+onde $a = e^{j2\pi/3}$ é o operador de fase e $i = \sqrt{-1}$.
+
+Por Euler, temos que:
+
+$$a = \cos(120^\circ) + j\sin(120^\circ)$$
+$$a^2 = \cos(240^\circ) + j\sin(240^\circ)$$
+
+---
+
+## Referencial estacionário $\alpha\beta$:
+
+Projetando o vetor $v_{abc}$ no referencial estacionário com eitos $\alpha$ (real) e $\beta$ (imaginário), têm-se:
+
+$$v_{\alpha\beta} = [T_{abc}]v_{abc}$$
+
+Com a matriz de transformação $T_{abc}$ de Clarke:
+
+$$v_{\alpha\beta} = \frac{2}{3}\begin{bmatrix} 1 & -\frac{1}{2} & -\frac{1}{2} \\ 0 & \frac{\sqrt{3}}{2} & -\frac{\sqrt{3}}{2} \end{bmatrix}\begin{bmatrix} v_a \\ v_b \\ v_c \end{bmatrix}$$
+
+---
+
+## Referencial estacionário $\alpha\beta$
+
+Invertendo a transformação:
+
+$$v_{abc} = [T_{abc}]^{-1}v_{\alpha\beta}$$
+
+Com a matriz inversa:
+
+$$v_{abc} = \begin{bmatrix} 1 & 0 \\ -\frac{1}{2} & \frac{\sqrt{3}}{2} \\ -\frac{1}{2} & -\frac{\sqrt{3}}{2} \end{bmatrix}\begin{bmatrix} v_\alpha \\ v_\beta \end{bmatrix}$$
+
+---

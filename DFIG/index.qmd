@@ -9,4 +9,4 @@ format: html
 
 Controle VSC:
 
-* [Identificação e Controle VSC 0](Presents/VSC01.html)
+* [Variáveis trifásicas e referenciais](Presents/01VariaveisTrifasicasReferenciais.html)
