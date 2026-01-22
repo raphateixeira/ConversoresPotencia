@@ -1,0 +1,26 @@
+project:
+  type: website
+  output-dir: docs
+
+website:
+  title: "VSC" 
+
+  
+format:
+  html:
+    theme: default
+    lang: pt-BR
+    scss: TemaRTx.scss
+    
+  revealjs:
+    theme: default
+    scss: TemaRTx.scss
+    transition: slide
+    slide-number: true
+    footer: ""
+    width: 1600      # Largura
+    height: 900       # Altura
+    code-theme: monokai
+    code-font-size: 2.0em
+    code-line-numbers: true
+    

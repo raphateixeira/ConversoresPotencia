@@ -1,0 +1,77 @@
+/*-- scss:defaults --*/
+
+// Paleta de Cores UFPA
+$blue-ufpa: #002C6F;
+$red-ufpa: #E4002B;
+$yellow-ufpa: #FFD700;
+$black-ufpa: #231F20;
+$white: #FFFFFF;
+
+// Fontes:
+$main-font-size: 18px;
+$code-font-family: 'Courier New', Courier, monospace;
+
+// Configuração do Tema Bootstrap
+$primary: $blue-ufpa;
+$secondary: $red-ufpa;
+$navbar-dark-bg: $blue-ufpa; 
+$navbar-dark-color: $white; 
+$body-bg: $white; 
+
+// Cores Específicas para Componentes do Quarto
+$body-color: $black-ufpa; 
+$link-color: $blue-ufpa;
+// COMENTADO: QUARTO VAI USAR CORES DO CODE-THEME (MONOKAI)
+// $code-bg: #EAEAEA; 
+// $code-color: $black-ufpa; 
+/*-- scss:rules --*/
+
+// --- Customizações Gerais ---
+h1, h2, h3, h4, h5, h6 {
+    color: $black-ufpa !important; 
+}
+
+// --- Customização da Apresentação (Reveal.js) ---
+
+// 1. Título da Capa da Apresentação (field 'title:' no YAML)
+.title {
+    font-size: 0.4em !important;
+    line-height: 1.0;
+}
+
+// 2. Títulos de slides internos (Cabeçalho #)
+.reveal h1 {
+    font-size: 0.5em !important; 
+}
+
+// --- Customização da Barra Lateral do Site ---
+
+// Estilo para o item ativo na barra lateral
+.sidebar-item.active > a {
+    // Valor fixo em Hex para substituir lighten($blue-ufpa, 50%)
+    background-color: #CCCCE5; 
+    color: $blue-ufpa !important; font-weight: bold;    
+}
+
+// Estilo para os itens da barra lateral ao passar o mouse
+.sidebar-item > a:hover {
+    background-color: lighten($blue-ufpa, 40%); 
+    color: $white !important; 
+}
+
+// Estilo para os links na barra lateral
+.sidebar-item > a {
+    color: $black-ufpa !important; 
+}
+
+// --- Customização do Rodapé do Site ---
+footer.site-footer {
+    background-color: $blue-ufpa; 
+    color: $white; 
+}
+
+// ⬇️ NOVA REGRA: Fonte grande específica para blocos de código
+.fonte-grande-codigo pre code {
+    // Aumenta o tamanho da fonte do código (ex: 1.3em para ser bem maior)
+    font-size: 1.6em !important; 
+}

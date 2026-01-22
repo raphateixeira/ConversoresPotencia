@@ -1,0 +1,19 @@
+---
+title: "Identificação e Controle MPC do VSC"
+subtitle: "Modelo ARX adaptativo por RST"
+institute: "Universidade Federal do Pará"
+author: "Prof. Dr. Raphael Teixeira"
+date: ""
+editor:
+  render-on-save: false
+format: 
+  revealjs:
+    slide-number: true
+    transition: fade
+---
+
+## Inversor de Tensão Trifásico com VSC
+
+---
+
+## Transformacoes de Referencial

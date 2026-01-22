@@ -1,0 +1,12 @@
+---
+title: "Controle e Identificação de Sistemas"
+subtitle: "Inversor de Tensão Trifásico"
+institute: "Universidade Federal do Pará"
+author: "Prof. Dr. Raphael Teixeira"
+date: ""
+format: html
+---
+
+Controle VSC:
+
+* [Identificação e Controle VSC](Presents/VSC01.html)
