@@ -1,5 +1,5 @@
 ---
-title: "Identificação e Controle MPC do VSC"
+title: "Controle DFIG"
 subtitle: "Modelo ARX adaptativo por RST"
 institute: "Universidade Federal do Pará"
 author: "Prof. Dr. Raphael Teixeira"
