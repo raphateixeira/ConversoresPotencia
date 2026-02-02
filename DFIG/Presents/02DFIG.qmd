@@ -1,0 +1,92 @@
+---
+title: "Controle MPC-FCS de gerador DFIG"
+subtitle: "Estratégia adaptativa de modelo ARX preditivo por RST"
+institute: "Universidade Federal do Pará"
+author: "Prof. Dr. Raphael Teixeira"
+date: ""
+editor:
+  render-on-save: false
+format: 
+  revealjs:
+    slide-number: true
+    transition: fade
+---
+
+## Gerador de Indução de Dupla Alimentação (DFIG)
+
+Tensões (correntes, fluxos) trifásicas  em espaço vetorial:
+
+$$v_{abc} = \frac{2}{3}\begin{bmatrix} v_a, av_b, a^2v_c \end{bmatrix}$$
+
+onde $a = e^{j2\pi/3}$ é o operador de fase e $i = \sqrt{-1}$.
+
+Por Euler, temos que:
+
+$$a = \cos(120^\circ) + j\sin(120^\circ)$$
+$$a^2 = \cos(240^\circ) + j\sin(240^\circ)$$
+
+---
+
+## Referencial estacionário $\alpha\beta$:
+
+Projetando o vetor $v_{abc}$ no referencial estacionário com eitos $\alpha$ (real) e $\beta$ (imaginário), têm-se:
+
+$$v_{\alpha\beta} = [T_{abc}]v_{abc}$$
+
+Com a matriz de transformação $T_{abc}$ de Clarke:
+
+$$v_{\alpha\beta} = \frac{2}{3}\begin{bmatrix} 1 & -\frac{1}{2} & -\frac{1}{2} \\ 0 & \frac{\sqrt{3}}{2} & -\frac{\sqrt{3}}{2} \end{bmatrix}\begin{bmatrix} v_a \\ v_b \\ v_c \end{bmatrix}$$
+
+---
+
+## Referencial estacionário $\alpha\beta$
+
+Invertendo a transformação:
+
+$$v_{abc} = [T_{abc}]^{-1}v_{\alpha\beta}$$
+
+Com a matriz inversa:
+
+$$v_{abc} = \begin{bmatrix} 1 & 0 \\ -\frac{1}{2} & \frac{\sqrt{3}}{2} \\ -\frac{1}{2} & -\frac{\sqrt{3}}{2} \end{bmatrix}\begin{bmatrix} v_\alpha \\ v_\beta \end{bmatrix}$$
+
+---
+
+## Referencial síncrono - girante $dq$
+
+O referencial síncrono $dq$ gira com frequência $\omega$ e é localizado em $\theta = \omega t$ do referencial estacionário $\alpha\beta$. 
+
+Projetando o vetor $v_{\alpha\beta}$ no referencial girante com eitos $d$ (direto) e $q$ (quadratura), têm-se:
+
+$$\begin{bmatrix} v_d \\ v_q \end{bmatrix} = [T_{dq}]v_{\alpha\beta}$$
+Com a matriz de transformação $T_{dq}$ de Park:
+$$\begin{bmatrix} v_d \\ v_q \end{bmatrix} = \begin{bmatrix} \;\;\cos(\theta) & \sin(\theta) \\ -\sin(\theta) & \cos(\theta) \end{bmatrix}\begin{bmatrix} v_\alpha \\ v_\beta \end{bmatrix}$$
+
+---
+
+## Referencial síncrono - girante $dq$
+
+Invertendo a transformação:
+$$v_{\alpha\beta} = [T_{dq}]^{-1}\begin{bmatrix} v_d \\ v_q \end{bmatrix}$$
+Com a matriz inversa:
+$$v_{\alpha\beta} = \begin{bmatrix} \;\;\cos(\theta) & -\sin(\theta) \\ \sin(\theta) & \;\;\cos(\theta) \end{bmatrix}\begin{bmatrix} v_d \\ v_q \end{bmatrix}$$
+
+---
+
+## Referencial síncrono - girante $dq$
+
+Pode-se também transformar diretamente de $abc$ para $dq$:
+
+$$\begin{bmatrix} v_d \\ v_q \end{bmatrix} = [T_{dq}][T_{abc}]v_{abc}$$
+
+Ou de $dq$ para $abc$:
+
+$$v_{abc} = [T_{abc}]^{-1}[T_{dq}]^{-1}\begin{bmatrix} v_d \\ v_q \end{bmatrix}$$
+
+---
+
+
+## Referencial síncrono - girante $dq$
+
+Em notação compacta, as transformações podem ser escritas como:
+
+$$v_{dq} =  v_d + jv_q = v_{\alpha\beta}e^{-j\theta}$$

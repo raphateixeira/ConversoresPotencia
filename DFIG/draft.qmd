@@ -1,0 +1,60 @@
+
+---
+
+## Estrutura do Vetor de Regressores $\phi(t)$
+
+Para a estimação via Mínimos Quadrados, o vetor de regressores para a corrente $i_{ds}$, por exemplo, é expandido como:
+
+$$
+\phi(t) = \begin{bmatrix} 
+\text{Própria: } & i_{ds}(t-1), i_{ds}(t-2) \\
+\text{Outras: } & i_{qs}(t-1), i_{qs}(t-2), i_{dr}(t-1), \dots, i_{qr}(t-2) \\
+\text{Tensões: } & v_{ds}(t-1), v_{ds}(t-2), \dots, v_{qr}(t-2)
+\end{bmatrix}^T
+$$
+
+* **Total de parâmetros por corrente:** $(4 \text{ correntes} \times n_a) + (4 \text{ tensões} \times n_b)$.
+* Com $n_a=2$ e $n_b=2$, temos **16 parâmetros** por vetor $\theta$.
+
+---
+
+## Modelos Identificados por Corrente
+
+A estrutura MISO resulta em quatro equações de diferenças independentes, onde os vetores de parâmetros $\theta^{(c)}$ variam para capturar a dinâmica de cada eixo:
+
+$$
+\begin{aligned}
+\hat{i}_{ds}(t) &= \phi(t)^T \theta^{(1)} \\
+\hat{i}_{qs}(t) &= \phi(t)^T \theta^{(2)} \\
+\hat{i}_{dr}(t) &= \phi(t)^T \theta^{(3)} \\
+\hat{i}_{qr}(t) &= \phi(t)^T \theta^{(4)}
+\end{aligned}
+$$
+
+### Matriz de Parâmetros Global
+
+Os resultados da identificação são consolidados na matriz $\Theta_{Total} \in \mathbb{R}^{16 \times 4}$:
+
+$$
+\Theta_{Total} = \begin{bmatrix} \theta^{(1)} & \theta^{(2)} & \theta^{(3)} & \theta^{(4)} \end{bmatrix}
+$$
+
+* Cada coluna representa a assinatura dinâmica de uma corrente em relação a todos os estados e entradas do sistema.
+* **Consistência Física:** Espera-se simetria entre os coeficientes dos eixos $d$ e $q$ em condições ideais de operação.
+
+---
+
+## Resultados e Validação do Modelo
+
+Validação: confronta a resposta do modelo ARX com os dados do modelo analítico da planta simulada no referencial $dq$.
+
+### Métrica de Desempenho (FIT)
+
+$$FIT = 100 \times \left( 1 - \frac{\|y - \hat{y}\|}{\|y - \bar{y}\|} \right) \%$$
+
+* **Captura da Dinâmica:** O modelo rastreia fielmente os transientes e as oscilações típicas da DFIG, mesmo sob o efeito do chaveamento PWM.
+* **Validação Cruzada:** Índices de FIT elevados (geralmente $> 95\%$) validam a escolha dos regressores e a ordem $n_a=2, n_b=2$.
+
+
+
+---

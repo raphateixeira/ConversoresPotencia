@@ -10,3 +10,7 @@ format: html
 Controle VSC:
 
 * [Variáveis trifásicas e referenciais](Presents/01VariaveisTrifasicasReferenciais.html)
+
+* [Identificação ARX - DFIG](Presents\03ControleDFIGpFCS.html)
+
+

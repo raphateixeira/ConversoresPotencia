@@ -50,3 +50,43 @@ Com a matriz inversa:
 $$v_{abc} = \begin{bmatrix} 1 & 0 \\ -\frac{1}{2} & \frac{\sqrt{3}}{2} \\ -\frac{1}{2} & -\frac{\sqrt{3}}{2} \end{bmatrix}\begin{bmatrix} v_\alpha \\ v_\beta \end{bmatrix}$$
 
 ---
+
+## Referencial síncrono - girante $dq$
+
+O referencial síncrono $dq$ gira com frequência $\omega$ e é localizado em $\theta = \omega t$ do referencial estacionário $\alpha\beta$. 
+
+Projetando o vetor $v_{\alpha\beta}$ no referencial girante com eitos $d$ (direto) e $q$ (quadratura), têm-se:
+
+$$\begin{bmatrix} v_d \\ v_q \end{bmatrix} = [T_{dq}]v_{\alpha\beta}$$
+Com a matriz de transformação $T_{dq}$ de Park:
+$$\begin{bmatrix} v_d \\ v_q \end{bmatrix} = \begin{bmatrix} \;\;\cos(\theta) & \sin(\theta) \\ -\sin(\theta) & \cos(\theta) \end{bmatrix}\begin{bmatrix} v_\alpha \\ v_\beta \end{bmatrix}$$
+
+---
+
+## Referencial síncrono - girante $dq$
+
+Invertendo a transformação:
+$$v_{\alpha\beta} = [T_{dq}]^{-1}\begin{bmatrix} v_d \\ v_q \end{bmatrix}$$
+Com a matriz inversa:
+$$v_{\alpha\beta} = \begin{bmatrix} \;\;\cos(\theta) & -\sin(\theta) \\ \sin(\theta) & \;\;\cos(\theta) \end{bmatrix}\begin{bmatrix} v_d \\ v_q \end{bmatrix}$$
+
+---
+
+## Referencial síncrono - girante $dq$
+
+Pode-se também transformar diretamente de $abc$ para $dq$:
+
+$$\begin{bmatrix} v_d \\ v_q \end{bmatrix} = [T_{dq}][T_{abc}]v_{abc}$$
+
+Ou de $dq$ para $abc$:
+
+$$v_{abc} = [T_{abc}]^{-1}[T_{dq}]^{-1}\begin{bmatrix} v_d \\ v_q \end{bmatrix}$$
+
+---
+
+
+## Referencial síncrono - girante $dq$
+
+Em notação compacta, as transformações podem ser escritas como:
+
+$$v_{dq} =  v_d + jv_q = v_{\alpha\beta}e^{-j\theta}$$
