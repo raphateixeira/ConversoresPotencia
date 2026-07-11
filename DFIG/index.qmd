@@ -11,6 +11,8 @@ Controle VSC:
 
 * [Variáveis trifásicas e referenciais](Presents/01VariaveisTrifasicasReferenciais.html)
 
-* [Identificação ARX - DFIG](Presents\03ControleDFIGpFCS.html)
+* [Controle MPC-FCS de gerador DFIG](Presents/02DFIG.html)
+
+* [Identificação ARX - DFIG](Presents/03ControleDFIGpFCS.html)
 
 
