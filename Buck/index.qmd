@@ -1,13 +1,11 @@
 ---
-title: "Apresentações"
-subtitle: "Templates"
-
+title: "Controle do Conversor Buck"
+subtitle: "Modelagem e controle de um conversor CC-CC Buck"
+author: "Prof. Dr. Raphael Teixeira"
 ---
 
-
+Pesquisa em modelagem e controle do conversor Buck (CC-CC).
 
 ## Conteúdo
 
-
-* [Modelagem do Conversor Buck](01ModelagemBuck.qmd){.internal}
-
+* [Modelagem simbólica do conversor Buck](ModelagemBuck.html) — dedução das equações de espaço de estados via `sympy`.

@@ -1,24 +1,17 @@
 project:
   type: website
-  output-dir: _site
+  output-dir: docs
+  render:
+    - index.qmd
+    - ModelagemBuck.ipynb
 
 website:
-  title: "Apresentações UFPA"
-  
-  # Configuração da Barra Lateral (Sidebar)
-  sidebar:
-    style: "docked"
-    search: true
-    collapse-level: 2
-    contents:
-      - index.qmd 
+  title: "Controle do Conversor Buck"
+  site-url: https://raphateixeira.github.io/ControleBuck/
+  repo-url: https://github.com/raphateixeira/ControleBuck
 
-# --------------------------
-# Opções de Estilo e Formato
-# --------------------------
 format:
   html:
-    theme: default # Base de onde partem as customizações
-    # Inclui o SCSS customizado (foi movido para dentro de format:html)
-    css: TemaRTx.scss
-    toc: true # Habilita Sumário nas páginas HTML (se aplicável)
+    theme: [cosmo, TemaRTx.scss]
+    lang: pt-BR
+    toc: true
