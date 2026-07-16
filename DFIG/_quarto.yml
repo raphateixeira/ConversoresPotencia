@@ -18,9 +18,8 @@ format:
     scss: TemaRTx.scss
     
   revealjs:
-    theme: default
-    scss: TemaRTx.scss
-    transition: slide
+    theme: [simple, tema.scss]
+    transition: fade
     slide-number: true
     footer: ""
     width: 1600      # Largura
@@ -28,4 +27,7 @@ format:
     code-theme: monokai
     code-font-size: 2.0em
     code-line-numbers: true
-    
+    title-slide-attributes:
+      data-background-image: "imgs/ufpa-colorido.png"
+      data-background-size: "84px"
+      data-background-position: "top 45px center"
