@@ -13,12 +13,11 @@ website:
   
 format:
   html:
-    theme: default
+    theme: [cosmo, TemaRTx.scss]
     lang: pt-BR
-    scss: TemaRTx.scss
-    
+
   revealjs:
-    theme: [simple, tema.scss]
+    theme: [simple, TemaRTx.scss]
     transition: fade
     slide-number: true
     footer: ""
