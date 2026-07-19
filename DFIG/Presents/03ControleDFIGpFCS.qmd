@@ -263,3 +263,11 @@ $$
 
 
  - Como o ARX é **invariante no tempo**, a predição de $\hat{i}_{ds}(t+1)$ é obtida deslocando todas as amostras um passo à frente.
+
+---
+
+## Ver também
+
+- [Identificação de Modelos ARX por Mínimos Quadrados](https://raphateixeira.github.io/Identificacao/Identificacao/Ident03ARXMinimosQuadrados.html) (Identificacao) — fundamentos do estimador ARX por mínimos quadrados usado aqui, no caso escalar mais simples.
+- [IC-DataDrive](https://raphateixeira.github.io/IC-DataDrive/) — mesmo estimador ARX aplicado a conversores de potência monofásicos.
+- [DeePC — Data-Enabled Predictive Control](https://raphateixeira.github.io/DataDrivenControl/DeePC/DeePCNota.html) (DataDrivenControl) — controle preditivo direto sobre dados, sem passar por um modelo ARX explícito como o daqui.
