@@ -1,0 +1,134 @@
+---
+title: "Plano de Trabalho de Iniciação Científica"
+subtitle: "Modelagem, Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico com Carga RL em Plataforma Comercial Texas Instruments"
+author: "Alessandra Gabrielly Costa de Sousa"
+lang: pt-BR
+---
+
+| Campo | Informação |
+|---|---|
+| Aluno(a) | Alessandra Gabrielly Costa de Sousa |
+| Curso | Engenharia Elétrica |
+| Orientador | Prof. Dr. Raphael Barros Teixeira |
+| Unidade | Faculdade de Engenharia Elétrica – Campus Universitário de Tucuruí (UFPA) |
+| Projeto de pesquisa vinculado | Identificação, Estimação e Controle Baseados em Dados e Inteligência Computacional Aplicados a Conversores de Potência e Acionamentos Elétricos |
+| Período de execução | 12 meses |
+| Carga horária | 20 horas semanais |
+
+::: {.callout-note}
+Documento original (PDF assinado): [`PlanoIC03.pdf`](PlanoIC03.pdf).
+:::
+
+## Resumo
+
+Este plano de trabalho propõe o estudo, a modelagem, a identificação de sistemas e o controle de um inversor de frequência trifásico de dois níveis alimentando uma carga RL trifásica equilibrada, implementado sobre a plataforma comercial de controle digital Texas Instruments LAUNCHXL-F28379D, já utilizada em plano de trabalho correlato deste mesmo projeto de pesquisa, em conjunto com o módulo inversor trifásico a GaN BOOSTXL-3PHGANINV. A carga RL trifásica permite isolar o estudo do inversor e de suas malhas de controle de corrente e tensão da dinâmica adicional de uma máquina elétrica, constituindo etapa intermediária entre o domínio da conversão CC-CA e o acionamento de máquinas de indução previsto nas etapas subsequentes do projeto de pesquisa. Serão derivados os modelos do inversor com carga RL nos referenciais estacionário (αβ) e síncrono (dq), complementados por identificação experimental de modelos ARX por mínimos quadrados convencionais (MQC) e por sua atualização em tempo real por mínimos quadrados recursivos (Recursive Least Squares – RLS). A partir desses modelos, serão projetados, simulados e implementados de forma embarcada três estratégias de controle de corrente: controlador Proporcional-Integral (PI) no referencial síncrono dq, controlador Proporcional-Ressonante (PR) no referencial estacionário αβ, e controle preditivo de conjunto finito de controle (FCS-MPC). O trabalho contempla fundamentação teórica, modelagem analítica, simulação computacional, montagem da bancada física, identificação experimental e implementação embarcada dos controladores, com avaliação comparativa de desempenho.
+
+## Introdução e Justificativa
+
+O inversor de frequência trifásico é o elemento central de conversão CC-CA em acionamentos de máquinas elétricas, sistemas de geração distribuída, fontes ininterruptas de energia e interfaces de conexão à rede elétrica. Sua operação controlada exige a síntese de tensões ou correntes trifásicas senoidais equilibradas a partir de uma fonte de tensão contínua, por meio de técnicas de modulação por largura de pulso — senoidal (SPWM) ou vetorial (SVPWM) — e de malhas de controle capazes de rastrear referências alternadas com erro de regime permanente nulo. O estudo do inversor alimentando uma carga RL trifásica equilibrada, em vez de uma máquina elétrica, permite isolar as etapas de modulação, identificação e controle de corrente da dinâmica eletromecânica adicional presente em acionamentos, constituindo abordagem didática e experimentalmente controlada, amplamente empregada na literatura de eletrônica de potência para validação de estratégias de controle antes de sua aplicação a acionamentos elétricos.
+
+Este plano de trabalho dá continuidade ao uso da plataforma comercial de controle digital Texas Instruments LAUNCHXL-F28379D, já adotada em outro plano de trabalho vinculado a este projeto de pesquisa para o estudo de conversores CC-CC, reforçando a padronização do ambiente de desenvolvimento entre os planos de trabalho de iniciação científica e permitindo o reaproveitamento de competências de programação embarcada e de aquisição de dados em tempo real. Para o estágio de potência do inversor trifásico, será utilizado o módulo comercial BOOSTXL-3PHGANINV, uma BoosterPack que integra três meias-pontes baseadas em dispositivos de nitreto de gálio (GaN), tecnologia que permite frequências de comutação significativamente mais elevadas do que os MOSFETs de silício convencionais, com redução das perdas de comutação e do tamanho dos elementos passivos de filtragem. A adoção desse módulo expõe a aluna bolsista a uma tecnologia de semicondutores de potência de última geração, de crescente relevância na indústria de eletrônica de potência.
+
+Do ponto de vista de controle, o rastreamento de referências senoidais por controladores lineares invariantes no tempo exige tratamento específico, uma vez que um controlador PI convencional, aplicado diretamente às correntes trifásicas no referencial estacionário, apresenta erro de regime permanente não nulo frente a referências alternadas. Duas abordagens clássicas resolvem essa limitação: o controle no referencial síncrono (dq), obtido pela transformação de Park, no qual as correntes trifásicas equilibradas em regime permanente senoidal tornam-se grandezas contínuas, permitindo o uso direto de controladores PI; e o controle Proporcional-Ressonante (PR) no referencial estacionário (αβ), que introduz um par de polos complexos conjugados na frequência fundamental, eliminando o erro de regime permanente sem a necessidade de transformação de referencial. A comparação entre essas duas estratégias clássicas lineares permite avaliar, na bancada física, as vantagens e limitações de cada abordagem quanto à complexidade computacional, à sensibilidade a variações de frequência e ao desempenho dinâmico.
+
+Como estratégia de controle avançado, este plano de trabalho investiga o controle preditivo de conjunto finito de controle (Finite Control Set Model Predictive Control – FCS-MPC), técnica que explora diretamente a natureza discreta dos estados de chaveamento do inversor, dispensando o modulador PWM e permitindo a incorporação natural de múltiplos objetivos de controle — como o rastreamento de corrente e a minimização da frequência de comutação — na função de custo do controlador. O FCS-MPC tem se consolidado como alternativa de alto desempenho ao controle vetorial clássico em inversores de potência, sendo tecnologia de controle avançado baseada em modelo de crescente adoção acadêmica e industrial.
+
+Este plano de trabalho insere-se no projeto de pesquisa "Identificação, Estimação e Controle Baseados em Dados e Inteligência Computacional Aplicados a Conversores de Potência e Acionamentos Elétricos", contribuindo especificamente para as etapas de fundamentação teórica, modelagem, identificação de sistemas e controle avançado dos conversores CC-CA previstas no projeto principal, e preparando a infraestrutura experimental e a competência da aluna bolsista para as etapas subsequentes de acionamento e controle do motor de indução trifásico e da máquina de indução duplamente alimentada, nas quais o mesmo módulo inversor trifásico poderá ser reaproveitado.
+
+## Objetivos
+
+### Objetivo Geral
+
+Investigar a identificação de sistemas e o controle clássico linear e preditivo baseado em modelo de um inversor de frequência trifásico de dois níveis alimentando carga RL trifásica equilibrada, implementado sobre a plataforma comercial de controle digital Texas Instruments LAUNCHXL-F28379D com o módulo inversor trifásico a GaN BOOSTXL-3PHGANINV.
+
+### Objetivos Específicos
+
+- Estudar os fundamentos teóricos do inversor de frequência trifásico de dois níveis, dos princípios de modulação SPWM e vetorial (SVPWM), e das transformações de Clarke e Park;
+- Estudar a arquitetura da plataforma LAUNCHXL-F28379D e do módulo BOOSTXL-3PHGANINV, incluindo os estágios de potência a GaN, o sensoriamento de corrente e de tensão integrado, e a geração de PWM trifásico complementar com tempo morto;
+- Projetar e montar o banco de carga RL trifásica equilibrada e as interfaces de medição de tensão e de corrente necessárias à caracterização da bancada;
+- Derivar o modelo matemático do inversor trifásico com carga RL nos referenciais estacionário (αβ) e síncrono (dq), obtendo as equações de estado da corrente de carga;
+- Simular o sistema completo no ambiente MATLAB/Simulink, validando a operação em malha aberta com modulação SPWM/SVPWM e em malha fechada com os controladores propostos, e gerando dados de entrada e saída para identificação de sistemas;
+- Aplicar a técnica de identificação por mínimos quadrados convencionais (MQC) sobre a planta física implementada, obtendo modelos ARX entre o índice de modulação e a corrente de carga nos referenciais αβ e dq, com validação cruzada frente aos modelos analíticos;
+- Implementar a atualização em tempo real dos modelos ARX identificados por mínimos quadrados recursivos (RLS), com fator de esquecimento variável, avaliando o rastreamento de variações paramétricas decorrentes de mudanças na carga RL;
+- Projetar e implementar, de forma embarcada na plataforma LAUNCHXL-F28379D, o controlador PI no referencial síncrono dq, com desacoplamento entre os eixos direto e em quadratura;
+- Projetar e implementar o controlador Proporcional-Ressonante (PR) no referencial estacionário αβ, avaliando o rastreamento de referências senoidais sem uso de transformação de Park;
+- Projetar e implementar o controle preditivo de conjunto finito de controle (FCS-MPC), a partir dos modelos identificados, avaliando o desempenho de rastreamento de corrente e o conteúdo harmônico da tensão e da corrente de saída;
+- Comparar experimentalmente o desempenho das estratégias PI-dq, PR-αβ e FCS-MPC quanto a erro de rastreamento em regime permanente, tempo de resposta a degraus de referência, distorção harmônica total (THD) da corrente de carga e robustez a variações de frequência e de amplitude de referência;
+- Elaborar relatórios técnicos parciais e final, e produzir material para eventual submissão a evento científico ou periódico, sob orientação do coordenador do projeto.
+
+## Metodologia
+
+O plano de trabalho será executado em oito etapas ao longo de 12 meses, em consonância com a metodologia do projeto de pesquisa ao qual este plano está vinculado.
+
+### Etapa 1 — Revisão bibliográfica e fundamentação teórica
+
+Estudo dos fundamentos do inversor de frequência trifásico de dois níveis, dos modos de operação com carga RL, dos princípios de modulação SPWM e vetorial (SVPWM), das transformações de Clarke e Park, e dos fundamentos de controle de corrente em conversores trifásicos (controle no referencial síncrono e controle Proporcional-Ressonante).
+
+### Etapa 2 — Familiarização com a plataforma e configuração do módulo BOOSTXL-3PHGANINV
+
+Configuração do ambiente de desenvolvimento Code Composer Studio (ou do suporte C2000 do MATLAB/Simulink Embedded Coder) para operação conjunta da plataforma LAUNCHXL-F28379D com o módulo BOOSTXL-3PHGANINV. Implementação de rotinas de geração de PWM trifásico complementar com tempo morto, leitura dos sensores de corrente e de tensão integrados ao módulo, e comunicação serial para aquisição de dados em tempo real.
+
+### Etapa 3 — Montagem da bancada com carga RL trifásica
+
+Projeto e montagem do banco de carga RL trifásica equilibrada, com valores de resistência e indutância compatíveis com a faixa de tensão e corrente do módulo BOOSTXL-3PHGANINV. Implementação das interfaces de medição de tensão de linha e de corrente de fase complementares às disponíveis no módulo, quando necessário. Caracterização estática e dinâmica da bancada em malha aberta, com modulação SPWM em diferentes índices de modulação e frequências fundamentais.
+
+### Etapa 4 — Modelagem analítica e simulação computacional
+
+Derivação do modelo matemático do inversor trifásico com carga RL nos referenciais estacionário (αβ) e síncrono (dq), obtendo as equações de estado da corrente de carga em função da tensão aplicada pelo inversor. Construção do modelo de simulação do sistema completo no ambiente MATLAB/Simulink (Simscape Electrical), com implementação da modulação SPWM/SVPWM e validação do comportamento em malha aberta e em malha fechada, gerando dados de entrada e saída para uso na identificação de sistemas.
+
+### Etapa 5 — Identificação de sistemas
+
+Aplicação de sinais de excitação no índice de modulação do inversor implementado, com aquisição simultânea das correntes de carga, para identificação por mínimos quadrados convencionais (MQC) nos referenciais αβ e dq, obtendo modelos ARX de baixa ordem. Implementação do algoritmo de mínimos quadrados recursivos (RLS) com fator de esquecimento variável para atualização em tempo real dos modelos ARX identificados, acompanhando variações paramétricas decorrentes de mudanças na carga RL. Validação cruzada dos modelos identificados frente aos modelos analíticos obtidos na Etapa 4.
+
+### Etapa 6 — Projeto e implementação do controle clássico (PI-dq e PR-αβ)
+
+Projeto do controlador PI no referencial síncrono dq, com transformação de Park, malhas de corrente desacopladas nos eixos direto e em quadratura, e modulação SVPWM para síntese da tensão de referência. Projeto do controlador Proporcional-Ressonante (PR) no referencial estacionário αβ, com sintonia do ganho ressonante na frequência fundamental de operação. Implementação embarcada de ambos os controladores na plataforma LAUNCHXL-F28379D e validação experimental do rastreamento de correntes de referência senoidais.
+
+### Etapa 7 — Projeto e implementação do controle preditivo (FCS-MPC)
+
+Formulação do controle preditivo de conjunto finito de controle (FCS-MPC) a partir dos modelos identificados na Etapa 5, com avaliação, a cada período de amostragem, dos estados de chaveamento admissíveis do inversor e seleção do estado que minimiza a função de custo de rastreamento de corrente. Implementação embarcada do algoritmo na plataforma LAUNCHXL-F28379D e testes experimentais em malha fechada sobre a bancada com carga RL.
+
+### Etapa 8 — Testes comparativos, análise de resultados e redação
+
+Comparação experimental do desempenho das estratégias PI-dq, PR-αβ e FCS-MPC quanto a erro de rastreamento em regime permanente, tempo de resposta a degraus de referência, distorção harmônica total (THD) da corrente de carga e robustez a variações de frequência e de amplitude de referência. Consolidação dos resultados e redação do relatório técnico final do plano de trabalho, com produção de material para eventual submissão a evento científico ou periódico.
+
+### Ferramentas computacionais e plataforma de hardware
+
+- **Plataforma de controle digital**: kit de desenvolvimento Texas Instruments LAUNCHXL-F28379D (microcontrolador C2000 Delfino TMS320F28379D, duplo núcleo);
+- **Estágio de potência do inversor trifásico**: BoosterPack Texas Instruments BOOSTXL-3PHGANINV (três meias-pontes a GaN);
+- **Carga**: banco de resistores e indutores trifásico equilibrado, montado no laboratório da FEE-CAMTUC;
+- **Ambiente de desenvolvimento embarcado**: Code Composer Studio e/ou MATLAB/Simulink com suporte C2000 (Embedded Coder);
+- **Simulação e projeto de controladores**: MATLAB/Simulink (Control System Toolbox, Model Predictive Control Toolbox, Simscape Electrical);
+- **Apoio à identificação de sistemas e análise de dados**: Python (pacotes numpy, scipy, matplotlib, python-control).
+
+## Cronograma de Atividades (12 meses)
+
+| Etapa | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 – Revisão bibliográfica | ● | ● | | | | | | | | | | |
+| 2 – Familiarização com a plataforma e BOOSTXL-3PHGANINV | | ● | ● | | | | | | | | | |
+| 3 – Montagem da bancada com carga RL | | | ● | ● | | | | | | | | |
+| 4 – Modelagem analítica e simulação | | | ● | ● | ● | | | | | | | |
+| 5 – Identificação de sistemas | | | | | ● | ● | | | | | | |
+| 6 – Controle clássico (PI-dq e PR-αβ) | | | | | | ● | ● | ● | | | | |
+| 7 – Controle preditivo (FCS-MPC) | | | | | | | | ● | ● | ● | | |
+| 8 – Testes comparativos e redação final | | | | | | | | | | ● | ● | ● |
+
+## Resultados Esperados
+
+Espera-se, ao final da execução deste plano de trabalho, dispor de: (i) uma bancada física funcional de inversor de frequência trifásico com carga RL, implementada sobre a plataforma comercial LAUNCHXL-F28379D com o módulo BOOSTXL-3PHGANINV; (ii) modelos dinâmicos identificados experimentalmente entre o índice de modulação e a corrente de carga, nos referenciais αβ e dq; (iii) controladores PI-dq, PR-αβ e FCS-MPC projetados, implementados de forma embarcada e validados experimentalmente, com avaliação comparativa de desempenho; (iv) relatório técnico final e material para submissão a evento científico ou periódico da área; e (v) formação prática da aluna bolsista em modulação, identificação e controle de inversores trifásicos, com infraestrutura experimental diretamente reaproveitável nas etapas de acionamento de máquinas elétricas previstas no projeto de pesquisa ao qual este plano está vinculado.
+
+## Referências
+
+- AGUIRRE, Luis Antonio. *Introdução à Identificação de Sistemas: Técnicas Lineares e Não-Lineares Aplicadas a Sistemas Reais*. 4. ed. Belo Horizonte: Editora UFMG, 2015. ISBN 978-85-423-0079-6.
+- CAMACHO, Eduardo F.; BORDONS, Carlos. *Model Predictive Control*. 2. ed. London: Springer, 2007. (Advanced Textbooks in Control and Signal Processing). ISBN 978-1-85233-694-3. DOI: 10.1007/978-0-85729-398-5.
+- HOLMES, D. Grahame; LIPO, Thomas A. *Pulse Width Modulation for Power Converters: Principles and Practice*. Piscataway: Wiley-IEEE Press, 2003. ISBN 978-0-471-20814-2.
+- KAZMIERKOWSKI, Marian P.; MALESANI, Luigi. Current control techniques for three-phase voltage-source PWM converters: A survey. *IEEE Transactions on Industrial Electronics*, v. 45, n. 5, p. 691-703, 1998. DOI: 10.1109/41.720325.
+- KRAUSE, Paul C.; WASYNCZUK, Oleg; SUDHOFF, Scott D.; PEKAREK, Steven D. *Analysis of Electric Machinery and Drive Systems*. 3. ed. Piscataway: Wiley-IEEE Press, 2013. ISBN 978-1-118-02429-4.
+- LJUNG, Lennart. *System Identification: Theory for the User*. Upper Saddle River: PTR Prentice Hall, 1999.
+- MOHAN, Ned; UNDELAND, Tore M.; ROBBINS, William P. *Power Electronics: Converters, Applications, and Design*. 3. ed. Hoboken, NJ: John Wiley & Sons, 2003. ISBN 978-0-471-22693-2.
+- RODRIGUEZ, Jose; CORTES, Patricio. *Predictive Control of Power Converters and Electrical Drives*. Chichester: Wiley-IEEE Press, 2012. ISBN 978-1-119-96398-1.
+- TEXAS INSTRUMENTS. *TMS320F28379D Dual-Core Delfino Microcontroller — Data Manual*. Dallas: Texas Instruments.
+- TEXAS INSTRUMENTS. *LAUNCHXL-F28379D — C2000 Delfino LaunchPad Development Kit — User's Guide*. Dallas: Texas Instruments.
+- TEXAS INSTRUMENTS. *BOOSTXL-3PHGANINV — Three-Phase GaN Inverter BoosterPack — User's Guide*. Dallas: Texas Instruments.
+- TEXAS INSTRUMENTS. *LMG5200 — 80-V, 10-A GaN Half-Bridge Power Stage — Datasheet*. Dallas: Texas Instruments.

@@ -1,0 +1,53 @@
+---
+title: "Controle do Inversor Trifásico"
+subtitle: "Modelagem, Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico com Carga RL em Plataforma Comercial Texas Instruments"
+author:
+  - "Alessandra Gabrielly Costa de Sousa"
+  - "Orientador: Prof. Dr. Raphael Barros Teixeira"
+---
+
+Repositório de acompanhamento do plano de Iniciação Científica **"Modelagem,
+Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico
+com Carga RL em Plataforma Comercial Texas Instruments"** (Alessandra Gabrielly Costa
+de Sousa, orientação do Prof. Dr. Raphael Barros Teixeira), vinculado ao projeto de
+pesquisa *Identificação, Estimação e Controle Baseados em Dados e Inteligência
+Computacional Aplicados a Conversores de Potência e Acionamentos Elétricos*.
+
+O inversor de frequência trifásico de dois níveis (LAUNCHXL-F28379D + módulo a GaN
+BOOSTXL-3PHGANINV) alimenta uma carga RL trifásica equilibrada, isolando o estudo da
+modulação, identificação e controle de corrente da dinâmica adicional de uma máquina
+elétrica — etapa intermediária para os acionamentos elétricos previstos no projeto de
+pesquisa.
+
+## Plano de Trabalho
+
+* [Plano de Trabalho de IC](Plano/PlanoIC03.html) — objetivos, metodologia (8 etapas) e cronograma de 12 meses. ([PDF assinado](Plano/PlanoIC03.pdf))
+
+## Conteúdo
+
+### Fundamentação
+
+::: {.callout-note}
+Etapa 1 do plano (revisão bibliográfica: inversor trifásico de dois níveis, modulação
+SPWM/SVPWM, transformações de Clarke e Park) ainda não iniciada.
+:::
+
+### Bancada
+
+* [Carga Trifásica RL da Bancada do Inversor](Bancada/carga_rl_trifasica.html) — dimensionamento das cargas RL trifásicas equilibradas em função dos limites do módulo BOOSTXL-3PHGANINV (Etapas 2–3: familiarização com a plataforma e montagem da bancada).
+
+### Modelagem, Identificação e Controle
+
+::: {.callout-note}
+Etapas 4–8 do plano (modelagem analítica e simulação, identificação por MQC/RLS,
+controladores PI-dq/PR-αβ/FCS-MPC e testes comparativos) ainda não iniciadas — serão
+adicionadas aqui conforme o andamento do IC.
+:::
+
+## Referências
+
+* Holmes, D. G.; Lipo, T. A. *Pulse Width Modulation for Power Converters: Principles and Practice*. Wiley-IEEE Press, 2003.
+* Rodriguez, J.; Cortes, P. *Predictive Control of Power Converters and Electrical Drives*. Wiley-IEEE Press, 2012.
+* Kazmierkowski, M. P.; Malesani, L. Current control techniques for three-phase voltage-source PWM converters: A survey. *IEEE Trans. Industrial Electronics*, v. 45, n. 5, 1998.
+* Krause, P. C. et al. *Analysis of Electric Machinery and Drive Systems*. 3ª ed. Wiley-IEEE Press, 2013.
+* Aguirre, L. A. *Introdução à Identificação de Sistemas*. 4ª ed. Editora UFMG, 2015.

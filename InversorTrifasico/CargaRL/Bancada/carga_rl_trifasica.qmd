@@ -1,0 +1,468 @@
+---
+title: "Carga Trifásica RL da Bancada do Inversor"
+subtitle: "Dimensionamento em Função dos Limites do BOOSTXL-3PHGANINV"
+institute: "Universidade Federal do Pará"
+author: "Prof. Dr. Raphael Teixeira"
+lang: pt
+format:
+  revealjs:
+    theme: [simple, ../TemaRTx.scss]
+    self-contained: true
+    transition: fade
+    slide-number: true
+    center: false
+    width: 1600
+    height: 900
+    footer: " "
+    title-slide-attributes:
+      data-background-image: "../imgs/ufpa-colorido.png"
+      data-background-size: "84px"
+      data-background-position: "top 45px center"
+engine: knitr
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+
+# Habilita a biblioteca arrows.meta (seta ">=Latex") nos chunks {tikz}
+# desta apresentação.
+knitr::opts_chunk$set(engine.opts = list(
+  extra.preamble = c("\\usetikzlibrary{arrows.meta}")
+))
+
+# ---------------------------------------------------------------------
+# Duas cargas RL por fase (ligação estrela), compartilhando o MESMO
+# banco de resistores da bancada de inversor trifásico do LINCE (Plano
+# de Trabalho IC03) — um indutor dedicado, inserível em série, é
+# adicionado (Carga B) ou removido/bypassado (Carga A):
+#   Carga A — controle de corrente: resistor da bancada + indutância
+#             residual de fiação/trilhas (sem indutor dedicado);
+#   Carga B — controle de potência: resistor da bancada + indutor
+#             dedicado em série.
+# ---------------------------------------------------------------------
+R_load <- 4.7          # ohm — banco de resistores, comum às duas cargas
+L_A    <- 1.0e-3       # H — indutância residual estimada (Carga A)
+L_B    <- 6.8e-3       # H — indutor dedicado (Carga B)
+f_rede <- 60            # Hz
+w      <- 2 * pi * f_rede
+
+# Limites do módulo inversor BOOSTXL-3PHGANINV (Texas Instruments)
+Vdc_min        <- 12          # V
+Vdc_max        <- 60          # V
+Vdc_nom        <- 48          # V
+I_rms_limite   <- 7                       # A rms por fase (datasheet)
+I_pico_limite  <- I_rms_limite * sqrt(2)  # A pico (~9,9 A)
+I_pico_medicao <- 10                      # A pico, faixa nominal de medição da EVM
+I_pico_teorico_shunt <- 16.5              # A pico, faixa teórica do shunt 5 mOhm + INA240
+
+# Parâmetros de modulação
+m       <- 0.9
+fsw_nom <- 20e3        # Hz
+
+# ---------------------------------------------------------------------
+# Modelo da carga por fase: Z = R + jXL
+# ---------------------------------------------------------------------
+modelo_carga <- function(R, L) {
+  XL  <- w * L
+  Z   <- sqrt(R^2 + XL^2)
+  FP  <- R / Z
+  phi <- atan(XL / R)
+  tau <- L / R
+  list(R = R, L = L, XL = XL, Z = Z, FP = FP,
+       phi_deg = phi * 180 / pi, tau = tau, f_pole = 1 / (2 * pi * tau))
+}
+
+mA <- modelo_carga(R_load, L_A)
+mB <- modelo_carga(R_load, L_B)
+
+# ---------------------------------------------------------------------
+# Ponto de operação (SPWM): V_fase,pico = m*Vdc/2
+# ---------------------------------------------------------------------
+calc_ponto <- function(Vdc, R, L, m = 0.9) {
+  XL_l  <- w * L
+  Z_l   <- sqrt(R^2 + XL_l^2)
+  Vf_pico <- m * Vdc / 2
+  Vf_rms  <- Vf_pico / sqrt(2)
+  Irms  <- Vf_rms / Z_l
+  Ipico <- Vf_pico / Z_l
+  P <- 3 * Irms^2 * R
+  Q <- 3 * Irms^2 * XL_l
+  S <- sqrt(P^2 + Q^2)
+  data.frame(Vdc = Vdc, XL = XL_l, Z = Z_l, FP = R / Z_l,
+             Vf_pico = Vf_pico, Vf_rms = Vf_rms,
+             Irms = Irms, Ipico = Ipico, P = P, Q = Q, S = S)
+}
+
+ptA48 <- calc_ponto(Vdc_nom, R_load, L_A)
+ptA60 <- calc_ponto(Vdc_max, R_load, L_A)
+ptB48 <- calc_ponto(Vdc_nom, R_load, L_B)
+ptB60 <- calc_ponto(Vdc_max, R_load, L_B)
+
+# Fator de extensão da região linear com SVPWM (terceiro harmônico)
+fator_svpwm <- 2 / sqrt(3)
+
+# Ripple de corrente: Δi ≈ Vdc / (4 L fsw)
+ripple <- function(Vdc, fsw, L) Vdc / (4 * L * fsw)
+diA_20k_48V <- ripple(Vdc_nom, fsw_nom, L_A)
+diA_20k_60V <- ripple(Vdc_max, fsw_nom, L_A)
+diB_20k_48V <- ripple(Vdc_nom, fsw_nom, L_B)
+diB_20k_60V <- ripple(Vdc_max, fsw_nom, L_B)
+
+# Nível de trip de sobrecorrente (CMPSS): margem de 85% do limite de pico do inversor
+trip_level <- 0.85 * I_pico_limite
+
+# Faixa de corrente nominal de operação, entre as duas cargas e os dois Vdc
+Ipico_op_min <- min(ptA48$Ipico, ptB48$Ipico)
+Ipico_op_max <- max(ptA60$Ipico, ptB60$Ipico)
+
+# Tensão reduzida para início dos ensaios
+Vdc_ensaio_reduzido <- 24
+```
+
+## Motivação
+
+A bancada de inversor trifásico do LINCE (LAUNCHXL-F28379D + BOOSTXL-3PHGANINV) precisa
+de cargas RL trifásicas equilibradas para os ensaios do Plano de Trabalho IC03
+(identificação e controle do inversor).
+
+::: {.callout-note}
+## Pergunta de projeto
+Como dimensionar as cargas a partir do **mesmo banco de resistores** da bancada, de
+forma a atender bem tanto os ensaios de **controle de corrente** (planta rápida, banda
+larga) quanto os de **controle de potência** (P/Q com reativo apreciável) —
+respeitando os limites do módulo inversor?
+:::
+
+Resposta adotada: **duas configurações de carga**, obtidas inserindo ou removendo um
+único indutor dedicado em série com o mesmo banco de resistores.
+
+---
+
+## Hardware da Bancada
+
+| Item | Especificação |
+|---|---|
+| Controle | LAUNCHXL-F28379D (TI C2000 Delfino, TMS320F28379D, duplo núcleo) |
+| Inversor | BOOSTXL-3PHGANINV — ponte trifásica GaN (meias-ponte LMG5200) |
+| Tensão de barramento CC | `r Vdc_min` V a `r Vdc_max` V (nominal `r Vdc_nom` V) |
+| Corrente de saída | `r I_rms_limite` A rms por fase (≈ `r round(I_pico_limite,1)` A de pico) |
+| Sensor de corrente | Shunt 5 mΩ + INA240 |
+| Faixa teórica do sensor | ± `r I_pico_teorico_shunt` A |
+| Faixa nominal de medição (EVM) | ± `r I_pico_medicao` A de pico |
+
+Fonte: página do produto e *user guide* da Texas Instruments.
+
+---
+
+## Requisitos Conflitantes
+
+::: columns
+::: {.column width="50%"}
+### Controle de corrente
+- Planta de 1ª ordem simples ($R$-$L$);
+- Banda de malha fechada a mais larga possível;
+- Reativo pequeno não é essencial.
+:::
+
+::: {.column width="50%"}
+### Controle de potência (P/Q)
+- Reativo **apreciável** — sem $Q$, não há o que controlar além de $P$;
+- Fator de potência de carga típico de sistemas reais: **0,85–0,9**;
+- Corrente não pode saturar o inversor nem o sensor.
+:::
+:::
+
+As duas colunas **não são bem atendidas por um único $L$** — a solução adotada usa
+**duas cargas**, aproveitando o mesmo banco de resistores já dimensionado para a
+bancada.
+
+---
+
+## Duas Cargas, um Único Resistor
+
+::: columns
+::: {.column width="50%"}
+### Carga A — Controle de Corrente
+Resistor da bancada **sem** o indutor dedicado (bypass) — sobra apenas a indutância
+residual de fiação/trilhas.
+
+$$R = `r R_load`\ \Omega \qquad L_A \approx `r L_A*1e3`\ \text{mH (residual)}$$
+:::
+
+::: {.column width="50%"}
+### Carga B — Controle de Potência
+Mesmo resistor, com o indutor dedicado **inserido** em série.
+
+$$R = `r R_load`\ \Omega \qquad L_B = `r L_B*1e3`\ \text{mH (dedicado)}$$
+:::
+:::
+
+Um jumper/chave em série com o indutor alterna entre as duas configurações, sem
+necessidade de trocar componentes.
+
+---
+
+## Modelo da Carga (por Fase)
+
+Carga RL série, ligação estrela: $\mathbf{Z} = R + j\,\omega L = R + jX_L$, $\omega = 2\pi f$.
+
+```{r}
+tab_modelo <- data.frame(
+  Carga = c("A (corrente)", "B (potência)"),
+  R = c(mA$R, mB$R), L_mH = c(mA$L, mB$L) * 1e3,
+  XL = c(mA$XL, mB$XL), Z = c(mA$Z, mB$Z), FP = c(mA$FP, mB$FP),
+  phi = c(mA$phi_deg, mB$phi_deg), tau_ms = c(mA$tau, mB$tau) * 1e3,
+  f_pole = c(mA$f_pole, mB$f_pole)
+)
+knitr::kable(tab_modelo, digits = 2,
+             col.names = c("Carga","R (Ω)","L (mH)","XL (Ω)","|Z| (Ω)","FP",
+                           "φ (°)","τ (ms)","f_polo (Hz)"))
+```
+
+A Carga A é **quase puramente resistiva** (FP $\approx `r round(mA$FP,2)`$) e tem polo
+**`r round(mB$tau/mA$tau,1)`× mais rápido** que a Carga B — favorece bandas de corrente
+mais largas. A Carga B tem reativo apreciável (FP $\approx `r round(mB$FP,2)`$),
+representativo de cargas reais.
+
+---
+
+## Ponto de Operação — Vdc = 48 V e 60 V
+
+SPWM, $m = `r m`$: $V_{f,\text{pico}} = m\,V_{dc}/2$.
+
+```{r}
+tab_pontos <- rbind(
+  cbind(Carga = "A", ptA48), cbind(Carga = "A", ptA60),
+  cbind(Carga = "B", ptB48), cbind(Carga = "B", ptB60)
+)
+tab_pontos$P_R_fase <- tab_pontos$P / 3
+knitr::kable(
+  tab_pontos[, c("Carga","Vdc","XL","Z","FP","Irms","Ipico","P","Q","S","P_R_fase")],
+  digits = 2,
+  col.names = c("Carga","Vdc (V)","XL (Ω)","|Z| (Ω)","FP","Irms (A)","Ipico (A)",
+                "P (W)","Q (var)","S (VA)","P/fase no R (W)")
+)
+```
+
+---
+
+## Diagrama Fasorial — Caso Nominal (Vdc = 48 V)
+
+```{tikz}
+%| echo: false
+%| fig-align: center
+%| fig-width: 8
+\input{imgs/tikz/FasoresCargaRL.tikz}
+```
+
+Carga A: $\varphi_A \approx `r round(mA$phi_deg,1)`^\circ$ (quase alinhada com
+$\mathbf{V}_f$). Carga B: $\varphi_B \approx `r round(mB$phi_deg,1)`^\circ$, defasagem
+bem mais visível — consistente com FP $\approx `r round(mB$FP,2)`$.
+
+---
+
+## Margem de Corrente — $I_{\text{pico}}$ vs. $V_{dc}$
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 6
+Vdc_seq <- seq(Vdc_min, Vdc_max, length.out = 200)
+IpicoA_seq <- sapply(Vdc_seq, function(v) calc_ponto(v, R_load, L_A)$Ipico)
+IpicoB_seq <- sapply(Vdc_seq, function(v) calc_ponto(v, R_load, L_B)$Ipico)
+
+par(mar = c(4.2, 4.5, 1, 1))
+plot(Vdc_seq, IpicoA_seq, type = "l", lwd = 3, col = "#2E7D6B",
+     xlab = "Vdc (V)", ylab = "I pico (A)",
+     ylim = c(0, I_pico_teorico_shunt + 1), xlim = c(Vdc_min, Vdc_max))
+lines(Vdc_seq, IpicoB_seq, lwd = 3, col = "#B23A48", lty = 2)
+abline(h = I_pico_limite, col = "#B23A48", lty = 3, lwd = 2)
+abline(h = I_pico_medicao, col = "#E65100", lty = 3, lwd = 2)
+points(c(Vdc_nom, Vdc_max), c(ptA48$Ipico, ptA60$Ipico), pch = 19, cex = 1.2, col = "#2E7D6B")
+points(c(Vdc_nom, Vdc_max), c(ptB48$Ipico, ptB60$Ipico), pch = 17, cex = 1.2, col = "#B23A48")
+text(Vdc_max, I_pico_limite, sprintf("limite do inversor (%.1f A)", I_pico_limite),
+     pos = 1, col = "#B23A48", cex = 0.85)
+text(Vdc_max, I_pico_medicao, sprintf("limite de medição (%.0f A)", I_pico_medicao),
+     pos = 3, col = "#E65100", cex = 0.85)
+legend("topleft", legend = c("Carga A (corrente)", "Carga B (potência)"),
+       col = c("#2E7D6B","#B23A48"), lwd = 3, lty = c(1,2), bty = "n", cex = 0.9)
+```
+
+Mesmo no caso máximo ($V_{dc} = `r Vdc_max`$ V), $I_{\text{pico}} \approx
+`r round(ptA60$Ipico,2)`$ A (Carga A) e $`r round(ptB60$Ipico,2)`$ A (Carga B) — margem
+confortável frente aos `r round(I_pico_limite,1)` A do inversor em ambas.
+
+---
+
+## Plano P×Q
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 6
+PQ_A <- t(sapply(Vdc_seq, function(v) { p <- calc_ponto(v, R_load, L_A); c(P = p$P, Q = p$Q) }))
+PQ_B <- t(sapply(Vdc_seq, function(v) { p <- calc_ponto(v, R_load, L_B); c(P = p$P, Q = p$Q) }))
+
+par(mar = c(4.2, 4.5, 1, 1))
+plot(PQ_B[, "P"], PQ_B[, "Q"], type = "l", lwd = 3, col = "#B23A48",
+     xlab = "P (W)", ylab = "Q (var)", xlim = range(c(PQ_A[,"P"], PQ_B[,"P"])),
+     ylim = range(c(PQ_A[,"Q"], PQ_B[,"Q"])))
+lines(PQ_A[, "P"], PQ_A[, "Q"], lwd = 3, col = "#2E7D6B", lty = 2)
+points(ptB48$P, ptB48$Q, pch = 17, cex = 1.3, col = "#B23A48")
+points(ptA48$P, ptA48$Q, pch = 19, cex = 1.3, col = "#2E7D6B")
+legend("topleft", legend = c("Carga B (potência)", "Carga A (corrente)"),
+       col = c("#B23A48","#2E7D6B"), lwd = 3, lty = c(1,2), bty = "n", cex = 0.9)
+```
+
+A Carga B percorre um reativo apreciável, útil para ensaios de controle de Q; a Carga A
+fica colada ao eixo $P$ (FP $\approx `r round(mA$FP,2)`$) — não serve para ensaios de
+potência reativa, mas não é essa a sua função.
+
+---
+
+## Ripple de Corrente vs. Frequência de Chaveamento
+
+$$\Delta i \approx \frac{V_{dc}}{4 L f_{sw}}$$
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 6
+fsw_seq <- seq(20e3, 100e3, length.out = 200)
+diA_48 <- ripple(Vdc_nom, fsw_seq, L_A)
+diB_48 <- ripple(Vdc_nom, fsw_seq, L_B)
+
+par(mar = c(4.2, 4.5, 1, 1))
+plot(fsw_seq/1e3, diA_48, type = "l", lwd = 3, col = "#2E7D6B",
+     xlab = "fsw (kHz)", ylab = "Δi (A), Vdc = 48 V", ylim = c(0, max(diA_48)))
+lines(fsw_seq/1e3, diB_48, lwd = 3, col = "#B23A48", lty = 2)
+points(fsw_nom/1e3, diA_20k_48V, pch = 19, col = "#2E7D6B", cex = 1.3)
+points(fsw_nom/1e3, diB_20k_48V, pch = 17, col = "#B23A48", cex = 1.3)
+legend("topright", legend = c("Carga A (corrente)", "Carga B (potência)"),
+       col = c("#2E7D6B","#B23A48"), lwd = 3, lty = c(1,2), bty = "n")
+```
+
+Em $f_{sw} = `r fsw_nom/1e3`$ kHz e $V_{dc} = `r Vdc_nom`$ V: $\Delta i \approx
+`r round(diA_20k_48V,2)`$ A na Carga A (≈ `r round(100*diA_20k_48V/ptA48$Ipico,0)`% do
+pico) contra $`r round(diB_20k_48V,3)`$ A na Carga B (≈
+`r round(100*diB_20k_48V/ptB48$Ipico,0)`% do pico) — o preço do $L$ menor é ripple
+maior, ainda assim dentro da faixa do sensor.
+
+---
+
+## Laço de Corrente: Constante de Tempo e Banda
+
+```{r}
+tab_polo <- data.frame(Carga = c("A (corrente)","B (potência)"),
+                        tau_ms = c(mA$tau, mB$tau)*1e3,
+                        f_pole = c(mA$f_pole, mB$f_pole))
+knitr::kable(tab_polo, digits = c(0,3,0),
+             col.names = c("Carga","τ (ms)","f_polo (Hz)"))
+```
+
+- Carga A: polo em $\approx `r round(mA$f_pole,0)`$ Hz — plana mais rápida, viabiliza
+  testar a malha de corrente em **bandas mais largas** (até próximo do limite imposto
+  por $f_{sw} = `r fsw_nom/1e3`$ kHz);
+- Carga B: polo em $\approx `r round(mB$f_pole,0)`$ Hz — banda de **1–2 kHz** é
+  suficiente e mais representativa de um ensaio de potência.
+
+```{r}
+#| fig-align: center
+#| fig-width: 9
+#| fig-height: 5
+t_seq <- seq(0, 8*mB$tau, length.out = 300)
+iA_step <- (ptA48$Vf_pico / R_load) * (1 - exp(-t_seq / mA$tau))
+iB_step <- (ptB48$Vf_pico / R_load) * (1 - exp(-t_seq / mB$tau))
+
+par(mar = c(4.2, 4.5, 1, 1))
+plot(t_seq*1e3, iB_step, type = "l", lwd = 3, col = "#B23A48",
+     xlab = "t (ms)", ylab = "i (A) — resposta ao degrau em malha aberta")
+lines(t_seq*1e3, iA_step, lwd = 3, col = "#2E7D6B", lty = 2)
+legend("bottomright", legend = c("Carga B (potência)", "Carga A (corrente)"),
+       col = c("#B23A48","#2E7D6B"), lwd = 3, lty = c(1,2), bty = "n")
+```
+
+---
+
+## Margem de Tensão nos Ensaios
+
+- Em degraus de referência, **saturar a razão cíclica** distorce a resposta —
+  recomenda-se operar com referências em **70–80% do valor nominal** durante
+  ensaios de degrau, preservando margem para o transitório;
+- Alternativa: modulação **SVPWM** (ou injeção de 3º harmônico) estende a região
+  linear em um fator $2/\sqrt{3} \approx `r round(fator_svpwm,3)`$
+  (≈ `r round(100*(fator_svpwm-1),1)`% a mais de tensão de fase disponível) em
+  relação ao SPWM puro, para o mesmo $V_{dc}$ — vale para as duas cargas.
+
+---
+
+## Comparação com Alternativas de Carga
+
+```{r}
+alt <- function(R, L_mH, label) {
+  L <- L_mH * 1e-3
+  p <- calc_ponto(Vdc_nom, R, L)
+  data.frame(Carga = label, R = R, L_mH = L_mH, XL = p$XL, Z = p$Z,
+             FP = p$FP, Irms = p$Irms, Ipico = p$Ipico)
+}
+
+tab_alt <- rbind(
+  alt(4.7, 1,   "4,7 Ω + 1 mH — Carga A (escolhida p/ corrente)"),
+  alt(4.7, 10,  "4,7 Ω + 10 mH (rejeitada)"),
+  alt(4.7, 6.8, "4,7 Ω + 6,8 mH — Carga B (escolhida p/ potência)")
+)
+
+knitr::kable(tab_alt, digits = 2,
+             col.names = c("Carga","R (Ω)","L (mH)","XL (Ω)","|Z| (Ω)",
+                           "FP","Irms (A)","Ipico (A)"))
+```
+
+- **1 mH**: FP $\approx `r round(tab_alt$FP[1],2)`$ — quase resistiva, polo rápido:
+  **escolhida como Carga A** (corrente), reaproveitando só o resistor da bancada;
+- **10 mH**: FP $\approx `r round(tab_alt$FP[2],2)`$, corrente menor
+  ($`r round(tab_alt$Irms[2],2)`$ A) — sub-utiliza a faixa do inversor sem ganho claro
+  sobre 6,8 mH; **rejeitada**;
+- **6,8 mH**: FP $\approx `r round(tab_alt$FP[3],2)`$, dentro da faixa típica de cargas
+  reais (0,85–0,9): **escolhida como Carga B** (potência).
+
+---
+
+## Especificação de Compra/Construção
+
+| Componente | Especificação | Uso | Justificativa |
+|---|---|---|---|
+| Resistor (por fase) | `r R_load` Ω, 100 W (fio/alumínio, com dissipador) | Cargas A **e** B | Dissipação máxima (60 V, Carga B) ≈ `r round(ptB60$P/3,1)` W/fase — 100 W dá margem de ≈ `r round(100/(ptB60$P/3),1)`× sobre o pior caso |
+| Indutor dedicado (por fase) | `r L_B*1e3` mH, $I_{\text{sat}} \geq 6$ A, $R_{\text{série}} < 0,3\ \Omega$ | Apenas Carga B (inserido em série) | $I_{\text{pico}}$ máximo ≈ `r round(ptB60$Ipico,2)` A (60 V) — 6 A dá margem de ≈ `r round(6/ptB60$Ipico,2)`×; núcleo de pó de ferro ou ferrite com entreferro |
+| Jumper/chave de bypass | Corrente nominal $\geq `r ceiling(ptA60$Ipico)`$ A | Alterna A ↔ B | Curto-circuita o indutor dedicado para obter a Carga A |
+
+---
+
+## Proteção e Início dos Ensaios
+
+- **Trip de sobrecorrente** via CMPSS do F28379D, ajustado em
+  $\approx `r round(trip_level,1)`$ A de pico (`r round(100*trip_level/I_pico_limite,0)`%
+  do limite do inversor) — acima da faixa de operação nominal das duas cargas, de
+  $`r round(Ipico_op_min,1)`$ a $`r round(Ipico_op_max,1)`$ A, e abaixo do limite físico
+  de $`r round(I_pico_limite,1)`$ A;
+- **Ensaios iniciais** com $V_{dc}$ reduzido para `r Vdc_ensaio_reduzido` V, em **ambas
+  as configurações**, validando firmware de PWM, leitura de corrente e proteção antes
+  de operar em `r Vdc_nom` V.
+
+---
+
+## Conclusão e Próximos Passos
+
+**Um único banco de resistores** (`r R_load` Ω), com um indutor dedicado que pode ser
+inserido ou removido em série, atende às duas frentes de ensaio:
+
+- **Carga A** (bypass do indutor): planta quase resistiva, polo em
+  $\approx `r round(mA$f_pole,0)`$ Hz — banda de corrente mais larga;
+- **Carga B** (indutor inserido): FP $\approx `r round(mB$FP,2)`$, reativo apreciável
+  em toda a faixa de $V_{dc}$ — ensaios de controle de potência (P/Q).
+
+::: {.callout-note}
+## Próximos passos
+- Filtro **LC** de saída, para ensaios de controle de **tensão**;
+- Conexão à **rede elétrica**, para controle de P/Q com referências independentes da
+  carga local.
+:::

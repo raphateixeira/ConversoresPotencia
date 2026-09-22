@@ -1,0 +1,18 @@
+project:
+  type: website
+  output-dir: docs
+  render:
+    - index.qmd
+    - Plano/PlanoIC03.qmd
+    - Bancada/carga_rl_trifasica.qmd
+
+website:
+  title: "Controle do Inversor Trifásico"
+  site-url: https://raphateixeira.github.io/ControleInversor3f/
+  repo-url: https://github.com/raphateixeira/ControleInversor3f
+
+format:
+  html:
+    theme: [cosmo, TemaRTx.scss]
+    lang: pt-BR
+    toc: true

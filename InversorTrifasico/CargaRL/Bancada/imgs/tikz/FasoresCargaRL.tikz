@@ -1,0 +1,24 @@
+% ---------------------------------------------------------------------
+% Diagrama fasorial da carga RL por fase, ponto de operação nominal
+% (Vdc = 48 V): tensão de fase como referência (0°) e corrente atrasada
+% de phi (carga indutiva), com o ângulo phi marcado entre os dois
+% fasores. Ângulo ilustrativo ~29° (phi = atan(XL/R), calculado nos
+% chunks R do .qmd). Tikz puro.
+% ---------------------------------------------------------------------
+\begin{tikzpicture}[>=Latex, line width=2pt, font=\Large, scale=1.7]
+
+  \draw[->] (-0.4,0) -- (3.4,0) node[right] {Re};
+  \draw[->] (0,-1.6) -- (0,1.0) node[above] {Im};
+
+  % Fasor de tensão de fase (referência, 0°)
+  \draw[->, blue!70!black] (0,0) -- (2.2,0) node[above right] {$\mathbf{V}_{f}\angle 0^\circ$};
+
+  % Fasor de corrente de fase (carga indutiva: I atrasa V de phi ~ 29°)
+  \draw[->, red!70!black] (0,0) -- ({1.9*cos(-29)},{1.9*sin(-29)})
+    node[below right] {$\mathbf{I}_{f}\angle{-\varphi}$};
+
+  % Arco do ângulo phi, entre V (0°) e I (-29°)
+  \draw[gray] (0.7,0) arc (0:-29:0.7);
+  \node[gray] at (0.9,-0.32) {$\varphi$};
+
+\end{tikzpicture}
