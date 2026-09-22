@@ -1,6 +1,6 @@
 ---
 title: "Plano de Trabalho de Iniciação Científica"
-subtitle: "Modelagem, Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico com Carga RL em Plataforma Comercial Texas Instruments"
+subtitle: "Modelagem, Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico com Carga RL"
 author: "Alessandra Gabrielly Costa de Sousa"
 lang: pt-BR
 ---

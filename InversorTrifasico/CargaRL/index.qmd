@@ -1,6 +1,6 @@
 ---
 title: "Controle do Inversor Trifásico"
-subtitle: "Modelagem, Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico com Carga RL em Plataforma Comercial Texas Instruments"
+subtitle: "Modelagem, Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico com Carga RL"
 author:
   - "Alessandra Gabrielly Costa de Sousa"
   - "Orientador: Prof. Dr. Raphael Barros Teixeira"
@@ -8,8 +8,8 @@ author:
 
 Repositório de acompanhamento do plano de Iniciação Científica **"Modelagem,
 Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico
-com Carga RL em Plataforma Comercial Texas Instruments"** (Alessandra Gabrielly Costa
-de Sousa, orientação do Prof. Dr. Raphael Barros Teixeira), vinculado ao projeto de
+com Carga RL"** (Alessandra Gabrielly Costa de Sousa, orientação do Prof. Dr.
+Raphael Barros Teixeira), vinculado ao projeto de
 pesquisa *Identificação, Estimação e Controle Baseados em Dados e Inteligência
 Computacional Aplicados a Conversores de Potência e Acionamentos Elétricos*.
 
