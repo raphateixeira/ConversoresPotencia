@@ -8,7 +8,6 @@ Alessandra Gabrielly Costa de Sousa, orientação do Prof. Dr. Raphael Barros Te
 Ver [Plano de Trabalho](Plano/PlanoIC03.pdf) para objetivos, metodologia e cronograma
 completos.
 
-Organizado em uma pasta por etapa do plano: `Plano/`, `Fundamentacao/`, `Bancada/`,
-`Modelagem/`, `Identificacao/`, `Controle/`.
+As notas ficam todas em `Notas/`, organizadas em seções a partir do `index.qmd`.
 
 🔗 Site: https://raphateixeira.github.io/ControleInversor3f/

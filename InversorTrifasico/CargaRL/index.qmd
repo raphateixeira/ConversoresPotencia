@@ -51,12 +51,20 @@ SPWM/SVPWM, transformações de Clarke e Park) ainda não iniciada.
 
 * [Carga Trifásica RL da Bancada do Inversor](Bancada/carga_rl_trifasica.html) — dimensionamento das cargas RL trifásicas equilibradas em função dos limites do módulo BOOSTXL-3PHGANINV (Etapas 2–3: familiarização com a plataforma e montagem da bancada).
 
-### Modelagem, Identificação e Controle
+### Modelagem
+
+* [Nota 01 — Modelagem do Inversor Trifásico (VSI)](Notas/Nota01ModelagemVSI.html) — estados de chaveamento, vetores espaciais, transformações de Clarke e Park, modelo médio e modelo da corrente com carga RL ($abc$, $\alpha\beta$, $dq$ e discreto/ARX).
 
 ::: {.callout-note}
-Etapas 4–8 do plano (modelagem analítica e simulação, identificação por MQC/RLS,
-controladores PI-dq/PR-αβ/FCS-MPC e testes comparativos) ainda não iniciadas — serão
-adicionadas aqui conforme o andamento do IC.
+Etapa 4 (simulação em MATLAB/Simulink) ainda não iniciada.
+:::
+
+### Identificação e Controle
+
+::: {.callout-note}
+Etapas 5–8 do plano (identificação por MQC/RLS, controladores PI-dq/PR-αβ/FCS-MPC e
+testes comparativos) ainda não iniciadas — serão adicionadas aqui conforme o andamento
+do IC.
 :::
 
 ## Referências
