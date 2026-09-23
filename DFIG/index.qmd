@@ -20,7 +20,7 @@ Controle VSC:
 ## Ver também
 
 * [Identificacao](https://raphateixeira.github.io/Identificacao/) — fundamentos teóricos da identificação ARX por mínimos quadrados usada aqui.
-* [IC-DataDrive](https://raphateixeira.github.io/IC-DataDrive/) — mesma técnica (ARX por mínimos quadrados a partir de PRBS) aplicada a conversores CC-CC/CC-CA/CA-CA.
+* [ControleCC2CC](https://raphateixeira.github.io/ControleCC2CC/) — mesma técnica (ARX por mínimos quadrados a partir de PRBS) aplicada a conversores CC-CC/CC-CA/CA-CA.
 * [DataDrivenControl](https://raphateixeira.github.io/DataDrivenControl/DeePC/DeePCNota.html) — DeePC, a contraparte do MPC-FCS baseado em ARX que dispensa a etapa explícita de identificação.
 
 
