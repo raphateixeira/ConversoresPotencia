@@ -23,6 +23,19 @@ pesquisa.
 
 * [Plano de Trabalho de IC](Plano/PlanoIC03.html) — objetivos, metodologia (8 etapas) e cronograma de 12 meses. ([PDF assinado](Plano/PlanoIC03.pdf))
 
+## Pré-requisitos
+
+- Eletrônica de Potência I e II (inversores, modulação PWM/SVPWM);
+- Sistemas de Controle I (referenciais dq/αβ desejável);
+- Identificação de Sistemas (mínimos quadrados);
+- Programação em C/C++ (Code Composer Studio, C2000) e Python/MATLAB para identificação e controle.
+
+## Acompanhamento
+
+- **Reunião quinzenal** com o orientador para validação de resultados;
+- **Entregáveis mensais**: firmware/notebook reprodutível cobrindo o pipeline modelagem → simulação → bancada → identificação → controle;
+- **Ferramentas**: kit LAUNCHXL-F28379D, módulo BOOSTXL-3PHGANINV, banco de carga RL trifásica, osciloscópio, MATLAB/Simulink, Python, este repositório Git.
+
 ## Conteúdo
 
 ### Fundamentação
@@ -51,3 +64,5 @@ adicionadas aqui conforme o andamento do IC.
 * Kazmierkowski, M. P.; Malesani, L. Current control techniques for three-phase voltage-source PWM converters: A survey. *IEEE Trans. Industrial Electronics*, v. 45, n. 5, 1998.
 * Krause, P. C. et al. *Analysis of Electric Machinery and Drive Systems*. 3ª ed. Wiley-IEEE Press, 2013.
 * Aguirre, L. A. *Introdução à Identificação de Sistemas*. 4ª ed. Editora UFMG, 2015.
+* Texas Instruments. *LAUNCHXL-F28379D — C2000 Delfino LaunchPad Development Kit — User's Guide*.
+* Texas Instruments. *BOOSTXL-3PHGANINV — Three-Phase GaN Inverter BoosterPack — User's Guide*.
