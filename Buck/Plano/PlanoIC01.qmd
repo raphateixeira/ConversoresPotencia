@@ -1,0 +1,116 @@
+---
+title: "Plano de Trabalho de Iniciação Científica"
+subtitle: "Fonte CC Controlada Baseada em Conversor Buck: Modelagem, Identificação e Controle"
+author: "Kauã dos Santos Oliveira"
+lang: pt-BR
+---
+
+| Campo | Informação |
+|---|---|
+| Aluno(a) | Kauã dos Santos Oliveira |
+| Matrícula | 202433940013 |
+| Curso | Engenharia Elétrica |
+| Orientador | Prof. Dr. Raphael Barros Teixeira |
+| Unidade | Faculdade de Engenharia Elétrica – Campus Universitário de Tucuruí (UFPA) |
+| Projeto de pesquisa vinculado | Identificação, Estimação e Controle Baseados em Dados e Inteligência Computacional Aplicados a Conversores de Potência e Acionamentos Elétricos |
+| Período de execução | 12 meses |
+| Carga horária | 20 horas semanais |
+
+::: {.callout-note}
+Documento original (PDF assinado): [`PlanoIC01.pdf`](PlanoIC01.pdf).
+:::
+
+## Resumo
+
+Este plano de trabalho propõe o estudo, a modelagem, a simulação computacional e a implementação física de uma fonte CC controlada, composta por um retificador de onda completa a diodo, filtro capacitivo e conversor CC-CC Buck, com sensoriamento de tensão de saída e de corrente no indutor e acionamento das chaves por circuito de gate drive. A partir da planta implementada, será conduzida a identificação de sistemas da relação entre a razão cíclica (duty cycle) aplicada ao conversor Buck e a tensão de saída regulada, obtendo-se modelos lineares para uso em projeto de controladores. Serão então projetados, simulados e implementados três estratégias de controle em malha de tensão e de corrente: controlador Proporcional-Integral (PI) convencional, compensador PI Tipo 2 (amplamente utilizado em fontes chaveadas comerciais) e controlador preditivo baseado em modelo (MPC).
+
+## Objetivos
+
+### Objetivo Geral
+
+Estudar, modelar, simular e implementar uma fonte CC controlada composta por retificador a diodo, filtro capacitivo e conversor CC-CC Buck, realizando a identificação de sistemas da relação entre razão cíclica e tensão de saída e o projeto, a simulação e a implementação de controladores de tensão e de corrente do tipo PI, PI Tipo 2 e preditivo (MPC).
+
+### Objetivos Específicos
+
+- Estudar os fundamentos teóricos da retificação de onda completa a diodo, do filtro capacitivo e do conversor CC-CC Buck, incluindo modos de condução contínua (MCC) e descontínua (MCD) e o princípio de modulação por largura de pulso (PWM);
+- Realizar o projeto analítico do estágio de potência da fonte CC, contemplando o dimensionamento da ponte retificadora, do capacitor de filtro, do indutor e do capacitor de saída do conversor Buck, e a escolha do dispositivo de chaveamento (MOSFET);
+- Estudar e especificar o circuito de gate drive para acionamento da chave do conversor Buck;
+- Estudar e especificar os circuitos de sensoriamento de tensão de saída e de corrente no indutor, incluindo condicionamento de sinal para aquisição em microcontrolador ou DSP;
+- Derivar o modelo de pequenos sinais do conversor Buck pela técnica de média no espaço de estados, obtendo a função de transferência entre razão cíclica e tensão de saída;
+- Simular o sistema completo (retificador, filtro, Buck, sensores e malhas de controle) no ambiente MATLAB/Simulink, validando o comportamento estático e dinâmico em malha aberta e malha fechada;
+- Implementar a bancada física da fonte CC controlada no laboratório de eletrônica de potência da FEE-CAMTUC;
+- Aplicar técnicas de identificação de sistemas por mínimos quadrados (convencional e recursivo) sobre a planta física implementada;
+- Projetar e implementar o controlador PI, o compensador PI Tipo 2 e o controlador MPC para as malhas de tensão e de corrente;
+- Comparar experimentalmente o desempenho das três estratégias de controle quanto a tempo de acomodação, sobressinal, erro em regime permanente e rejeição a perturbações de carga;
+- Elaborar relatórios técnicos parciais e final, e produzir material para eventual submissão a evento científico ou periódico.
+
+## Metodologia
+
+O plano de trabalho será executado em oito etapas ao longo de 12 meses.
+
+### Etapa 1 — Revisão bibliográfica e fundamentação teórica
+
+Estudo dos fundamentos de retificação a diodo, filtro capacitivo, conversor CC-CC Buck, modulação PWM, circuitos de gate drive e técnicas de sensoriamento de tensão e corrente em conversores estáticos.
+
+### Etapa 2 — Projeto analítico do estágio de potência
+
+Dimensionamento da ponte retificadora e do capacitor de filtro; dimensionamento do indutor e do capacitor de saída do Buck para MCC; especificação do MOSFET, do gate drive e dos circuitos de condicionamento dos sensores. Derivação do modelo de pequenos sinais do conversor Buck no espaço de estados médio, obtendo a função de transferência entre razão cíclica e tensão de saída.
+
+### Etapa 3 — Simulação computacional em MATLAB/Simulink
+
+Construção do modelo de simulação do sistema completo (retificador, filtro, Buck, sensores, gate drive) com Simscape Electrical. Validação estática e dinâmica em malha aberta. Implementação inicial das malhas de controle em ambiente simulado, gerando dados de entrada/saída para a identificação de sistemas.
+
+### Etapa 4 — Implementação da bancada física
+
+Montagem do estágio de potência, gate drive e sensoriamento no laboratório de eletrônica de potência da FEE-CAMTUC. Interface de aquisição de dados e geração de PWM em microcontrolador/DSP. Caracterização estática e dinâmica em malha aberta.
+
+### Etapa 5 — Identificação de sistemas
+
+Excitação (PRBS ou degraus) na razão cíclica, com aquisição da tensão de saída, para identificação por mínimos quadrados convencionais (modelo ARX) e recursivos (fator de esquecimento variável). Validação cruzada frente ao modelo analítico de pequenos sinais da Etapa 2.
+
+### Etapa 6 — Projeto dos controladores de tensão e de corrente
+
+- **PI**: alocação de polos, estrutura em cascata (malha interna de corrente, externa de tensão);
+- **PI Tipo 2**: projeto por resposta em frequência (margem de fase/ganho), otimizado para rejeição a perturbações de carga;
+- **MPC**: horizonte de predição finito, com restrições de razão cíclica e corrente máxima, a partir dos modelos ARX identificados.
+
+### Etapa 7 — Implementação embarcada e testes experimentais
+
+Implementação dos três controladores em microcontrolador/DSP, testes de regulação em malha fechada frente a variações de referência e perturbações de carga.
+
+### Etapa 8 — Análise de resultados e redação
+
+Análise comparativa das três estratégias de controle e redação do relatório técnico final.
+
+### Ferramentas computacionais
+
+MATLAB/Simulink (Control System Toolbox, Model Predictive Control Toolbox, Simscape Electrical) e Python (numpy, scipy, matplotlib, python-control).
+
+## Cronograma de Atividades (12 meses)
+
+| Etapa | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 – Revisão bibliográfica | ● | ● | | | | | | | | | | |
+| 2 – Projeto analítico do estágio de potência | | ● | ● | | | | | | | | | |
+| 3 – Simulação em MATLAB/Simulink | | | ● | ● | | | | | | | | |
+| 4 – Implementação da bancada física | | | | ● | ● | ● | | | | | | |
+| 5 – Identificação de sistemas | | | | | | ● | ● | | | | | |
+| 6 – Projeto dos controladores (PI, PI Tipo 2, MPC) | | | | | | | ● | ● | | | | |
+| 7 – Implementação embarcada e testes | | | | | | | | | ● | ● | ● | |
+| 8 – Análise de resultados e redação final | | | | | | | | | | | ● | ● |
+
+## Resultados Esperados
+
+(i) bancada física funcional de fonte CC controlada; (ii) modelos dinâmicos identificados experimentalmente entre razão cíclica e tensão de saída; (iii) três controladores de tensão e de corrente implementados e validados (PI, PI Tipo 2 e MPC), com avaliação comparativa; (iv) relatório técnico final e material para submissão a evento científico ou periódico; (v) formação prática do aluno bolsista em todo o ciclo de desenvolvimento de fontes chaveadas controladas.
+
+## Referências
+
+- AGUIRRE, Luis Antonio. *Introdução à Identificação de Sistemas: Técnicas Lineares e Não-Lineares Aplicadas a Sistemas Reais*. 4. ed. Belo Horizonte: Editora UFMG, 2015.
+- ÅSTRÖM, Karl J.; WITTENMARK, Björn. *Adaptive Control*. 2. ed. Mineola: Dover Publications, 2008.
+- BALOGH, Laszlo. *Design and Application Guide for High Speed MOSFET Gate Drive Circuits*. Texas Instruments (Unitrode), Application Note SLUP169, 2001.
+- BASSO, Christophe P. *Designing Control Loops for Linear and Switching Power Supplies: A Tutorial Guide*. Norwood: Artech House, 2012.
+- CAMACHO, Eduardo F.; BORDONS, Carlos. *Model Predictive Control*. 2. ed. London: Springer, 2007.
+- ERICKSON, Robert W.; MAKSIMOVIĆ, Dragan. *Fundamentals of Power Electronics*. 3. ed. Cham: Springer, 2020.
+- HAFIZ, Faizal et al. Multi-objective evolutionary approach to grey-box identification of Buck converter. *IEEE Transactions on Circuits and Systems I*, v. 67, n. 2, p. 584-597, 2020.
+- LJUNG, Lennart. *System Identification: Theory for the User*. Upper Saddle River: PTR Prentice Hall, 1999.
+- MOHAN, Ned; UNDELAND, Tore M.; ROBBINS, William P. *Power Electronics: Converters, Applications, and Design*. 3. ed. Hoboken, NJ: John Wiley & Sons, 2003.

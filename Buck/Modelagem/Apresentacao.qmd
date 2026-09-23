@@ -1,0 +1,208 @@
+---
+title: "Modelagem Simbólica do Conversor Buck"
+subtitle: "Espaço de Estados Médio e Pequenos Sinais, ao Vivo em Python/SymPy"
+institute: "UFPA — Campus Universitário de Tucuruí"
+author:
+  - "Kauã dos Santos Oliveira"
+  - "Orientador: Prof. Dr. Raphael Barros Teixeira"
+lang: pt
+engine: jupyter
+jupyter: python3
+format:
+  revealjs:
+    theme: [simple, ../TemaRTx.scss]
+    self-contained: true
+    transition: fade
+    slide-number: true
+    width: 1600
+    height: 900
+    footer: " "
+    center: false
+    title-slide-attributes:
+      data-background-image: "../imgs/ufpa-colorido.png"
+      data-background-size: "84px"
+      data-background-position: "top 45px center"
+execute:
+  echo: true
+---
+
+## Objetivos da Apresentação
+
+- Deduzir o modelo médio do conversor Buck com o código Python (`sympy`) que gera cada resultado
+- Obter os dois modos de chaveamento, o modelo médio (SSA) e a função de transferência direta
+- Estender ao modelo de **pequenos sinais**, calculando $G_{vd}(s)$ e $G_{vg}(s)$ simbolicamente
+- Cada resultado aqui é **calculado ao vivo** neste documento, não digitado à mão
+
+::: {.note}
+Versão notebook (mesmo conteúdo, formato interativo): [`ModelagemBuck.ipynb`](ModelagemBuck.html)
+:::
+
+---
+
+## Definição de Símbolos e Estados
+
+```{python}
+import sympy as sp
+from IPython.display import display, Math
+
+t = sp.symbols('t')
+L, C, R, Vi, d, s = sp.symbols('L C R V_i d s')
+i_L = sp.Function('i_L')(t)
+v_C = sp.Function('v_C')(t)
+x = sp.Matrix([i_L, v_C])
+x
+```
+
+Estados: corrente no indutor $i_L(t)$ e tensão no capacitor $v_C(t)$.
+
+---
+
+## Modo 1 — Chave Fechada
+
+```{python}
+dx = x.diff(t)
+u = sp.Matrix([Vi])
+
+A1 = sp.Matrix([[0, -1/L], [1/C, -1/(C*R)]])
+B1 = sp.Matrix([[1/L], [0]])
+
+display(Math(
+    sp.latex(dx) + "=" + sp.latex(A1) + sp.latex(x)
+    + "+" + sp.latex(B1) + sp.latex(u)
+))
+```
+
+A fonte $V_i$ é conectada diretamente ao indutor.
+
+---
+
+## Modo 2 — Chave Aberta
+
+```{python}
+A2 = sp.Matrix([[0, -1/L], [1/C, -1/(C*R)]])
+B2 = sp.Matrix([[0], [0]])
+
+display(Math(
+    sp.latex(dx) + "=" + sp.latex(A2) + sp.latex(x)
+    + "+" + sp.latex(B2) + sp.latex(u)
+))
+```
+
+O diodo de roda-livre assume a corrente: mesma matriz $A$, entrada desconectada ($B_2=0$).
+
+---
+
+## Modelo Médio (SSA)
+
+```{python}
+A_m = sp.simplify(A1*d + A2*(1 - d))
+B_m = sp.simplify(B1*d + B2*(1 - d))
+
+display(Math(
+    sp.latex(dx) + "=" + sp.latex(A_m) + sp.latex(x)
+    + "+" + sp.latex(B_m) + sp.latex(u)
+))
+```
+
+::: {.callout-insight}
+Como $A_1=A_2$, toda a dependência em $d$ fica isolada em $B_m$ — resultado característico do Buck.
+:::
+
+---
+
+## Função de Transferência Direta
+
+```{python}
+I2 = sp.eye(2)
+C_mat = sp.Matrix([[0, 1]])
+
+G0 = sp.simplify((C_mat * (s*I2 - A_m).inv() * B_m)[0] / d)
+G0
+```
+
+$H_0(s)=V_C(s)/d(s)$, tratando $d$ como entrada direta ($V_i$ fixo em 1).
+
+---
+
+## Pequenos Sinais — Termo Não Linear
+
+A não linearidade do Buck está no produto $d(t)\,v_i(t)$. Perturbando $d=d+\widehat d$ e $V_i=V_i+\widehat v_i$ em torno do ponto de operação:
+
+```{python}
+dh, vih = sp.symbols(r'\widehat{d} \widehat{v}_i')
+
+produto = sp.expand((d + dh) * (Vi + vih))
+produto
+```
+
+O termo com os dois chapéus ($\widehat d\,\widehat v_i$) é o produto de duas pequenas quantidades — desprezá-lo é a aproximação de pequenos sinais.
+
+---
+
+## Pequenos Sinais — Ponto de Operação CC
+
+Anulando a parcela CC, $0=A_1X+B_1\,d\,V_i$, e resolvendo para o estado de equilíbrio $X$:
+
+```{python}
+X1, X2 = sp.symbols('I_L V_C')
+Xvec = sp.Matrix([X1, X2])
+
+sol = sp.solve(sp.Eq(A1*Xvec + B1*d*Vi, sp.zeros(2, 1)), [X1, X2])
+sol
+```
+
+::: {.callout-note}
+$V_C=V_i d$ recupera o ganho estático já conhecido; $I_L=V_C/R$ é a corrente média de carga.
+:::
+
+---
+
+## Pequenos Sinais — Modelo Linearizado
+
+Descartado o termo CC (cancela com $\dot X=0$) e o de 2ª ordem, os termos de 1ª ordem viram os dois vetores de forçante da dinâmica linear $\dot{\widehat x}=A_1\widehat x+B_d\widehat d+B_{v_i}\widehat v_i$:
+
+```{python}
+B_d = sp.simplify(B1 * Vi)
+B_vi = sp.simplify(B1 * d)
+
+display(Math("B_d = V_i\\,B_1 = " + sp.latex(B_d)))
+display(Math("B_{v_i} = d\\,B_1 = " + sp.latex(B_vi)))
+```
+
+---
+
+## Pequenos Sinais — Duas Funções de Transferência
+
+Por superposição, com $\widehat v_i=0$ para $G_{vd}$ e $\widehat d=0$ para $G_{vg}$:
+
+```{python}
+Gvd = sp.simplify((C_mat * (s*I2 - A1).inv() * B_d)[0])
+Gvg = sp.simplify((C_mat * (s*I2 - A1).inv() * B_vi)[0])
+
+display(Math("G_{vd}(s) = " + sp.latex(Gvd)))
+display(Math("G_{vg}(s) = " + sp.latex(Gvg)))
+```
+
+---
+
+## Verificação Simbólica
+
+O código confirma a relação anunciada entre a função de transferência direta $H_0(s)$ e as duas funções de pequenos sinais:
+
+```{python}
+check_vd = sp.simplify(Gvd/Vi - G0) == 0
+check_vg = sp.simplify(Gvg/d - G0) == 0
+check_vd, check_vg
+```
+
+::: {.callout-insight}
+$G_{vd}(s)/V_i = G_{vg}(s)/d = H_0(s)$ — **confirmado simbolicamente**, não só por inspeção.
+:::
+
+---
+
+## Conclusão
+
+- Toda a cadeia — modos de chaveamento, modelo médio, função de transferência direta e modelo de pequenos sinais — foi deduzida e **verificada em código**, nesta mesma página
+- Contexto, motivação e revisão da literatura: [Apresentação do projeto](../Apresentacao/Apresentacao.html)
+- Aplicação ao dimensionamento de uma fonte real: [Projeto da Fonte CC Controlada](../FonteControlada/Apresentacao.html)

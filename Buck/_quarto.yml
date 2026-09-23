@@ -3,7 +3,14 @@ project:
   output-dir: docs
   render:
     - index.qmd
-    - ModelagemBuck.ipynb
+    - Plano/PlanoIC01.qmd
+    - Modelagem/ModelagemBuck.ipynb
+    - Modelagem/Apresentacao.qmd
+    - Apresentacao/Apresentacao.qmd
+    - FonteControlada/Apresentacao.qmd
+
+bibliography: referencias.bib
+csl: apa.csl
 
 website:
   title: "Controle do Conversor Buck"

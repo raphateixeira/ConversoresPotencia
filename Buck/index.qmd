@@ -1,11 +1,41 @@
 ---
 title: "Controle do Conversor Buck"
-subtitle: "Modelagem e controle de um conversor CC-CC Buck"
-author: "Prof. Dr. Raphael Teixeira"
+subtitle: "Fonte CC Controlada Baseada em Conversor Buck: Modelagem, Identificação e Controle"
+author:
+  - "Kauã dos Santos Oliveira"
+  - "Orientador: Prof. Dr. Raphael Barros Teixeira"
 ---
 
-Pesquisa em modelagem e controle do conversor Buck (CC-CC).
+Repositório de acompanhamento do plano de Iniciação Científica **"Fonte CC
+Controlada Baseada em Conversor Buck: Modelagem, Identificação e
+Controle"** (Kauã dos Santos Oliveira, orientação do Prof. Dr. Raphael
+Barros Teixeira), vinculado ao projeto de pesquisa *Identificação, Estimação
+e Controle Baseados em Dados e Inteligência Computacional Aplicados a
+Conversores de Potência e Acionamentos Elétricos*.
+
+## Plano de Trabalho
+
+* [Plano de Trabalho de IC](Plano/PlanoIC01.html) — objetivos, metodologia (8 etapas) e cronograma de 12 meses. ([PDF assinado](Plano/PlanoIC01.pdf))
 
 ## Conteúdo
 
-* [Modelagem simbólica do conversor Buck](ModelagemBuck.html) — dedução das equações de espaço de estados via `sympy`.
+**Etapa 1–2 — Fundamentação e projeto analítico**
+
+* [Modelagem simbólica do conversor Buck](Modelagem/ModelagemBuck.html) — dedução das equações de espaço de estados via `sympy` (notebook).
+* [Apresentação — Modelagem Simbólica](Modelagem/Apresentacao.html) — mesma dedução em slides, com o código Python executado ao vivo (modos de chaveamento, SSA, pequenos sinais e verificação simbólica).
+* [Apresentação — Modelagem e Pequenos Sinais](Apresentacao/Apresentacao.html) — versão narrativa: motivação, modelo médio, pequenos sinais e revisão da literatura.
+* [Dimensionamento de uma fonte controlada](FonteControlada/FonteControlada.m) — script MATLAB (ponte retificadora + buck) com simulação comportamental de verificação.
+* [Apresentação — Projeto da Fonte CC Controlada](FonteControlada/Apresentacao.html) — passo a passo do dimensionamento e conferência projeto × simulação.
+
+  [![](FonteControlada/figuras/01_Verifica_o_do_dimensionamento.png)](FonteControlada/figuras/01_Verifica_o_do_dimensionamento.png)
+  [![](FonteControlada/figuras/02_Zoom_no_ripple_de_chaveamento.png)](FonteControlada/figuras/02_Zoom_no_ripple_de_chaveamento.png)
+
+::: {.callout-note}
+Etapas 3–8 do plano (simulação Simulink, bancada física, identificação de
+sistemas, controladores PI/PI Tipo 2/MPC, testes embarcados e redação final)
+ainda não iniciadas — serão adicionadas aqui conforme o andamento do IC.
+:::
+
+## Referências
+
+* [Dilger (2018) — Desenvolvimento de uma Fonte Chaveada para Uso em Laboratório de Graduação](referencias/TCC_Dilger_FonteChaveada_Buck_2018.pdf) (TCC, UTFPR)
