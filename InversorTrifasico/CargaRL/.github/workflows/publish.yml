@@ -17,4 +17,4 @@ jobs:
       r_packages: "knitr, rmarkdown, magick, pdftools"
       needs_magick_system_deps: true
       needs_tinytex: true
-      output_dir: "docs"
+      output_dir: "_site"
