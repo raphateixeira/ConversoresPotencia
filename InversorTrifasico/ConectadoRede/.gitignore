@@ -1,0 +1,31 @@
+# Quarto
+/.quarto/
+**/*.quarto_ipynb
+/_site/
+
+# Tema compartilhado: baixado de raphateixeira/.github (ver .github/scripts/atualizar-tema.sh na raiz de GitRTx)
+/TemaRTx.scss
+
+# MATLAB/Simulink: caches e arquivos temporários (regeneráveis)
+/cache/
+slprj/
+*.slxc
+*.asv
+*.autosave
+*.slx.r20*
+*.mexmaci64
+*.mexmaca64
+*.mexa64
+*.mexw64
+
+# Resultados de treinamento/simulação (grandes; regenerar)
+savedAgents/
+AgenteFSC.mat
+
+# Referências com direitos autorais: não versionar PDFs
+/Referencias/*.pdf
+
+# Sistema e ferramentas
+.DS_Store
+__pycache__/
+**/.claude/settings.local.json

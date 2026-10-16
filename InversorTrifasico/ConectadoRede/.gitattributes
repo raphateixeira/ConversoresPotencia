@@ -1,0 +1,5 @@
+*.slx  binary
+*.mdl  -text
+*.mat  binary
+*.mlx  binary
+*.pdf  binary

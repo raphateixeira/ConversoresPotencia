@@ -1,0 +1,43 @@
+---
+title: "VSI01 — Malha aberta"
+subtitle: "Senoides trifásicas sem realimentação"
+---
+
+::: {.callout-note}
+**Planejada.** Simulação ainda não criada. O firmware correspondente já existe em
+[ProjetosCCS/ProjetosVSI/VSI01MalhaAberta](https://github.com/raphateixeira/ProjetosCCS/tree/main/ProjetosVSI/VSI01MalhaAberta).
+:::
+
+## Objetivo
+
+Reproduzir no Simulink o ensaio de malha aberta da bancada. Três tensões senoidais
+defasadas de 120° são sintetizadas por PWM senoidal,
+
+$$
+v_a = V\sin(2\pi f t), \quad v_b = V\sin(2\pi f t - 120^\circ), \quad v_c = V\sin(2\pi f t + 120^\circ),
+$$
+
+com rampa de amplitude de 0 a $V_p$ na partida. O modelo servirá para validar o modelo da
+planta (filtro L e carga) contra as medições da placa antes de fechar qualquer malha.
+
+## Parâmetros da bancada (firmware)
+
+| Parâmetro | Valor |
+|---|---|
+| $f_{PWM}$ | 20 kHz ($T_s = 50\,\mu$s) |
+| tempo morto | 0,5 μs |
+| $V_{cc}$ | 24 V (BOOSTXL-3PHGANINV) |
+| $V_p$ | 8 V |
+| $f$ | 60 Hz, rampa de 1 s |
+
+::: {.callout-warning}
+Os parâmetros da bancada ($V_{cc}$ = 24 V, $f_{PWM}$ = 20 kHz) diferem dos de
+`Comum/Parametros.m` ($V_{cc}$ = 350 V, $T_s$ = 1/48 kHz), que descrevem o VSI conectado à
+rede. Ao criar este modelo, defina um conjunto de parâmetros próprio para a bancada.
+:::
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| — | ainda não criado |

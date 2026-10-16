@@ -1,0 +1,72 @@
+# ---------------------------------------------------------------------
+#  Configuração do projeto Quarto — ControleVSI.
+#  Simulações MATLAB/Simulink do inversor fonte de tensão (VSI) trifásico
+#  conectado à rede: PI, MPC-FSC, identificação ARX/RLS, MPC adaptativo e RL.
+#  Repositório privado: o site é só para leitura local (quarto preview),
+#  sem GitHub Pages.
+#  Cada etapa é uma pasta VSINN<Etapa>/ com os modelos (.slx), scripts (.m),
+#  blocos/ (código extraído dos blocos MATLAB Function) e index.qmd.
+# ---------------------------------------------------------------------
+
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - VSI*/index.qmd
+
+website:
+  title: "Controle do VSI"
+  description: "Simulações de controle do inversor fonte de tensão trifásico conectado à rede — Prof. Dr. Raphael Teixeira (UFPA-CAMTUC-FEE)"
+  repo-url: https://github.com/raphateixeira/ControleVSI
+  reader-mode: true
+  navbar:
+    background: "#1F3A5F"
+    foreground: "#FFFFFF"
+    title: "Controle do VSI"
+    left:
+      - text: "Início"
+        href: https://raphateixeira.github.io/index.html
+      - text: "Controle do VSI"
+        href: index.qmd
+    right:
+      - text: "Etapas"
+        menu:
+          - text: "Controle clássico"
+          - text: "VSI01 — Malha aberta"
+            href: VSI01MalhaAberta/index.qmd
+          - text: "VSI02 — Controle de corrente PI"
+            href: VSI02ControleCorrentePI/index.qmd
+          - text: "VSI03 — Controle de potência PI"
+            href: VSI03ControlePotenciaPI/index.qmd
+          - text: "---"
+          - text: "Controle preditivo"
+          - text: "VSI04 — Controle de corrente MPC"
+            href: VSI04ControleCorrenteMPC/index.qmd
+          - text: "VSI05 — Controle de potência MPC-FSC"
+            href: VSI05ControlePotenciaMPC/index.qmd
+          - text: "---"
+          - text: "Baseado em dados"
+          - text: "VSI06 — Identificação ARX (RLS)"
+            href: VSI06IdentificacaoARX/index.qmd
+          - text: "VSI07 — Controle RST via ARX"
+            href: VSI07ControleRST2ARX/index.qmd
+          - text: "VSI08 — MPC adaptativo (RLS)"
+            href: VSI08MPCAdaptativoRLS/index.qmd
+          - text: "VSI09 — Aprendizagem por reforço"
+            href: VSI09ControlePotenciaRL/index.qmd
+      - icon: github
+        href: https://github.com/raphateixeira/ControleVSI
+        aria-label: Repositório no GitHub
+  page-footer:
+    border: false
+    center: "©2026 Prof. Dr. Raphael Teixeira — UFPA-CAMTUC-FEE"
+
+format:
+  html:
+    theme: [cosmo, TemaRTx.scss]
+    lang: pt-BR
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    fig-align: center

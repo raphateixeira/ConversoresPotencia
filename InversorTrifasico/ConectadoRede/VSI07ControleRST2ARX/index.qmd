@@ -1,0 +1,27 @@
+---
+title: "VSI07 — Controle RST via ARX"
+subtitle: "Controlador polinomial RST projetado sobre o modelo ARX identificado"
+---
+
+::: {.callout-note}
+**Planejada.** Simulação ainda não criada.
+:::
+
+## Objetivo
+
+Usar o modelo ARX estimado na [VSI06](../VSI06IdentificacaoARX/index.qmd) para projetar
+um controlador RST por alocação de polos,
+
+$$
+R(q)\,u(k) = T(q)\,r(k) - S(q)\,y(k), \qquad A R + B S = A_m A_o ,
+$$
+
+primeiro com parâmetros fixos (projeto offline) e depois de forma auto-ajustável (RLS +
+reprojeto a cada amostra). É a contraparte de modulação contínua (PWM) do MPC adaptativo da
+[VSI08](../VSI08MPCAdaptativoRLS/index.qmd).
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| — | ainda não criado |
