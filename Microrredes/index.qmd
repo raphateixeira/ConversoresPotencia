@@ -1,10 +1,21 @@
 ---
-title: "Microrredes"
-subtitle: "Modelagem, Controle e Operação de Microrredes com Conversores de Potência"
-author: "Prof. Dr. Raphael Barros Teixeira"
+pagetitle: "Microrredes"
+
 ---
 
-[⬅ Site principal](https://raphateixeira.github.io)
+::: {.rtx-hero}
+[Pesquisa · Microrredes]{.rtx-eyebrow}
+
+# Microrredes {.unnumbered .unlisted}
+
+Modelagem, controle e operação de microrredes com conversores de potência.
+
+[Prof. Dr. Raphael Teixeira]{.rtx-meta}
+
+::: {.rtx-acoes}
+[GitHub](https://github.com/raphateixeira/MicroGrids){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
 
 Repositório de pesquisa sobre **microrredes** (*microgrids*): sistemas elétricos de
 pequeno porte que agregam geração distribuída, armazenamento de energia e cargas sob um
