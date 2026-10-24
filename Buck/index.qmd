@@ -1,12 +1,21 @@
 ---
-title: "Controle do Conversor Buck"
-subtitle: "Fonte CC Controlada Baseada em Conversor Buck: Modelagem, Identificação e Controle"
-author:
-  - "Kauã dos Santos Oliveira"
-  - "Orientador: Prof. Dr. Raphael Barros Teixeira"
+pagetitle: "Controle do Conversor Buck"
+
 ---
 
-[⬅ Site principal](https://raphateixeira.github.io)
+::: {.rtx-hero}
+[Iniciação científica · Eletrônica de potência]{.rtx-eyebrow}
+
+# Controle do Conversor Buck {.unnumbered .unlisted}
+
+Fonte CC controlada baseada em conversor Buck: modelagem, identificação e controle.
+
+[Kauã dos Santos Oliveira · orientação: Prof. Dr. Raphael Teixeira]{.rtx-meta}
+
+::: {.rtx-acoes}
+[Plano de trabalho](Plano/PlanoIC01.html){.rtx-btn .rtx-btn-primario} [GitHub](https://github.com/raphateixeira/ControleBuck){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
 
 Repositório de acompanhamento do plano de Iniciação Científica **"Fonte CC
 Controlada Baseada em Conversor Buck: Modelagem, Identificação e
