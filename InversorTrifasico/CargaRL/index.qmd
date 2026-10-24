@@ -1,12 +1,21 @@
 ---
-title: "Controle do Inversor Trifásico"
-subtitle: "Modelagem, Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico com Carga RL"
-author:
-  - "Alessandra Gabrielly Costa de Sousa"
-  - "Orientador: Prof. Dr. Raphael Barros Teixeira"
+pagetitle: "Controle do Inversor Trifásico"
+
 ---
 
-[⬅ Site principal](https://raphateixeira.github.io)
+::: {.rtx-hero}
+[Iniciação científica · Eletrônica de potência]{.rtx-eyebrow}
+
+# Controle do Inversor Trifásico {.unnumbered .unlisted}
+
+Modelagem, identificação e controle clássico e preditivo de um inversor de frequência trifásico com carga RL.
+
+[Alessandra Gabrielly Costa de Sousa · orientação: Prof. Dr. Raphael Teixeira]{.rtx-meta}
+
+::: {.rtx-acoes}
+[Plano de trabalho](Plano/PlanoIC03.html){.rtx-btn .rtx-btn-primario} [GitHub](https://github.com/raphateixeira/ControleInversor3f){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
 
 Repositório de acompanhamento do plano de Iniciação Científica **"Modelagem,
 Identificação e Controle Clássico e Preditivo de um Inversor de Frequência Trifásico
