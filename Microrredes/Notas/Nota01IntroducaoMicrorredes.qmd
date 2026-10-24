@@ -1,0 +1,360 @@
+---
+title: "Introdução às Microrredes"
+subtitle: "Nota 01 — da rede convencional ao controle hierárquico"
+author: "Prof. Dr. Raphael Teixeira"
+institute: "Universidade Federal do Pará"
+format: nova-revealjs
+bibliography: ../Referencias.bib
+csl: ../apa.csl
+link-citations: true
+resources:
+  - anims/*.js
+---
+
+# Da rede à microrrede
+
+- Rede convencional
+- Geração distribuída
+- Microrrede
+
+## A rede elétrica convencional
+
+::: {.nova-svg data-nova-diagram="rede-convencional"}
+:::
+
+## Geração distribuída
+
+::: {.nova-svg data-nova-diagram="geracao-distribuida"}
+:::
+
+## A microrrede
+
+[Fontes, armazenamento e cargas numa fronteira elétrica definida, controlados como **uma única entidade**, conectada à rede ou ilhada [@lasseter2002].]{.muted}
+
+::: {.nova-svg data-nova-diagram="microrrede" style="max-width: 1280px; margin: 0 auto;"}
+:::
+
+# Conceitos-chave
+
+- PCC
+- Conversores
+- Estruturas de controle
+
+## Ponto de conexão comum (PCC)
+
+::: {.nova-svg data-nova-diagram="pcc"}
+:::
+
+::: {.muted .smaller}
+O PCC é o único ponto de troca de energia com a rede. A chave estática abre e fecha.
+:::
+
+## O conversor como interface
+
+::: {.nova-svg data-nova-diagram="conversor-interface"}
+:::
+
+::: {.takeaway .fragment}
+Sem máquina girante, quem define o comportamento é o **controle**.
+:::
+
+## Centralizado, descentralizado, distribuído
+
+::: {.nova-svg data-nova-diagram="estruturas-controle"}
+:::
+
+::: {.takeaway .fragment}
+O *droop*, visto adiante, é o exemplo clássico de controle **descentralizado**.
+:::
+
+# Componentes
+
+- Geração
+- Armazenamento
+- Conversores
+- Cargas
+
+## Componentes da microrrede
+
+::: {.nova-svg data-nova-diagram="componentes"}
+:::
+
+# Modos de operação
+
+- Conectada
+- Ilhada
+
+## Conectada à rede
+
+::: {.nova-svg data-nova-diagram="modo-conectado"}
+:::
+
+::: {.takeaway .fragment}
+A rede é a referência: os conversores **seguem** sua tensão e frequência.
+:::
+
+## Ilhada
+
+::: {.nova-svg data-nova-diagram="modo-ilhado"}
+:::
+
+::: {.callout-note .fragment title="Transições"}
+Detecção de ilhamento e ressincronização com a rede ficam para a Nota 02.
+:::
+
+# Arquiteturas
+
+- CA
+- CC
+- Híbrida
+
+## Microrrede CA
+
+::: {.nova-svg data-nova-diagram="arq-ca"}
+:::
+
+## Microrrede CC
+
+::: {.nova-svg data-nova-diagram="arq-cc"}
+:::
+
+## Microrrede híbrida
+
+::: {.nova-svg data-nova-diagram="arq-hibrida"}
+:::
+
+## CA, CC ou híbrida?
+
+| | CA | CC | Híbrida |
+|:--|:--|:--|:--|
+| Conexão com a rede e cargas existentes | [direta]{.hl} | via conversor | direta no lado CA |
+| Conversões para FV e baterias | 1–2 | [1]{.hl} | [1]{.hl} |
+| Frequência e reativo a controlar | sim | [não]{.hl} | só no lado CA |
+| Proteção | madura | difícil (sem zero de corrente) | mista |
+| Ponto crítico | sincronismo | padronização | conversor de interligação |
+
+: {tbl-colwidths="[34,20,23,23]"}
+
+::: {.takeaway .fragment}
+A arquitetura define **quais variáveis** o controle precisa regular.
+:::
+
+# Formadores e seguidores
+
+- Grid-following
+- Grid-forming
+
+## Seguidor × formador de rede
+
+::: {.nova-svg data-nova-diagram="gfl-gfm"}
+:::
+
+::: {.callout-question .fragment}
+Sem gerador síncrono, quem dá **inércia** e **amortecimento** à frequência?
+:::
+
+# Fluxo de potência
+
+- Circuito
+- Dedução
+- Fasores
+
+## Duas fontes ligadas por uma linha
+
+::: {.nova-svg data-nova-diagram="circuito-linha"}
+:::
+
+::: {.lead .fragment}
+Como $P$ e $Q$ dependem de $E$, $V$ e do ângulo $\delta$?
+:::
+
+## Dedução de $P$ e $Q$
+
+::: {.eqx .deriv}
+::: {.step}
+[$S$]{.lhs} [$= V\,I^{\ast}$]{.rhs} [potência complexa no nó $V$]{.why}
+:::
+::: {.step .fragment}
+[$I$]{.lhs} [$= \frac{E\,e^{j\delta} - V}{jX}$]{.rhs} [lei de Ohm na linha]{.why}
+:::
+::: {.step .fragment}
+[$S$]{.lhs} [$= V\,\frac{E\,e^{-j\delta} - V}{-jX}$]{.rhs} [conjugando $I$]{.why}
+:::
+::: {.step .fragment}
+[$S$]{.lhs} [$= \frac{j\,V\,(E\cos\delta - jE\sin\delta - V)}{X}$]{.rhs} [$1/(-j) = j$ e Euler]{.why}
+:::
+::: {.step .fragment}
+[$S$]{.lhs} [$= \eq{a}{\frac{E\,V}{X}\sin\delta} + j\,\eq{b}{\frac{E\,V\cos\delta - V^2}{X}}$]{.rhs} [separando parte real e imaginária]{.why}
+:::
+:::
+
+::: {.takeaway .fragment}
+[$P$ = parte real]{.t-a} · [$Q$ = parte imaginária]{.t-b}
+:::
+
+## $P$ e $Q$ numa linha indutiva
+
+::: {.eqx}
+$$
+\begin{aligned}
+\eq{a}{P} &= \frac{\eq{c}{E}\,V}{\eq{d}{X}}\,\sin\eq{e}{\delta} && \approx\; \frac{E\,V}{X}\,\delta \\[6pt]
+\eq{b}{Q} &= \frac{\eq{c}{E}\,V\cos\eq{e}{\delta} - V^2}{\eq{d}{X}} && \approx\; \frac{V\,(E - V)}{X}
+\end{aligned}
+$$
+
+::: {.eqx-text}
+Para [ângulos pequenos]{.t-e .fragment .lightup} ($\sin\delta \approx \delta$, $\cos\delta \approx 1$), a [potência ativa]{.t-a .fragment .lightup} depende do ângulo e a [potência reativa]{.t-b .fragment .lightup} depende da diferença entre a [amplitude gerada]{.t-c .fragment .lightup} e a tensão da rede.
+:::
+:::
+
+::: {.takeaway .fragment}
+$P \leftrightarrow \delta$ (frequência) $\qquad Q \leftrightarrow E$ (amplitude)
+:::
+
+::: {.muted .smaller .fragment}
+Em baixa tensão, onde $R \gg X$, os papéis se invertem. É o assunto da Nota 02 (impedância virtual).
+:::
+
+## Fasores da linha indutiva
+
+::: {style="height: 640px"}
+<canvas class="nova-canvas" data-nova-anim="fasores" data-controls="delta,e"></canvas>
+:::
+
+# Controle por droop
+
+- Estatismo
+- Equações
+- Partilha de carga
+- Diagrama
+
+## De onde vem o *droop*?
+
+[*Droop* (estatismo): a frequência **cai linearmente** com a potência entregue, como no regulador de velocidade de um gerador síncrono.]{.muted}
+
+::: {.nova-svg data-nova-diagram="droop-curva" style="max-width: 1300px; margin: 0 auto;"}
+:::
+
+## Equações do *droop*
+
+::: {.eqx}
+$$
+\eq{a}{\omega} = \eq{b}{\omega^\ast} - \eq{c}{m_p}\,\eq{d}{P}
+\qquad\qquad
+\eq{e}{E} = \eq{f}{E^\ast} - \eq{g}{n_q}\,\eq{h}{Q}
+$$
+
+::::: {.columns}
+:::: {.column width="50%"}
+::: {.eqx-defs}
+- [$\omega$]{.t-a} frequência imposta pelo conversor
+- [$\omega^\ast$]{.t-b} frequência a vazio
+- [$m_p$]{.t-c} coeficiente $P$–$\omega$
+- [$P$]{.t-d} potência ativa medida (filtrada)
+:::
+::::
+:::: {.column width="50%"}
+::: {.eqx-defs}
+- [$E$]{.t-e} amplitude da tensão gerada
+- [$E^\ast$]{.t-f} amplitude a vazio
+- [$n_q$]{.t-g} coeficiente $Q$–$E$
+- [$Q$]{.t-h} potência reativa medida (filtrada)
+:::
+::::
+:::::
+:::
+
+::: {.takeaway .fragment}
+$m_{p,i}\,P_{i}^{\max}$ iguais ⇒ cada fonte assume carga **proporcional à sua capacidade**
+:::
+
+## Partilha de carga
+
+::: {style="height: 640px"}
+<canvas class="nova-canvas" data-nova-anim="droop-partilha" data-controls="pl,r"></canvas>
+:::
+
+## *Droop* em diagrama de blocos
+
+::: {.nova-svg data-nova-diagram="droop-blocos"}
+:::
+
+# Controle hierárquico
+
+- Visão geral
+- Níveis 0 a 3
+
+## Controle hierárquico: visão geral
+
+::: {.nova-svg data-nova-diagram="hierarquia" style="max-width: 1260px; margin: 0 auto;"}
+:::
+
+::: {.muted .smaller}
+Estrutura de @guerrero2011; ver também @olivares2014.
+:::
+
+## Nível 0: malhas internas
+
+::: {.nova-svg data-nova-diagram="nivel0"}
+:::
+
+::: {.takeaway .fragment}
+É o controle do conversor isolado, como no inversor trifásico.
+:::
+
+## Primário: *droop* local
+
+::: {.nova-svg data-nova-diagram="nivel1"}
+:::
+
+## Secundário: restauração
+
+::: {.nova-svg data-nova-diagram="nivel2"}
+:::
+
+## Secundário em ação
+
+::: {style="height: 640px"}
+<canvas class="nova-canvas" data-nova-anim="secundario" data-controls="ki"></canvas>
+:::
+
+## Terciário: intercâmbio com a rede
+
+::: {.nova-svg data-nova-diagram="nivel3"}
+:::
+
+## Onde entram nossos temas
+
+:::: {.columns}
+::: {.column width="50%"}
+**Limitações do *droop* clássico**
+
+- Desvio de $\omega$ e $E$ (exige o secundário)
+- Partilha de $Q$ imprecisa
+- Acoplamento $P$–$Q$ em linhas resistivas
+- Pouca inércia
+:::
+::: {.column width="50%" .fragment}
+**Linhas de pesquisa**
+
+- **MPC** nas malhas internas e no primário
+- **Identificação** da rede (ARX/RLS)
+- **Controle baseado em dados** (DeePC, Koopman)
+- Máquina síncrona virtual
+:::
+::::
+
+::: {.takeaway .fragment}
+Próximo passo (Nota 02): controle descentralizado e hierárquico em detalhe
+:::
+
+## Referências {.smaller}
+
+::: {#refs}
+:::
+
+<script src="anims/microrredes.js"></script>
+<script src="anims/nova-anim.js"></script>
+<script src="anims/microrredes-anim.js"></script>
+
+{{< include _encerramento.qmd >}}

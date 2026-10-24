@@ -1,0 +1,217 @@
+---
+title: "Controle Descentralizado e Hierárquico"
+subtitle: "Nota 02 — a partir de Guerrero et al. (2013), Parte I"
+author: "Prof. Dr. Raphael Teixeira"
+institute: "Universidade Federal do Pará"
+format: nova-revealjs
+bibliography: ../Referencias.bib
+csl: ../apa.csl
+link-citations: true
+resources:
+  - anims/*.js
+---
+
+# Papéis dos conversores
+
+- Formador, alimentador, suporte
+
+## Três papéis para um conversor
+
+| Papel | Modelo equivalente | Controla | Exemplo |
+|:--|:--|:--|:--|
+| **Formador** (*grid-forming*) | fonte de tensão, baixa impedância | $V$ e $f$ | UPS, bateria no modo ilhado |
+| **Alimentador** (*grid-feeding*) | fonte de corrente, alta impedância | $P$ e $Q$ | FV com MPPT |
+| **Suporte** (*grid-supporting*) | tensão ou corrente com *droop* | contribui para $V$ e $f$ | unidades com *droop* |
+
+: {tbl-colwidths="[24,30,20,26]"}
+
+::: {.muted .smaller}
+Classificação de @rocabert2012, adotada por @guerrero2013.
+:::
+
+## Formador e seguidor, lado a lado
+
+::: {.nova-svg data-nova-diagram="gfl-gfm"}
+:::
+
+# Controle descentralizado
+
+- *Droop* geral
+- Impedância virtual
+- *Droop* transitório
+
+## *Droop* para qualquer linha
+
+::: {.eqx}
+$$
+\begin{bmatrix} \eq{a}{P'} \\ \eq{b}{Q'} \end{bmatrix}
+=
+\begin{bmatrix} \sin\eq{c}{\theta} & -\cos\eq{c}{\theta} \\ \cos\eq{c}{\theta} & \sin\eq{c}{\theta} \end{bmatrix}
+\begin{bmatrix} P \\ Q \end{bmatrix},
+\qquad
+\eq{c}{\theta} = \arctan\frac{X}{R}
+$$
+
+$$
+\omega = \omega^\ast - m_p\,\eq{a}{P'} \qquad\qquad E = E^\ast - n_q\,\eq{b}{Q'}
+$$
+:::
+
+| Linha | $\theta$ | Droop resultante |
+|:--|:-:|:--|
+| indutiva (AT, MT) | $90°$ | $P$–$\omega$, $Q$–$E$ |
+| resistiva (BT) | $0°$ | $Q$–$\omega$, $P$–$E$ |
+
+: {tbl-colwidths="[34,16,50]"}
+
+## Impedância virtual
+
+::: {.nova-svg data-nova-diagram="impedancia-virtual"}
+:::
+
+::: {.callout-insight .fragment}
+O controle impõe a impedância de saída: torna a linha "indutiva", desacopla $P$ e $Q$, melhora a partilha de $Q$ e limita a corrente.
+:::
+
+## *Droop* transitório
+
+::: {.eqx}
+$$
+\eq{a}{\omega} = \omega^\ast - \eq{b}{m_p}\,P - \eq{c}{m_d}\,\frac{dP}{dt}
+$$
+
+::: {.eqx-text}
+Além da [inclinação]{.t-b} que divide a carga em regime, um termo [derivativo]{.t-c} reage às variações de potência e acrescenta amortecimento sem alterar a partilha em regime.
+:::
+:::
+
+# Estabilidade
+
+- Pequenos sinais
+- Lugar das raízes
+
+## Modelo de pequenos sinais
+
+::: {.eqx .deriv}
+::: {.step}
+[$\Delta P$]{.lhs} [$= \eq{a}{K}\,\Delta\delta,\quad \eq{a}{K} = \frac{E V\cos\delta_0}{X}$]{.rhs} [linearização de $P$ em $\delta_0$]{.why}
+:::
+::: {.step .fragment}
+[$\Delta P_f$]{.lhs} [$= \frac{1}{\eq{b}{\tau} s + 1}\,\Delta P$]{.rhs} [filtro de medição, $\tau = 1/\omega_c$]{.why}
+:::
+::: {.step .fragment}
+[$\Delta\omega$]{.lhs} [$= -(\eq{c}{m_p} + \eq{d}{m_d}\,s)\,\Delta P_f$]{.rhs} [*droop* (+ termo transitório)]{.why}
+:::
+::: {.step .fragment}
+[$s\,\Delta\delta$]{.lhs} [$= \Delta\omega$]{.rhs} [o ângulo integra a frequência]{.why}
+:::
+::: {.step .fragment}
+[$0$]{.lhs} [$= \eq{b}{\tau}\,s^2 + (1 + \eq{d}{m_d}\eq{a}{K})\,s + \eq{c}{m_p}\eq{a}{K}$]{.rhs} [equação característica]{.why}
+:::
+:::
+
+::: {.takeaway .fragment}
+$\omega_n = \sqrt{m_p K/\tau} \qquad \zeta = \dfrac{1 + m_d K}{2\sqrt{\tau\, m_p K}}$
+:::
+
+## Lugar das raízes do *droop*
+
+::: {style="height: 640px"}
+<canvas class="nova-canvas" data-nova-anim="raizes-droop" data-controls="mp,md"></canvas>
+:::
+
+::: {.notes}
+Modelo de uma unidade ligada a um barramento rígido, com $P$ e $Q$ desacoplados. $m_p$ grande dá partilha mais firme, mas menos amortecimento; $m_d$ devolve o amortecimento.
+:::
+
+# Controle hierárquico
+
+- Primário
+- Secundário e sincronização
+- Terciário
+
+## Visão geral
+
+::: {.nova-svg data-nova-diagram="hierarquia" style="max-width: 1260px; margin: 0 auto;"}
+:::
+
+## Primário: malhas internas
+
+::: {.nova-svg data-nova-diagram="nivel0"}
+:::
+
+## Secundário: restauração e sincronização
+
+::: {.nova-svg data-nova-diagram="nivel2" style="max-width: 1100px; margin: 0 auto;"}
+:::
+
+::: {.eqx style="font-size: 0.62em"}
+$$
+\begin{aligned}
+\delta\omega &= k_{p\omega}\,(\omega^\ast_{MG} - \omega_{MG}) + k_{i\omega}\!\int(\omega^\ast_{MG} - \omega_{MG})\,dt + \eq{a}{\Delta\omega_S} \\
+\delta E &= k_{pE}\,(E^\ast_{MG} - E_{MG}) + k_{iE}\!\int(E^\ast_{MG} - E_{MG})\,dt
+\end{aligned}
+$$
+:::
+
+::: {.muted .smaller}
+[$\Delta\omega_S$]{.t-a}: laço de sincronização que alinha a fase da microrrede à da rede antes de fechar o PCC [@guerrero2013].
+:::
+
+## Terciário: fluxo com a rede
+
+::: {.nova-svg data-nova-diagram="nivel3" style="max-width: 1250px; margin: 0 auto;"}
+:::
+
+::: {.eqx style="font-size: 0.62em"}
+$$
+\begin{aligned}
+\omega^\ast_{MG} &= k_{pP}\,(P^\ast_G - P_G) + k_{iP}\!\int(P^\ast_G - P_G)\,dt \\
+E^\ast_{MG} &= k_{pQ}\,(Q^\ast_G - Q_G) + k_{iQ}\!\int(Q^\ast_G - Q_G)\,dt
+\end{aligned}
+$$
+:::
+
+# Transições
+
+- Detecção de ilhamento
+- Reconexão
+
+## Detecção de ilhamento
+
+| Método | Como funciona | Limitação |
+|:--|:--|:--|
+| Passivo | sub/sobretensão e frequência, ROCOF, salto de fase | zona de não detecção |
+| Ativo | injeta pequena perturbação e observa a resposta | degrada a qualidade de energia |
+| Comunicação | sinal de abertura vindo da concessionária | custo e dependência do canal |
+
+: {tbl-colwidths="[18,50,32]"}
+
+## Reconexão à rede
+
+::: {.timeline .incremental}
+- **1** Ilhada: secundário restaura $\omega$ e $E$
+- **2** Sincroniza: $\Delta\omega_S$ alinha a fase com a rede
+- **3** Verifica: $|\Delta f|$, $|\Delta V|$, $|\Delta\varphi|$ dentro dos limites
+- **4** Fecha o PCC: terciário assume $P_G$, $Q_G$
+:::
+
+::: {.nova-svg data-nova-diagram="pcc" style="max-width: 1150px; margin: 30px auto 0;"}
+:::
+
+## Próximos passos
+
+- **Controle distribuído** (consenso): secundário sem controlador central
+- **MPC** e **controle baseado em dados** nos níveis 0 e 1
+- Simulação MATLAB/Simulink: duas unidades com *droop* e impedância virtual
+
+## Referências {.smaller}
+
+::: {#refs}
+:::
+
+<script src="anims/microrredes.js"></script>
+<script src="anims/nova-anim.js"></script>
+<script src="anims/microrredes-anim.js"></script>
+
+{{< include _encerramento.qmd >}}

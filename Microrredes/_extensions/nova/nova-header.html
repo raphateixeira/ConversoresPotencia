@@ -1,0 +1,18 @@
+<!-- Nova: configuração do MathJax 2 (usado pelo revealjs do Quarto).
+     1) Força a fonte web TeX (as STIX do macOS quebram \underbrace e \mathcal).
+     2) Macro \eq{letra}{termo}: marca um termo da equação para o recurso de
+        "equação explicada com cores" (.eqx). A letra (a–h) escolhe a cor e
+        liga o termo ao texto [explicação]{.t-letra}.
+     3) Macro \mv{nome}{termo}: marca um termo para o "movimento mágico"
+        (.morph): o termo de mesmo nome desliza de um passo para o outro. -->
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  "HTML-CSS": { availableFonts: [], preferredFont: null, webFont: "TeX" },
+  TeX: {
+    Macros: {
+      eq: ["\\class{eqx-term eqx-#1}{#2}", 2],
+      mv: ["\\class{mv mv-#1}{#2}", 2]
+    }
+  }
+});
+</script>
