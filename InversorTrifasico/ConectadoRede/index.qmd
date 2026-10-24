@@ -1,10 +1,21 @@
 ---
-title: "Controle do Inversor Fonte de Tensão (VSI)"
-subtitle: "Simulações MATLAB/Simulink do VSI trifásico conectado à rede: controle clássico, preditivo e baseado em dados"
-author: "Prof. Dr. Raphael Barros Teixeira — UFPA-CAMTUC-FEE"
+pagetitle: "Controle do Inversor Fonte de Tensão (VSI)"
+
 ---
 
-[⬅ Site principal](https://raphateixeira.github.io)
+::: {.rtx-hero}
+[Pesquisa · Inversor conectado à rede]{.rtx-eyebrow}
+
+# Controle do Inversor Fonte de Tensão (VSI) {.unnumbered .unlisted}
+
+Simulações MATLAB/Simulink do VSI trifásico conectado à rede: controle clássico, preditivo e baseado em dados.
+
+[Prof. Dr. Raphael Teixeira]{.rtx-meta}
+
+::: {.rtx-acoes}
+[Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
 
 Este repositório reúne as simulações MATLAB/Simulink de um **inversor fonte de tensão
 (VSI) trifásico de dois níveis conectado à rede por um filtro L**. O objetivo é comparar,
