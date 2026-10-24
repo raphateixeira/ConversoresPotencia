@@ -1,21 +1,40 @@
 ---
-title: "Controle e Identificação de Sistemas"
-subtitle: "Inversor de Tensão Trifásico"
-institute: "Universidade Federal do Pará"
-author: "Prof. Dr. Raphael Teixeira"
-date: ""
+pagetitle: "Controle e Identificação do DFIG"
 format: html
 ---
 
-[⬅ Site principal](https://raphateixeira.github.io)
+::: {.rtx-hero}
+[Pesquisa · Controle preditivo]{.rtx-eyebrow}
 
-Controle VSC:
+# Controle e Identificação do DFIG {.unnumbered .unlisted}
 
-* [Variáveis trifásicas e referenciais](Presents/01VariaveisTrifasicasReferenciais.html)
+Controle preditivo de conjunto finito (FCS-MPC) e identificação ARX de um gerador de indução duplamente alimentado (DFIG) acionado por inversor de tensão trifásico.
 
-* [Controle MPC-FCS de gerador DFIG](Presents/02DFIG.html)
+[Prof. Dr. Raphael Teixeira]{.rtx-meta}
 
-* [Identificação ARX - DFIG](Presents/03ControleDFIGpFCS.html)
+::: {.rtx-acoes}
+[GitHub](https://github.com/raphateixeira/ControleDFIG){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
+
+## Apresentações
+
+```{=html}
+<div class="categoria-grid">
+<a class="categoria-card" href="Presents/01VariaveisTrifasicasReferenciais.html">
+  <h3>Apresentação 1</h3>
+  <p>Variáveis trifásicas e referenciais</p>
+</a>
+<a class="categoria-card" href="Presents/02DFIG.html">
+  <h3>Apresentação 2</h3>
+  <p>Controle MPC-FCS de gerador DFIG</p>
+</a>
+<a class="categoria-card" href="Presents/03ControleDFIGpFCS.html">
+  <h3>Apresentação 3</h3>
+  <p>Identificação ARX - DFIG</p>
+</a>
+</div>
+```
 
 ## Ver também
 
