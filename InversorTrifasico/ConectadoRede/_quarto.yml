@@ -14,6 +14,7 @@ project:
   render:
     - index.qmd
     - VSI*/index.qmd
+    - Notas/Nota*.qmd
 
 website:
   title: "Controle do VSI"
@@ -30,6 +31,10 @@ website:
       - text: "Controle do VSI"
         href: index.qmd
     right:
+      - text: "Notas"
+        menu:
+          - text: "Nota 01 — Malha aberta na bancada (slides)"
+            href: Notas/Nota01MalhaAbertaBancada.qmd
       - text: "Etapas"
         menu:
           - text: "Controle clássico"

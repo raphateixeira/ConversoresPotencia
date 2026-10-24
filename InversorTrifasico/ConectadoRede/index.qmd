@@ -47,6 +47,10 @@ Parâmetros nominais (`Comum/Parametros.m`):
 | $L_s$ | 10 mH | indutância do filtro |
 | $C$ | 1000 μF | capacitor do barramento |
 
+Os parâmetros da bancada (LAUNCHXL-F28379D + BOOSTXL-3PHGANINV: $V_{cc}$ = 40 V,
+$f_{PWM}$ = 20 kHz, medição da placa, carga) ficam na struct `Bancada` do mesmo arquivo; ver
+[VSI01](VSI01MalhaAberta/index.qmd).
+
 ## Etapas
 
 Cada etapa é uma pasta `VSINN<Etapa>/`. A numeração é a mesma dos projetos de firmware em
@@ -55,7 +59,7 @@ a simulação `VSI01` corresponde ao firmware `VSI01` na LAUNCHXL-F28379D.
 
 | Etapa | Estratégia | Status |
 |---|---|---|
-| [VSI01 — Malha aberta](VSI01MalhaAberta/index.qmd) | senoides trifásicas sem realimentação | planejada (firmware pronto) |
+| [VSI01 — Malha aberta](VSI01MalhaAberta/index.qmd) | senoides trifásicas sem realimentação (bancada BOOSTXL-3PHGANINV) | **simulação pronta** (firmware precisa de correção) |
 | [VSI02 — Controle de corrente PI](VSI02ControleCorrentePI/index.qmd) | PI em $dq$ | planejada |
 | [VSI03 — Controle de potência PI](VSI03ControlePotenciaPI/index.qmd) | malhas de $P$/$Q$ externas ao PI de corrente | planejada |
 | [VSI04 — Controle de corrente MPC](VSI04ControleCorrenteMPC/index.qmd) | MPC-FSC de corrente (Rodríguez et al., 2007) | planejada |
@@ -64,6 +68,14 @@ a simulação `VSI01` corresponde ao firmware `VSI01` na LAUNCHXL-F28379D.
 | [VSI07 — Controle RST via ARX](VSI07ControleRST2ARX/index.qmd) | RST projetado sobre o ARX identificado | planejada |
 | [VSI08 — MPC adaptativo (RLS)](VSI08MPCAdaptativoRLS/index.qmd) | RLS → ARX → MPC-FSC em linha | em andamento |
 | [VSI09 — Aprendizagem por reforço](VSI09ControlePotenciaRL/index.qmd) | agente DQN no lugar do MPC-FSC | em andamento |
+
+## Notas (apresentações)
+
+* [Nota 01 — Malha aberta do VSI na bancada](Notas/Nota01MalhaAbertaBancada.qmd) — slides (tema Nova): a bancada
+  LAUNCHXL-F28379D + BOOSTXL-3PHGANINV, o modelo do inversor de dois níveis com carga RL,
+  dimensionamento pelos limites da placa (40 V, 20 kHz, tempo morto de 100 ns), amostragem e
+  atraso de implementação, efeito do tempo morto, os dois modelos Simulink do VSI01 e os
+  resultados contra a teoria, correções do firmware e roteiro da primeira energização.
 
 ## Como usar
 

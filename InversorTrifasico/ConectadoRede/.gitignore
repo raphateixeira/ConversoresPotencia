@@ -29,3 +29,5 @@ AgenteFSC.mat
 .DS_Store
 __pycache__/
 **/.claude/settings.local.json
+
+/.luarc.json

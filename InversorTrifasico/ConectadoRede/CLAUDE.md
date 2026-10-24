@@ -23,3 +23,7 @@ local. Tema `TemaRTx.scss`, compartilhado e não versionado; não inventar palet
 - Não renomear os `.slx`: o nome do modelo aparece em scripts (ex.: `'MPCFSCRL/AgenteFSC'`
   em `VSI09ControlePotenciaRL/AgenteRL.m`).
 - Caches (`cache/`, `slprj/`, `*.slxc`) e PDFs de `Referencias/` são gitignorados.
+- `Notas/NotaNN<Tema>.qmd`: apresentações em slides no tema Nova (`format: nova-revealjs`,
+  extensão em `_extensions/nova/`, copiada de `GitRTx/NovaPresent`). Diagramas SVG em
+  `Notas/anims/vsi.js`; figuras vêm de `VSI*/figuras/`. Nota nova: entrada no `index.qmd`
+  (seção "Notas") e no menu "Notas" do `_quarto.yml`.
