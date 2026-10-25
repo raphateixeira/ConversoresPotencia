@@ -4,7 +4,7 @@ pagetitle: "Conversores de Potência"
 
 <!-- Página única do repositório: cada sistema tem uma seção com links diretos para o conteúdo.
      Âncoras fixas (#buck, #inversor, #carga-rl, #conectado-rede, #firmware-buck,
-     #firmware-inversor, #microrredes) usadas na navbar do _quarto.yml. -->
+     #firmware-inversor, #dfig, #microrredes) usadas na navbar do _quarto.yml. -->
 
 ::: {.rtx-hero}
 [Pesquisa · Eletrônica de potência]{.rtx-eyebrow}
@@ -12,13 +12,13 @@ pagetitle: "Conversores de Potência"
 # Conversores de Potência {.unnumbered .unlisted}
 
 Modelagem, identificação e controle de conversores de potência — do conversor Buck ao inversor
-trifásico conectado à rede e às microrredes —, da simulação ao firmware na plataforma
+trifásico conectado à rede, ao gerador DFIG e às microrredes —, da simulação ao firmware na plataforma
 LAUNCHXL-F28379D.
 
 [Prof. Dr. Raphael Teixeira · UFPA, Campus de Tucuruí]{.rtx-meta}
 
 ::: {.rtx-acoes}
-[Conversor Buck](#buck){.rtx-btn .rtx-btn-primario} [Inversor trifásico](#inversor){.rtx-btn} [Microrredes](#microrredes){.rtx-btn} [GitHub](https://github.com/raphateixeira/ConversoresPotencia){.rtx-btn}
+[Conversor Buck](#buck){.rtx-btn .rtx-btn-primario} [Inversor trifásico](#inversor){.rtx-btn} [DFIG](#dfig){.rtx-btn} [Microrredes](#microrredes){.rtx-btn} [GitHub](https://github.com/raphateixeira/ConversoresPotencia){.rtx-btn}
 :::
 :::
 
@@ -135,6 +135,15 @@ open_system('VSI05ControlePotenciaMPC/MPCFSC.slx')
 
 Depois de editar um bloco MATLAB Function, rode `python3 scripts/extrai_blocos.py` para atualizar
 a cópia em texto em `VSINN*/blocos/` (deixa a lei de controle visível no `git diff`).
+
+## Gerador de indução duplamente alimentado (DFIG) {#dfig}
+
+Controle preditivo de conjunto finito (FCS-MPC) dos conversores *back-to-back* de um DFIG, com o
+modelo de predição identificado por ARX e uma estratégia adaptativa por RST.
+
+* [Variáveis trifásicas e referenciais](DFIG/Presents/01VariaveisTrifasicasReferenciais.qmd) — grandezas trifásicas, vetores espaciais e as transformações de Clarke e Park.
+* [Controle MPC-FCS de gerador DFIG](DFIG/Presents/02DFIG.qmd) — estratégia adaptativa de modelo ARX preditivo por RST.
+* [Identificação ARX e FCS-MPC do DFIG](DFIG/Presents/03ControleDFIGpFCS.qmd) — identificação do modelo ARX e controle preditivo de conjunto finito.
 
 ## Microrredes {#microrredes}
 

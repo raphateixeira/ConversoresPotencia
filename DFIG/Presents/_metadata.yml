@@ -1,0 +1,14 @@
+# Opções das apresentações do DFIG (antes no format.revealjs do _quarto.yml do ControleDFIG)
+format:
+  revealjs:
+    theme: [simple, ../../TemaRTx.scss]
+    transition: fade
+    slide-number: true
+    footer: ""
+    width: 1600
+    height: 900
+    code-line-numbers: true
+    title-slide-attributes:
+      data-background-image: "../imgs/ufpa-colorido.png"
+      data-background-size: "84px"
+      data-background-position: "top 45px center"

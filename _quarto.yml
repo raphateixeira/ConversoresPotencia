@@ -20,6 +20,8 @@ project:
     - InversorTrifasico/ConectadoRede/VSI*/index.qmd
     - InversorTrifasico/ConectadoRede/Notas/Nota*.qmd
     - InversorTrifasico/Ensaios/*/index.qmd
+    # DFIG (ex-ControleDFIG)
+    - DFIG/Presents/0*.qmd
     # Microrredes (ex-MicroGrids)
     - Microrredes/Notas/Nota*.qmd
 
@@ -88,6 +90,16 @@ website:
             href: index.qmd#conectado-rede
           - text: "Nota 01 — Malha aberta na bancada"
             href: InversorTrifasico/ConectadoRede/Notas/Nota01MalhaAbertaBancada.qmd
+      - text: "DFIG"
+        menu:
+          - text: "Visão geral"
+            href: index.qmd#dfig
+          - text: "Variáveis trifásicas e referenciais"
+            href: DFIG/Presents/01VariaveisTrifasicasReferenciais.qmd
+          - text: "Controle MPC-FCS de gerador DFIG"
+            href: DFIG/Presents/02DFIG.qmd
+          - text: "Identificação ARX e FCS-MPC"
+            href: DFIG/Presents/03ControleDFIGpFCS.qmd
       - text: "Microrredes"
         menu:
           - text: "Visão geral"
