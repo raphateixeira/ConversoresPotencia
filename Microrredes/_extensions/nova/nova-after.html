@@ -1,0 +1,141 @@
+<script>
+/* =====================================================================
+   Nova — comportamentos do tema: cabeçalho dos slides (título + trilha
+   da seção), numeração das seções, equações explicadas com cores,
+   gatilhos de animação e atalhos de teclado.
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  const LETTER = /^(?:eqx|t)-([a-h])$/;
+  const letterOf = (el) => {
+    for (const c of el.classList) { const m = c.match(LETTER); if (m) return m[1]; }
+    return null;
+  };
+  const store = (k, v) => {
+    try { return v === undefined ? sessionStorage.getItem(k) : sessionStorage.setItem(k, v); }
+    catch (e) { return null; }
+  };
+
+  // ---------------------------------------------------------------
+  // Cabeçalho: envolve o <h2> em .nova-head (filete abaixo) com a
+  // trilha da seção à direita; numera as seções (# Título).
+  // ---------------------------------------------------------------
+  function setupChrome() {
+    const reveal = document.querySelector(".reveal");
+    const isBare = (s) => s.id === "title-slide" ||
+      s.matches("section.title-slide.level1, .no-chrome, .encerramento");
+
+    let current = "", n = 0;
+    for (const s of Reveal.getSlides()) {
+      if (s.matches("section.title-slide.level1")) {
+        const h = s.querySelector("h1");
+        current = h ? h.textContent.trim() : "";
+        n += 1;
+        if (!s.matches(".unnumbered")) {
+          const num = document.createElement("div");
+          num.className = "nova-secnum";
+          num.textContent = String(n).padStart(2, "0");
+          s.insertBefore(num, h);
+        }
+        continue;
+      }
+      if (isBare(s)) continue;
+      const h2 = s.querySelector(":scope > h2");
+      if (!h2) continue;
+      const head = document.createElement("div");
+      head.className = "nova-head";
+      h2.replaceWith(head);
+      head.appendChild(h2);
+      if (current && !s.matches(".no-crumb")) {
+        const crumb = document.createElement("div");
+        crumb.className = "nova-crumb";
+        crumb.textContent = current;
+        head.appendChild(crumb);
+      }
+    }
+
+    const update = (slide) => reveal.classList.toggle("nova-bare", isBare(slide));
+    update(Reveal.getCurrentSlide());
+    Reveal.on("slidechanged", (e) => update(e.currentSlide));
+    Reveal.layout();
+  }
+
+  // ---------------------------------------------------------------
+  // Equações explicadas com cores (.eqx) — ver regras em nova.scss
+  //   mouse/clique destacam o par termo–texto (clique fixa)
+  // ---------------------------------------------------------------
+  function setupEqx() {
+    const target = (ev) => {
+      const el = ev.target.closest && ev.target.closest(
+        ".eqx [class*='eqx-'], .eqx [class*='t-']");
+      if (!el) return null;
+      const L = letterOf(el);
+      return L ? { box: el.closest(".eqx"), L } : null;
+    };
+
+    document.addEventListener("mouseover", (ev) => {
+      const t = target(ev);
+      if (t && !t.box.dataset.pin) t.box.dataset.focus = t.L;
+    });
+    document.addEventListener("mouseout", (ev) => {
+      const t = target(ev);
+      if (t && !t.box.dataset.pin) delete t.box.dataset.focus;
+    });
+    document.addEventListener("click", (ev) => {
+      const t = target(ev);
+      document.querySelectorAll(".eqx[data-pin]").forEach((b) => {
+        if (!t || b !== t.box || b.dataset.pin !== t.L) {
+          delete b.dataset.pin; delete b.dataset.focus;
+        }
+      });
+      if (!t) return;
+      if (t.box.dataset.pin === t.L) { delete t.box.dataset.pin; delete t.box.dataset.focus; }
+      else { t.box.dataset.pin = t.L; t.box.dataset.focus = t.L; }
+    });
+
+    // Modo preto/colorido global: lembra a escolha ao recarregar
+    const saved = store("nova-eqx-mode");
+    if (saved) document.documentElement.classList.toggle("eqx-mono", saved === "mono");
+  }
+
+  // ---------------------------------------------------------------
+  // Animações: elementos com [data-nova-anim] recebem "nova:start" ao
+  // entrar no slide e "nova:stop" ao sair.
+  // ---------------------------------------------------------------
+  function setupAnims() {
+    const fire = (slide, type) => {
+      if (!slide) return;
+      slide.querySelectorAll("[data-nova-anim]").forEach((el) =>
+        el.dispatchEvent(new CustomEvent(type)));
+    };
+    Reveal.on("slidechanged", (e) => {
+      fire(e.previousSlide, "nova:stop");
+      fire(e.currentSlide, "nova:start");
+    });
+    fire(Reveal.getCurrentSlide(), "nova:start");
+  }
+
+  // ---------------------------------------------------------------
+  // Atalhos: C = equações pretas/coloridas (toda a apresentação);
+  // W = fundo papel/branco; R = reinicia as animações do slide.
+  // ---------------------------------------------------------------
+  function setupKeys() {
+    Reveal.addKeyBinding({ keyCode: 67, key: "C", description: "Equações: preto/cores" }, () => {
+      const mono = document.documentElement.classList.toggle("eqx-mono");
+      store("nova-eqx-mode", mono ? "mono" : "color");
+    });
+    Reveal.addKeyBinding({ keyCode: 87, key: "W", description: "Fundo papel/branco" }, () => {
+      document.body.classList.toggle("nova-white");
+    });
+    Reveal.addKeyBinding({ keyCode: 82, key: "R", description: "Reiniciar animação" }, () => {
+      Reveal.getCurrentSlide().querySelectorAll("[data-nova-anim]").forEach((el) =>
+        el.dispatchEvent(new CustomEvent("nova:restart")));
+    });
+  }
+
+  const init = () => { setupChrome(); setupEqx(); setupAnims(); setupKeys(); };
+  if (window.Reveal && Reveal.isReady && Reveal.isReady()) init();
+  else window.addEventListener("load", () => Reveal.isReady() ? init() : Reveal.on("ready", init));
+})();
+</script>

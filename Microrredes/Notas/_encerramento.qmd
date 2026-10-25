@@ -1,0 +1,13 @@
+## Encerramento {.encerramento background-color="#ECE7DC"}
+
+![](imgs/ufpa-colorido.png)
+
+[[Prof. Dr. Raphael Teixeira](https://raphateixeira.github.io)]{.encerramento-nome}
+
+[Universidade Federal do Pará]{.encerramento-ufpa}
+
+[Campus Universitário de Tucuruí]{.encerramento-campus}
+
+[Faculdade de Engenharia Elétrica]{.encerramento-campus}
+
+[raphaelbt@ufpa.br](mailto:raphaelbt@ufpa.br){.encerramento-email}

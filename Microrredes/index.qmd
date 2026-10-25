@@ -1,0 +1,56 @@
+---
+pagetitle: "Microrredes"
+
+---
+
+::: {.rtx-hero}
+[Pesquisa · Microrredes]{.rtx-eyebrow}
+
+# Microrredes {.unnumbered .unlisted}
+
+Modelagem, controle e operação de microrredes com conversores de potência.
+
+[Prof. Dr. Raphael Teixeira]{.rtx-meta}
+
+::: {.rtx-acoes}
+[GitHub](https://github.com/raphateixeira/MicroGrids){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
+
+Repositório de pesquisa sobre **microrredes** (*microgrids*): sistemas elétricos de
+pequeno porte que agregam geração distribuída, armazenamento de energia e cargas sob um
+controle coordenado, capazes de operar **conectados à rede** ou **ilhados**. Como quase
+toda a geração e o armazenamento se conectam por **conversores de potência**, a
+microrrede é um ponto de encontro natural entre eletrônica de potência, controle
+clássico e preditivo (MPC) e controle baseado em dados.
+
+O projeto está vinculado à linha de pesquisa *Identificação, Estimação e Controle
+Baseados em Dados e Inteligência Computacional Aplicados a Conversores de Potência e
+Acionamentos Elétricos* e reaproveita o trabalho em inversores trifásicos
+([ControleInversor3f](https://raphateixeira.github.io/ControleInversor3f/)), conversores
+CC-CC ([ControleCC2CC](https://raphateixeira.github.io/ControleCC2CC/)) e controle
+baseado em dados ([DataDrivenControl](https://raphateixeira.github.io/DataDrivenControl/)).
+
+## Objetivos
+
+- Revisar arquiteturas de microrredes CA, CC e híbridas e seus modos de operação;
+- Modelar os conversores formadores (*grid-forming*) e seguidores (*grid-following*) de rede;
+- Estudar o controle hierárquico (primário por *droop*, secundário e terciário);
+- Investigar MPC e controle baseado em dados (DeePC, Koopman) como alternativas ao controle clássico;
+- Validar em simulação (MATLAB/Simulink) e, em etapa posterior, em bancada com a plataforma C2000.
+
+## Conteúdo
+
+### Notas (apresentações)
+
+* [Nota 01 — Introdução às Microrredes](Notas/Nota01IntroducaoMicrorredes.html) — da rede convencional à microrrede: PCC, conversores como interface, controle centralizado/descentralizado/distribuído, componentes, modos de operação, arquiteturas CA/CC/híbrida, formadores e seguidores de rede, fluxo de potência numa linha indutiva, *droop* e controle hierárquico.
+* [Nota 02 — Controle Descentralizado e Hierárquico](Notas/Nota02ControleDescentralizadoHierarquico.html) *(rascunho)* — papéis dos conversores, *droop* para linhas quaisquer, impedância virtual, estabilidade de pequenos sinais, níveis primário a terciário, ilhamento e reconexão (Guerrero et al., 2013, Parte I).
+
+## Referências
+
+* Lasseter, R. H. MicroGrids. *IEEE Power Engineering Society Winter Meeting*, 2002.
+* Hatziargyriou, N. et al. Microgrids. *IEEE Power and Energy Magazine*, v. 5, n. 4, 2007.
+* Guerrero, J. M. et al. Advanced control architectures for intelligent microgrids — Part I: decentralized and hierarchical control. *IEEE Trans. Industrial Electronics*, v. 60, n. 4, 2013.
+* Guerrero, J. M. et al. Hierarchical control of droop-controlled AC and DC microgrids — a general approach toward standardization. *IEEE Trans. Industrial Electronics*, v. 58, n. 1, 2011.
+* Rocabert, J. et al. Control of power converters in AC microgrids. *IEEE Trans. Power Electronics*, v. 27, n. 11, 2012.
+* Olivares, D. E. et al. Trends in microgrid control. *IEEE Trans. Smart Grid*, v. 5, n. 4, 2014.
