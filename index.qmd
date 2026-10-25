@@ -194,5 +194,5 @@ MPC e controle baseado em dados (DeePC, Koopman); validação em simulação e d
 
 * [ProjetosCCS](https://raphateixeira.github.io/ProjetosCCS/) — a placa LAUNCHXL-F28379D (primeiro projeto no CCS, ADC/DAC) e os ensaios com o filtro Sallen-Key.
 * [ControleCC2CC](https://raphateixeira.github.io/ControleCC2CC/) — IC sobre conversores Buck, Boost e Buck-Boost.
-* [DataDrivenControl](https://raphateixeira.github.io/DataDrivenControl/) — DeePC, Koopman, SINDy e aprendizagem por reforço.
+* [DataDrivenControl](https://raphateixeira.github.io/Notas/#controle-dados) — DeePC, Koopman, SINDy e aprendizagem por reforço.
 * [Conversores de Energia](https://raphateixeira.github.io/Notas/fundamentos/conversores-energia/) — fundamentos (Notas).
