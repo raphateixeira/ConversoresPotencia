@@ -1,0 +1,34 @@
+---
+title: "VSI08 — MPC adaptativo (RLS)"
+subtitle: "MPC-FSC de potência com modelo ARX estimado em linha"
+---
+
+::: {.callout-warning}
+**Em andamento.** O modelo `MPCFSCRLS.slx` roda (passo fixo $T_s$, 0,4 s), mas o rascunho
+`MPC_FSC_RMS_ARX.m` está incompleto.
+:::
+
+## Ideia
+
+Substituir o modelo físico da [VSI05](../VSI05ControlePotenciaMPC/index.qmd) por um modelo
+**identificado em linha**. O bloco `RLS2ARX2FSC` faz três coisas a cada $T_s$:
+
+1. **RLS:** atualiza $\hat{\boldsymbol\theta}_\alpha$, $\hat{\boldsymbol\theta}_\beta$ ($n_A = 3$, $n_B = 2$, $\lambda = 0{,}99$, $\mathbf{P}_0 = 10^6\mathbf{I}$), como na [VSI06](../VSI06IdentificacaoARX/index.qmd), com $\hat{\boldsymbol\theta}_0$ inicializado num ARX nominal;
+2. **ARX → espaço de estados:** monta $(\mathbf{A}_\alpha, \mathbf{B}_\alpha)$ e $(\mathbf{A}_\beta, \mathbf{B}_\beta)$ na forma observável, com o estado formado pelas últimas $n_A$ correntes;
+3. **FSC:** prediz $i_\alpha(k+1)$, $i_\beta(k+1)$ para os 8 vetores com entrada $\mathbf{u} = \mathbf{v}_n - \mathbf{v}_g$, calcula $P_n$, $Q_n$ e minimiza $|P^* - P_n| + |Q^* - Q_n|$.
+
+O bloco também exporta $\hat{\boldsymbol\theta}_\alpha$, $\hat{\boldsymbol\theta}_\beta$ (`tta`, `ttb`) para acompanhar a convergência.
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| `MPCFSCRLS.slx` | modelo Simulink (mesmo circuito da VSI05) |
+| `blocos/RLS2ARX2FSC.m` | código do bloco MATLAB Function (extraído, somente leitura) |
+| `MPC_FSC_RMS_ARX.m` | **rascunho** de S-function nível 1 com a mesma ideia: `flag` não é definido e as subfunções estão vazias; não roda |
+
+## Pendências
+
+- Decidir entre o bloco MATLAB Function (já funciona) e a S-function: terminar ou descartar `MPC_FSC_RMS_ARX.m`.
+- Excitação: em regime senoidal o regressor pode perder persistência e $\mathbf{P}$ cresce com $\lambda < 1$ (*covariance windup*).
+- Comparar com a VSI05 sob variação de $L_s$ e $R_s$ (robustez a erro de modelo).

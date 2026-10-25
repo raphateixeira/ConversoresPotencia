@@ -1,0 +1,42 @@
+---
+title: "VSI05 — Controle de potência MPC-FSC"
+subtitle: "Controle preditivo direto de potência ativa e reativa"
+---
+
+::: {.callout-tip}
+**Simulação pronta.** Modelo `MPCFSC.slx` (R2024a, solver de passo variável, 40 ms).
+:::
+
+## Lei de controle
+
+O bloco MATLAB Function `FSC` executa a cada $T_s$:
+
+1. monta os 8 vetores de tensão possíveis $\mathbf{v}_n = \tfrac{2}{3}V_{cc}(S_a + aS_b + a^2S_c)$;
+2. prediz a corrente para cada um: $\mathbf{i}_n(k+1) = (1 - R_sT_s/L_s)\,\mathbf{i}(k) + (T_s/L_s)(\mathbf{v}_n - \mathbf{v}_g)$;
+3. prediz as potências $P_n = \tfrac{3}{2}\mathrm{Re}\{\mathbf{v}_g\mathbf{i}_n^*\}$ e $Q_n = \tfrac{3}{2}\mathrm{Im}\{\mathbf{v}_g\mathbf{i}_n^*\}$;
+4. escolhe $n^\star = \arg\min_n\, |P^* - P_n| + |Q^* - Q_n|$ e aplica $(S_a, S_b, S_c)$ e os complementares.
+
+O modelo do circuito (Specialized Power Systems) tem o barramento CC ideal, a ponte
+trifásica (`Universal Bridge`), o filtro RL série, a rede (3 fontes CA) e degraus em
+$P^*$/$Q^*$.
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| `MPCFSC.slx` | modelo Simulink completo |
+| `blocos/FSC.m` | código do bloco MATLAB Function (extraído, somente leitura) |
+| `FSCopt.m` | mesma lei como função `.m` avulsa (não usada pelo modelo) |
+
+## Como rodar
+
+```matlab
+IniciarProjeto; Parametros
+sim('VSI05ControlePotenciaMPC/MPCFSC.slx')
+```
+
+## Pendências
+
+- `FSCopt.m` e o bloco `FSC` são cópias da mesma lei, e qualquer mudança precisa ser feita
+  nas duas. Vale chamar `FSCopt` de dentro do bloco ou apagar o `.m`.
+- Medir THD da corrente e frequência média de chaveamento para comparar com a VSI03.

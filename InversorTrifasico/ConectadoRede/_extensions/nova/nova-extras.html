@@ -1,0 +1,530 @@
+<script>
+/* =====================================================================
+   Nova — componentes interativos (independentes de nova-after.html):
+     1. .morph        movimento mágico entre passos de uma equação
+     2. .rn-*         anotações "à mão" (sublinhar, circular, marcar…)
+     3. .compare      comparador antes/depois com barra deslizante
+     4. .nova-plotly  gráfico interativo (Plotly, isolado num iframe)
+     5. .pyrun        Python executado no navegador (Pyodide)
+     6. .quiz         pergunta com contagem de votos e QR code
+     7. citações      referências do slide no rodapé do próprio slide
+     8. acessibilidade  A = paleta p/ daltonismo, D = modo escuro
+   ===================================================================== */
+(function () {
+  "use strict";
+
+  const PRINT = /print-pdf/i.test(window.location.search);
+  const store = (k, v) => {
+    try { return v === undefined ? sessionStorage.getItem(k) : sessionStorage.setItem(k, v); }
+    catch (e) { return null; }
+  };
+  const loadScript = (() => {
+    const cache = {};
+    return (src) => cache[src] || (cache[src] = new Promise((ok, fail) => {
+      const s = document.createElement("script");
+      s.src = src; s.onload = ok; s.onerror = fail;
+      document.head.appendChild(s);
+    }));
+  })();
+  const onSlide = (fn) => {                 // chama fn(slide) ao entrar em cada slide
+    fn(Reveal.getCurrentSlide());
+    Reveal.on("slidechanged", (e) => fn(e.currentSlide, e.previousSlide));
+  };
+  const el = (tag, cls, html) => {
+    const n = document.createElement(tag);
+    if (cls) n.className = cls;
+    if (html != null) n.innerHTML = html;
+    return n;
+  };
+
+  // ===================================================================
+  // 1. Movimento mágico (.morph)
+  //    ::: {.morph}
+  //    $$ x = A x + B\mv{u}{u} $$
+  //    $$ x = A x + B\mv{u}{(-Kx)} $$
+  //    :::
+  //    Cada equação é um passo (fragmento). Termos com o mesmo nome em
+  //    \mv{nome}{…} deslizam da posição antiga para a nova (FLIP).
+  // ===================================================================
+  function setupMorph() {
+    const boxes = document.querySelectorAll(".reveal .morph");
+    if (!boxes.length) return;
+    boxes.forEach((box) => {
+      [...box.children].forEach((child, i) => {
+        child.classList.add("morph-step");
+        if (i > 0 && !PRINT) child.classList.add("fragment", "morph-frag");
+      });
+    });
+    Reveal.sync();
+
+    const currentOf = (box) => {
+      const vis = [...box.querySelectorAll(":scope > .morph-step.fragment.visible")];
+      return vis.length ? vis[vis.length - 1] : box.querySelector(":scope > .morph-step");
+    };
+    const mark = (box) => {
+      const cur = currentOf(box);
+      box.querySelectorAll(":scope > .morph-step").forEach((s) => s.classList.toggle("is-current", s === cur));
+      return cur;
+    };
+    boxes.forEach(mark);
+
+    function flip(box, from, to) {
+      if (!from || !to || from === to) return;
+      const scale = Reveal.getScale() || 1;
+      const rectOf = (n) => n.getBoundingClientRect();
+      const olds = {};
+      from.querySelectorAll(".mv").forEach((n) => {
+        const name = [...n.classList].find((c) => c.startsWith("mv-"));
+        if (name) olds[name] = rectOf(n);
+      });
+      to.classList.add("is-current");
+      from.classList.remove("is-current");
+      from.classList.add("morph-leaving");
+      setTimeout(() => from.classList.remove("morph-leaving"), 700);
+      to.querySelectorAll(".mv").forEach((n) => {
+        const name = [...n.classList].find((c) => c.startsWith("mv-"));
+        const a = olds[name];
+        if (!a) { n.classList.add("mv-new"); setTimeout(() => n.classList.remove("mv-new"), 900); return; }
+        const b = rectOf(n);
+        const dx = (a.left - b.left) / scale, dy = (a.top - b.top) / scale;
+        const sx = b.width ? a.width / b.width : 1, sy = b.height ? a.height / b.height : 1;
+        n.style.transition = "none";
+        n.style.transformOrigin = "0 0";
+        n.style.transform = `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})`;
+        n.getBoundingClientRect();                            // força o reflow
+        n.style.transition = "transform 0.9s cubic-bezier(0.22, 1, 0.36, 1)";
+        n.style.transform = "";
+        n.classList.add("mv-moving");
+        setTimeout(() => n.classList.remove("mv-moving"), 950);
+      });
+    }
+
+    const handle = (e) => {
+      e.fragments.forEach((f) => {
+        if (!f.classList.contains("morph-frag")) return;
+        const box = f.closest(".morph");
+        const prev = box.querySelector(":scope > .morph-step.is-current");
+        const next = currentOf(box);
+        flip(box, prev, next);
+        mark(box);
+      });
+    };
+    Reveal.on("fragmentshown", handle);
+    Reveal.on("fragmenthidden", handle);
+    Reveal.on("slidechanged", () => boxes.forEach(mark));
+  }
+
+  // ===================================================================
+  // 2. Anotações "à mão" (.rn-underline, .rn-box, .rn-circle,
+  //    .rn-highlight, .rn-strike, .rn-bracket)
+  //    [palavra]{.rn-circle}             → desenha ao entrar no slide
+  //    [palavra]{.rn-underline .fragment} → desenha no clique
+  //    color="#…" muda a cor; também funciona em ::: {.rn-box} com figura
+  // ===================================================================
+  const RN = ["underline", "box", "circle", "highlight", "strike", "bracket"];
+  function rough(type, w, h, seed) {
+    let s = seed;
+    const r = (a) => { s = (s * 9301 + 49297) % 233280; return (s / 233280 - 0.5) * 2 * a; };
+    const p = 6;
+    switch (type) {
+      case "underline": {
+        const y = h * 0.9;
+        return [`M${r(2)},${y + r(1.5)} Q${w / 2},${y + 3 + r(2)} ${w + r(3)},${y + r(1.5)}`,
+                `M${4 + r(2)},${y + 5 + r(1.5)} Q${w / 2},${y + 7 + r(2)} ${w - 4 + r(3)},${y + 4 + r(1.5)}`];
+      }
+      case "strike": {
+        const y = h * 0.55;
+        return [`M${-4 + r(2)},${y + r(2)} L${w + 4 + r(2)},${y + r(2)}`];
+      }
+      case "box": {
+        const x0 = -p, y0 = -p / 2, x1 = w + p, y1 = h + p / 2;
+        return [0, 1].map(() => `M${x0 + r(3)},${y0 + r(3)} L${x1 + r(3)},${y0 + r(3)} L${x1 + r(3)},${y1 + r(3)} L${x0 + r(3)},${y1 + r(3)} Z`);
+      }
+      case "bracket": {
+        const x0 = -p, x1 = w + p, y0 = -p / 2, y1 = h + p / 2;
+        return [`M${x0 + 10},${y0 + r(2)} L${x0 + r(2)},${y0} L${x0 + r(2)},${y1} L${x0 + 10},${y1 + r(2)}`,
+                `M${x1 - 10},${y0 + r(2)} L${x1 + r(2)},${y0} L${x1 + r(2)},${y1} L${x1 - 10},${y1 + r(2)}`];
+      }
+      case "circle": {
+        const cx = w / 2, cy = h * 0.55, rx = w / 2 + 14, ry = h * 0.42 + 6, pts = [];
+        for (let i = 0; i <= 44; i++) {
+          const a = -2.2 + (i / 40) * 2 * Math.PI * 1.07, k = 1 + r(0.035);
+          pts.push(`${(cx + rx * k * Math.cos(a)).toFixed(1)},${(cy + ry * k * Math.sin(a)).toFixed(1)}`);
+        }
+        return ["M" + pts.join(" L")];
+      }
+      case "highlight": {
+        const y = h * 0.57;
+        return [`M${-3 + r(2)},${y + r(1)} L${w + 3 + r(2)},${y + r(1)}`];
+      }
+    }
+    return [];
+  }
+  function buildRN(node) {
+    const w = node.offsetWidth, h = node.offsetHeight;
+    if (!w || node.dataset.rnSize === `${w}x${h}`) return;   // já desenhada neste tamanho
+    node.dataset.rnSize = `${w}x${h}`;
+    const old = node.querySelector(":scope > .rn-svg");
+    if (old) old.remove();
+    const type = RN.find((t) => node.classList.contains("rn-" + t));
+    const color = node.dataset.color ||
+      (type === "highlight" ? "rgba(201,154,46,0.38)" : "var(--nova-rn, #A63D4A)");
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("class", "rn-svg");
+    svg.setAttribute("width", w); svg.setAttribute("height", h);
+    svg.setAttribute("overflow", "visible");
+    const paths = rough(type, w, h, (w * 7 + h * 13) | 0);
+    paths.forEach((d, i) => {
+      const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      p.setAttribute("d", d);
+      p.setAttribute("pathLength", "1");
+      p.setAttribute("class", "rn-ink");
+      p.setAttribute("fill", "none");
+      p.setAttribute("stroke", color);
+      p.setAttribute("stroke-width", type === "highlight" ? Math.max(h * 0.62, 10) : 2.6);
+      p.setAttribute("stroke-linecap", type === "highlight" ? "butt" : "round");
+      p.setAttribute("stroke-linejoin", "round");
+      p.style.transitionDelay = `${i * 0.35}s`;
+      svg.appendChild(p);
+    });
+    node.appendChild(svg);
+  }
+  function setupRN() {
+    const sel = RN.map((t) => ".reveal .rn-" + t).join(",");
+    if (!document.querySelector(sel)) return;
+    const enter = (slide, prev) => {
+      if (prev) prev.querySelectorAll(sel).forEach((n) => n.classList.remove("rn-on"));
+      if (!slide) return;
+      const items = [...slide.querySelectorAll(sel)];
+      // espera as fontes: medir com a fonte provisória desalinha o traço
+      (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => {
+        if (Reveal.getCurrentSlide() !== slide) return;
+        items.forEach(buildRN);
+        items.filter((n) => !n.classList.contains("fragment"))
+          .forEach((n, i) => setTimeout(() => n.classList.add("rn-on"), 500 + i * 450));
+      });
+    };
+    Reveal.on("fragmentshown", (e) => e.fragments.forEach((f) => f.matches(sel) && buildRN(f)));
+    if (PRINT) {
+      const go = () => document.fonts.ready.then(() =>
+        document.querySelectorAll(sel).forEach((n) => { buildRN(n); n.classList.add("rn-on"); }));
+      Reveal.on("pdf-ready", go); setTimeout(go, 1500);
+      return;
+    }
+    onSlide(enter);
+  }
+
+  // ===================================================================
+  // 3. Comparador antes/depois (.compare)
+  //    ::: {.compare}
+  //    ![antes](a.png)
+  //    ![depois](b.png)
+  //    :::
+  // ===================================================================
+  function setupCompare() {
+    document.querySelectorAll(".reveal .compare").forEach((box) => {
+      const imgs = box.querySelectorAll("img");
+      if (imgs.length < 2) return;
+      const [a, b] = imgs;
+      const stage = el("div", "compare-stage");
+      const pa = el("div", "compare-a"), pb = el("div", "compare-b");
+      pa.appendChild(a); pb.appendChild(b);
+      const labA = el("span", "compare-label compare-label-a", a.alt || "antes");
+      const labB = el("span", "compare-label compare-label-b", b.alt || "depois");
+      const bar = el("div", "compare-bar"), knob = el("div", "compare-knob", "⟷");
+      const range = el("input", "compare-range");
+      Object.assign(range, { type: "range", min: 0, max: 100, step: 0.1, value: box.dataset.start || 50 });
+      const set = () => {
+        const v = range.value;
+        pb.style.clipPath = `inset(0 0 0 ${v}%)`;
+        bar.style.left = knob.style.left = `${v}%`;
+      };
+      range.addEventListener("input", set);
+      range.addEventListener("keydown", (e) => e.stopPropagation());
+      stage.append(pa, pb, bar, knob, labA, labB, range);
+      box.innerHTML = "";
+      box.appendChild(stage);
+      set();
+    });
+  }
+
+  // ===================================================================
+  // 4. Gráfico interativo (.nova-plotly) — Plotly num iframe (o zoom e o
+  //    hover ficam corretos mesmo com o slide escalado). Conteúdo:
+  //    um <script type="application/json"> com {"data": [...], "layout": {...}}
+  //    (scripts/nova_plotly.py gera isso a partir de Python)
+  // ===================================================================
+  const PLOTLY = "https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js";
+  function plotlyDoc(spec, dark) {
+    const ink = dark ? "#E9E6DF" : "#1D1C1A", grid = dark ? "#3A3B40" : "#E2DDD2", muted = dark ? "#A39E94" : "#77736A";
+    const layout = Object.assign({
+      paper_bgcolor: "rgba(0,0,0,0)", plot_bgcolor: "rgba(0,0,0,0)",
+      font: { family: "Inter, sans-serif", size: 16, color: ink },
+      colorway: ["#3A6EDB", "#D0473B", "#2E9C6B", "#7B4FD0", "#D27A22", "#2795B0"],
+      margin: { l: 70, r: 20, t: 30, b: 60 },
+      xaxis: { gridcolor: grid, zerolinecolor: grid, linecolor: muted, tickcolor: muted },
+      yaxis: { gridcolor: grid, zerolinecolor: grid, linecolor: muted, tickcolor: muted },
+      legend: { orientation: "h", y: 1.08, x: 1, xanchor: "right", bgcolor: "rgba(0,0,0,0)" },
+      hoverlabel: { font: { family: "Inter, sans-serif" } },
+      separators: ",.",
+    }, spec.layout || {});
+    ["xaxis", "yaxis"].forEach((ax) => {
+      if (spec.layout && spec.layout[ax]) layout[ax] = Object.assign({ gridcolor: grid, zerolinecolor: grid, linecolor: muted }, spec.layout[ax]);
+    });
+    return `<!doctype html><html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<style>html,body{margin:0;height:100%;background:transparent;overflow:hidden}#p{width:100%;height:100%}</style>
+<script src="${PLOTLY}"><\/script></head><body><div id="p"></div><script>
+Plotly.newPlot("p", ${JSON.stringify(spec.data)}, ${JSON.stringify(layout)},
+  {responsive: true, displaylogo: false, modeBarButtonsToRemove: ["lasso2d","select2d","toImage"]});
+// setas/espaço dentro do gráfico continuam navegando nos slides
+document.addEventListener("keydown", (e) => parent.postMessage({ novaKey: e.key }, "*"));
+<\/script></body></html>`;
+  }
+  function setupPlotly() {
+    const boxes = [...document.querySelectorAll(".reveal .nova-plotly")];
+    if (!boxes.length) return;
+    const build = (box) => {
+      if (box.dataset.built) return;
+      const src = box.querySelector('script[type="application/json"]');
+      if (!src) return;
+      box.dataset.built = "1";
+      const frame = el("iframe", "nova-plotly-frame");
+      frame.setAttribute("title", "Gráfico interativo");
+      frame.setAttribute("allowtransparency", "true");
+      frame.srcdoc = plotlyDoc(JSON.parse(src.textContent), document.documentElement.classList.contains("nova-dark"));
+      box.appendChild(frame);
+    };
+    window.addEventListener("message", (e) => {
+      const k = e.data && e.data.novaKey;
+      if (!k) return;
+      if (["ArrowRight", "ArrowDown", "PageDown", " "].includes(k)) Reveal.next();
+      if (["ArrowLeft", "ArrowUp", "PageUp"].includes(k)) Reveal.prev();
+    });
+    if (PRINT) { boxes.forEach(build); return; }
+    onSlide((slide) => {                         // monta no slide atual e no seguinte
+      if (!slide) return;
+      slide.querySelectorAll(".nova-plotly").forEach(build);
+      const next = Reveal.getSlides()[Reveal.getSlides().indexOf(slide) + 1];
+      if (next) next.querySelectorAll(".nova-plotly").forEach(build);
+    });
+  }
+
+  // ===================================================================
+  // 5. Python no navegador (.pyrun) — Pyodide (WebAssembly)
+  //    ::: {.pyrun}
+  //    ```python
+  //    print("olá")
+  //    ```
+  //    :::
+  //    Editar e executar com o botão ou Shift+Enter. Requer internet na
+  //    primeira execução (~10 MB, fica em cache do navegador).
+  // ===================================================================
+  const PYODIDE = "https://cdn.jsdelivr.net/pyodide/v0.26.4/full/";
+  let pyReady = null;
+  function getPyodide(status) {
+    if (pyReady) return pyReady;
+    status("carregando Python (primeira vez: alguns segundos)…");
+    pyReady = loadScript(PYODIDE + "pyodide.js")
+      .then(() => window.loadPyodide({ indexURL: PYODIDE }))
+      .then(async (py) => {
+        await py.loadPackage(["numpy", "matplotlib"]);
+        await py.runPythonAsync(`
+import matplotlib
+matplotlib.use("agg")
+import matplotlib.pyplot as plt
+plt.rcParams.update({"figure.facecolor": "none", "axes.facecolor": "none", "savefig.facecolor": "none",
+  "axes.edgecolor": "#77736A", "axes.spines.top": False, "axes.spines.right": False, "axes.grid": True,
+  "grid.color": "#E2DDD2", "lines.linewidth": 2.4, "font.size": 13, "figure.figsize": (7.5, 4.2),
+  "axes.prop_cycle": matplotlib.cycler(color=["#3A6EDB","#D0473B","#2E9C6B","#7B4FD0","#D27A22","#2795B0"])})
+`);
+        return py;
+      });
+    return pyReady;
+  }
+  function setupPyrun() {
+    document.querySelectorAll(".reveal .pyrun").forEach((box) => {
+      const code = box.querySelector("pre code");
+      if (!code) return;
+      const src = code.textContent.replace(/\n$/, "");
+      const ta = el("textarea", "pyrun-editor");
+      ta.value = src; ta.spellcheck = false; ta.wrap = "off";
+      ta.rows = Math.min(Math.max(src.split("\n").length + 1, 4), 16);
+      const bar = el("div", "pyrun-bar");
+      const run = el("button", "pyrun-run", "▶ Executar");
+      const reset = el("button", "pyrun-reset", "↺ Restaurar");
+      const status = el("span", "pyrun-status", "Shift+Enter executa");
+      bar.append(run, reset, status);
+      const out = el("pre", "pyrun-out"), fig = el("div", "pyrun-fig");
+      const left = el("div", "pyrun-left"), right = el("div", "pyrun-right");
+      left.append(ta, bar); right.append(out, fig);
+      box.innerHTML = ""; box.append(left, right);
+      const say = (s) => (status.textContent = s);
+      async function exec() {
+        run.disabled = true; out.textContent = ""; fig.innerHTML = "";
+        try {
+          const py = await getPyodide(say);
+          say("executando…");
+          let buf = "";
+          py.setStdout({ batched: (s) => (buf += s + "\n") });
+          py.setStderr({ batched: (s) => (buf += s + "\n") });
+          await py.loadPackagesFromImports(ta.value);
+          await py.runPythonAsync(ta.value);
+          const png = await py.runPythonAsync(`
+import io, base64
+_r = ""
+if plt.get_fignums():
+    _b = io.BytesIO(); plt.gcf().savefig(_b, format="png", dpi=160, bbox_inches="tight"); plt.close("all")
+    _r = base64.b64encode(_b.getvalue()).decode()
+_r`);
+          out.textContent = buf;
+          if (png) { const im = el("img"); im.src = "data:image/png;base64," + png; fig.appendChild(im); }
+          say("pronto");
+        } catch (err) {
+          out.textContent = String(err.message || err).split("\n").slice(-6).join("\n");
+          say("erro");
+        }
+        run.disabled = false;
+      }
+      run.addEventListener("click", exec);
+      reset.addEventListener("click", () => { ta.value = src; });
+      ta.addEventListener("keydown", (e) => {
+        e.stopPropagation();
+        if (e.key === "Enter" && e.shiftKey) { e.preventDefault(); exec(); }
+        if (e.key === "Tab") {
+          e.preventDefault();
+          const i = ta.selectionStart;
+          ta.value = ta.value.slice(0, i) + "    " + ta.value.slice(ta.selectionEnd);
+          ta.selectionStart = ta.selectionEnd = i + 4;
+        }
+      });
+    });
+  }
+
+  // ===================================================================
+  // 6. Quiz (.quiz) — pergunta com alternativas, contagem de votos e QR
+  //    ::: {.quiz answer="b" url="https://forms.gle/…"}
+  //    Pergunta?
+  //
+  //    - alternativa A
+  //    - alternativa B
+  //    :::
+  //    Teclas 1–6 (ou clique) somam votos; Shift+clique subtrai; o
+  //    próximo avanço revela a resposta. Votos por celular: o QR leva a
+  //    um formulário (Google Forms etc.).
+  // ===================================================================
+  const QR = "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js";
+  function setupQuiz() {
+    const quizzes = document.querySelectorAll(".reveal .quiz");
+    if (!quizzes.length) return;
+    quizzes.forEach((q) => {
+      const list = q.querySelector("ul, ol");
+      if (!list) return;
+      const answer = (q.dataset.answer || "").toLowerCase();
+      const letters = "abcdef";
+      const opts = [...list.children].map((li, i) => {
+        const card = el("button", "quiz-opt");
+        card.type = "button";
+        card.innerHTML = `<span class="quiz-letter">${letters[i].toUpperCase()}</span>
+          <span class="quiz-text">${li.innerHTML}</span>
+          <span class="quiz-bar"><span class="quiz-fill"></span></span>
+          <span class="quiz-count">0</span>`;
+        card.dataset.letter = letters[i];
+        if (letters[i] === answer) card.classList.add("quiz-correct");
+        return card;
+      });
+      const grid = el("div", "quiz-opts");
+      opts.forEach((o) => grid.appendChild(o));
+      list.replaceWith(grid);
+      const votes = opts.map(() => 0);
+      const draw = () => {
+        const tot = votes.reduce((a, b) => a + b, 0) || 1;
+        opts.forEach((o, i) => {
+          o.querySelector(".quiz-fill").style.width = `${(100 * votes[i]) / tot}%`;
+          o.querySelector(".quiz-count").textContent = votes[i] ? `${votes[i]} · ${Math.round((100 * votes[i]) / tot)} %` : "0";
+        });
+      };
+      q._vote = (i, d = 1) => { if (i < votes.length) { votes[i] = Math.max(0, votes[i] + d); draw(); } };
+      opts.forEach((o, i) => o.addEventListener("click", (e) => q._vote(i, e.shiftKey ? -1 : 1)));
+      // passo extra que revela a resposta
+      const rev = el("span", "fragment quiz-reveal");
+      q.appendChild(rev);
+      if (q.dataset.url) {
+        const side = el("div", "quiz-qr");
+        side.innerHTML = `<div class="quiz-qr-code"></div><div class="quiz-qr-url">${q.dataset.url.replace(/^https?:\/\//, "")}</div>`;
+        q.classList.add("has-qr");
+        q.appendChild(side);
+        loadScript(QR).then(() => {
+          const code = window.qrcode(0, "M");
+          code.addData(q.dataset.url); code.make();
+          side.querySelector(".quiz-qr-code").innerHTML = code.createSvgTag({ cellSize: 6, margin: 0, scalable: true });
+        }).catch(() => {});
+      }
+    });
+    Reveal.sync();
+    const sync = () => document.querySelectorAll(".reveal .quiz").forEach((q) => {
+      const r = q.querySelector(".quiz-reveal");
+      q.classList.toggle("revealed", !!(r && r.classList.contains("visible")));
+    });
+    Reveal.on("fragmentshown", sync); Reveal.on("fragmenthidden", sync); Reveal.on("slidechanged", sync);
+    for (let n = 1; n <= 6; n++) {
+      Reveal.addKeyBinding({ keyCode: 48 + n, key: String(n), description: n === 1 ? "Quiz: votos (1–6)" : undefined }, () => {
+        const q = Reveal.getCurrentSlide().querySelector(".quiz");
+        if (q && q._vote) q._vote(n - 1, 1);
+      });
+    }
+  }
+
+  // ===================================================================
+  // 7. Citações: as referências citadas num slide aparecem, discretas,
+  //    no pé do próprio slide (com o link do DOI). A bibliografia
+  //    completa vai no slide com ::: {#refs} :::
+  // ===================================================================
+  function setupCites() {
+    const refs = document.querySelector("#refs");
+    if (!refs) return;
+    Reveal.getSlides().forEach((s) => {
+      if (s.contains(refs) || s.matches(".no-cites")) return;
+      // o revealjs troca o href da citação pelo slide de referências;
+      // as chaves ficam em data-cites
+      const keys = [...new Set([...s.querySelectorAll(".citation[data-cites]")]
+        .flatMap((c) => c.dataset.cites.split(/\s+/)))];
+      const entries = keys.map((k) => document.getElementById("ref-" + k)).filter(Boolean);
+      if (!entries.length) return;
+      const box = el("div", "nova-cites");
+      entries.forEach((e) => {
+        const item = el("div", "nova-cite");
+        item.innerHTML = e.innerHTML;
+        item.querySelectorAll("a").forEach((a) => (a.target = "_blank"));
+        box.appendChild(item);
+      });
+      s.appendChild(box);
+      s.classList.add("has-cites");
+    });
+  }
+
+  // ===================================================================
+  // 8. Acessibilidade: A = paleta segura p/ daltonismo; D = modo escuro
+  // ===================================================================
+  function setupAccess() {
+    const root = document.documentElement;
+    [["nova-cvd", "eqx-cvd"], ["nova-dark", "nova-dark"]].forEach(([k, cls]) => {
+      const v = store(k);
+      if (v) root.classList.toggle(cls, v === "1");
+    });
+    Reveal.addKeyBinding({ keyCode: 65, key: "A", description: "Paleta para daltonismo" }, () => {
+      store("nova-cvd", root.classList.toggle("eqx-cvd") ? "1" : "0");
+    });
+    Reveal.addKeyBinding({ keyCode: 68, key: "D", description: "Modo escuro" }, () => {
+      store("nova-dark", root.classList.toggle("nova-dark") ? "1" : "0");
+    });
+  }
+
+  const init = () => {
+    const steps = [setupAccess, setupMorph, setupRN, setupCompare, setupPlotly, setupPyrun, setupQuiz, setupCites];
+    steps.forEach((f) => { try { f(); } catch (e) { console.error("[nova]", f.name, e); } });
+  };
+  if (window.Reveal && Reveal.isReady && Reveal.isReady()) init();
+  else window.addEventListener("load", () => Reveal.isReady() ? init() : Reveal.on("ready", init));
+})();
+</script>

@@ -1,0 +1,21 @@
+---
+title: "VSI02 — Controle de corrente PI"
+subtitle: "Controle PI das correntes no referencial síncrono dq"
+---
+
+::: {.callout-note}
+**Planejada.** Simulação ainda não criada.
+:::
+
+## Objetivo
+
+Fechar a malha de corrente com controladores PI em $dq$ (PLL na tensão da rede,
+desacoplamento $\omega L_s$ e *feedforward* de $\mathbf{v}_g$), com modulação SPWM ou SVPWM.
+Esta etapa é a referência clássica com que os controladores preditivos e baseados em
+dados das etapas seguintes serão comparados (seguimento, THD, esforço de chaveamento).
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| — | ainda não criado |

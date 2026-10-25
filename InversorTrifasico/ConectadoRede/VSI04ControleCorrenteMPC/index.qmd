@@ -1,0 +1,32 @@
+---
+title: "VSI04 — Controle de corrente MPC"
+subtitle: "MPC de conjunto finito (FCS-MPC) das correntes αβ"
+---
+
+::: {.callout-note}
+**Planejada.** Simulação ainda não criada.
+:::
+
+## Objetivo
+
+Implementar o controle preditivo de corrente de Rodríguez et al. (2007). A cada período,
+prediz-se $\mathbf{i}(k+1)$ para os 8 estados de chaveamento com o modelo discreto da planta
+e aplica-se o estado que minimiza
+
+$$
+g = |i_\alpha^* - i_\alpha(k+1)| + |i_\beta^* - i_\beta(k+1)| .
+$$
+
+O código pode partir de `VSI05ControlePotenciaMPC/blocos/FSC.m`, trocando a função
+custo de potência pela de corrente.
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| — | ainda não criado |
+
+## Referência
+
+Rodríguez, J. et al. Predictive current control of a voltage source inverter. *IEEE Trans.
+Industrial Electronics*, v. 54, n. 1, p. 495–503, 2007 (`Referencias/`).
