@@ -1,0 +1,96 @@
+---
+title: "Identificacao DFIG"
+format:   revealjs
+---
+
+## Slide 1
+
+* Testando a renderização para o Prof. Raphael.
+* Se isso funcionar, o problema é um caractere oculto no outro arquivo.
+
+---
+
+
+## Modelo Físico - Analítico do DFIG (Referencial $dq$)
+
+O modelo dinâmico no referencial síncrono é descrito pelas equações de tensão:
+
+$$
+\begin{aligned}
+v_{ds} &= R_s i_{ds} + \frac{d\psi_{ds}}{dt} - \omega_s \psi_{qs} \\
+v_{qs} &= R_s i_{qs} + \frac{d\psi_{qs}}{dt} + \omega_s \psi_{ds} \\
+v_{dr} &= R_r i_{dr} + \frac{d\psi_{dr}}{dt} - (\omega_s - \omega_r) \psi_{qr} \\
+v_{qr} &= R_r i_{qr} + \frac{d\psi_{qr}}{dt} + (\omega_s - \omega_r) \psi_{dr}
+\end{aligned}
+$$
+
+---
+
+## Relações de Fluxo
+
+As correntes são acopladas magneticamente através das indutâncias:
+
+$$
+\begin{cases}
+\psi_{ds} = L_s i_{ds} + L_m i_{dr} \\
+\psi_{qs} = L_s i_{qs} + L_m i_{qr} \\
+\psi_{dr} = L_m i_{ds} + L_r i_{dr} \\
+\psi_{qr} = L_m i_{qs} + L_r i_{qr}
+\end{cases}
+$$
+
+Este acoplamento justifica a inclusão de todas as correntes como regressores em uma modelagem por identificação.
+
+---
+
+# Conjunto de dados
+
+* **Simulação da Planta:** Modelo analítico do DFIG implementado em Simulink.
+* **Sinais de Entrada:** Tensões $v_{ds}, v_{qs}, v_{dr}, v_{qr}$.
+* **Sinais de Saída:** Correntes $i_{ds}, i_{qs}, i_{dr}, i_{qr}$.
+
+---
+
+Carregando os dados no MATLAB - arquivo `DadosDFIG.mat`:
+
+```matlab
+clear, clc
+
+load DadosDFIG.mat
+
+t = DadosDFIG.Time;             % Vetor de tempo;
+Ts = t(2)-t(1);                 % Período de amostragem;
+N = length(t);                  % Número de amostras;
+Ids = DadosDFIG.Data(:,1);      % Corrente d do estator;
+Iqs = DadosDFIG.Data(:,2);      % Corrente q do estator;
+Idr = DadosDFIG.Data(:,3);      % Corrente d do rotor;
+Iqr = DadosDFIG.Data(:,4);      % Corrente q do rotor;
+Vds = DadosDFIG.Data(:,5);      % Tensão d do estator;
+Vqs = DadosDFIG.Data(:,6);      % Tensão q do estator;
+Vdr = DadosDFIG.Data(:,7);      % Tensão d do rotor;
+Vqr = DadosDFIG.Data(:,8);      % Tensão q do rotor;
+
+subplot(2,4,1), plot(t,Ids), grid, title('Ids')
+subplot(2,4,2), plot(t,Iqs), grid, title('Iqs')
+subplot(2,4,3), plot(t,Idr), grid, title('Idr')
+subplot(2,4,4), plot(t,Iqr), grid, title('Iqr')
+subplot(2,4,5), plot(t,Vds), grid, title('Vds')
+subplot(2,4,6), plot(t,Vqs), grid, title('Vqs')
+subplot(2,4,7), plot(t,Vdr), grid, title('Vdr')
+subplot(2,4,8), plot(t,Vqr), grid, title('Vqr')
+```
+
+---
+
+## Modelo ARX
+
+Cada corrente é representada por um modelo ARX - MISO. Para uma corrente genérica $i_x$ (onde $x \in \{ds, qs, dr, qr\}$):
+
+$$i_x(t) + \sum_{k=1}^{n_a} a_k i_x(t-k) = \sum_{j \in \text{outras} \sum_{k=1}^{n_a} c_{jk} i_j(t-k)} + \sum_{p=1}^{4} \sum_{k=1}^{n_b} b_{pk} v_p(t-k) + e(t)$$
+
+Regressores:
+
+---
+
+Slide
+

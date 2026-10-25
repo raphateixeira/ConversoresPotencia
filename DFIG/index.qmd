@@ -1,0 +1,45 @@
+---
+pagetitle: "Controle e Identificação do DFIG"
+format: html
+---
+
+::: {.rtx-hero}
+[Pesquisa · Controle preditivo]{.rtx-eyebrow}
+
+# Controle e Identificação do DFIG {.unnumbered .unlisted}
+
+Controle preditivo de conjunto finito (FCS-MPC) e identificação ARX de um gerador de indução duplamente alimentado (DFIG) acionado por inversor de tensão trifásico.
+
+[Prof. Dr. Raphael Teixeira]{.rtx-meta}
+
+::: {.rtx-acoes}
+[GitHub](https://github.com/raphateixeira/ControleDFIG){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
+
+## Apresentações
+
+```{=html}
+<div class="categoria-grid">
+<a class="categoria-card" href="Presents/01VariaveisTrifasicasReferenciais.html">
+  <h3>Apresentação 1</h3>
+  <p>Variáveis trifásicas e referenciais</p>
+</a>
+<a class="categoria-card" href="Presents/02DFIG.html">
+  <h3>Apresentação 2</h3>
+  <p>Controle MPC-FCS de gerador DFIG</p>
+</a>
+<a class="categoria-card" href="Presents/03ControleDFIGpFCS.html">
+  <h3>Apresentação 3</h3>
+  <p>Identificação ARX - DFIG</p>
+</a>
+</div>
+```
+
+## Ver também
+
+* [Identificacao](https://raphateixeira.github.io/Notas/fundamentos/identificacao-sistemas/) — fundamentos teóricos da identificação ARX por mínimos quadrados usada aqui.
+* [ControleCC2CC](https://raphateixeira.github.io/ControleCC2CC/) — mesma técnica (ARX por mínimos quadrados a partir de PRBS) aplicada a conversores CC-CC/CC-CA/CA-CA.
+* [DataDrivenControl](https://raphateixeira.github.io/DataDrivenControl/DeePC/DeePCNota.html) — DeePC, a contraparte do MPC-FCS baseado em ARX que dispensa a etapa explícita de identificação.
+
+
