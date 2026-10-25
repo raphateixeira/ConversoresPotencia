@@ -1,0 +1,290 @@
+---
+title: "Nota 01 — Modelagem do Inversor Trifásico (VSI)"
+subtitle: "Estados de chaveamento, transformações de Clarke e Park e modelo com carga RL"
+author: "Controle do Inversor Trifásico — UFPA/CAMTUC"
+lang: pt-BR
+format:
+  html:
+    theme: [cosmo, ../TemaRTx.scss]
+    toc: true
+    toc-depth: 3
+    html-math-method: mathjax
+    number-sections: true
+engine: knitr
+---
+
+[⬅ Índice do projeto](../index.qmd)
+
+## Objetivo
+
+Obter o modelo do inversor trifásico de dois níveis alimentado por tensão (*Voltage
+Source Inverter*, VSI) alimentando uma carga RL trifásica equilibrada em estrela, nos
+referenciais $abc$, estacionário $\alpha\beta$ e síncrono $dq$. Esse modelo é a base para
+a simulação (Etapa 4), para a identificação ARX (Etapa 5) e para o projeto dos
+controladores PI-dq, PR-$\alpha\beta$ e FCS-MPC (Etapas 6 e 7) do plano de trabalho.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, fig.align = "center")
+
+R_load <- 4.7      # ohm   (Bancada/carga_rl_trifasica.qmd)
+L_load <- 6.8e-3   # H
+f_rede <- 60       # Hz
+Vdc    <- 48       # V
+fsw    <- 20e3     # Hz
+Ts     <- 1 / fsw  # s
+```
+
+## Topologia
+
+O VSI de dois níveis possui três braços (fases $a$, $b$ e $c$), cada um com duas chaves
+complementares ligadas ao barramento CC de tensão $V_{dc}$. Para o braço $x \in \{a,b,c\}$,
+define-se a **função de chaveamento**
+
+$$
+S_x =
+\begin{cases}
+1, & \text{chave superior conduzindo (inferior aberta)}\\
+0, & \text{chave inferior conduzindo (superior aberta)}
+\end{cases}
+$$
+
+Com as chaves de um mesmo braço acionadas de forma complementar (o tempo morto é
+desprezado neste modelo), há $2^3 = 8$ estados de chaveamento possíveis.
+
+::: {.callout-note}
+## Hipóteses
+- chaves e diodos ideais (sem queda de tensão e sem perdas);
+- tempo morto desprezado;
+- barramento CC ideal, de tensão constante $V_{dc}$;
+- carga equilibrada, ligada em estrela e com neutro isolado.
+:::
+
+## Tensões de saída
+
+### Tensões de polo
+
+Tomando como referência o terminal negativo do barramento ($N$), a tensão de polo de cada
+braço é imposta diretamente pelo estado da chave:
+
+$$
+v_{xN} = S_x\,V_{dc}, \qquad x \in \{a,b,c\}.
+$$
+
+### Tensões de fase da carga
+
+Seja $n$ o neutro da carga em estrela. Como $v_{xN} = v_{xn} + v_{nN}$ e, para carga
+equilibrada, $v_{an}+v_{bn}+v_{cn}=0$, a tensão de modo comum é
+
+$$
+v_{nN} = \frac{v_{aN}+v_{bN}+v_{cN}}{3} = \frac{V_{dc}}{3}\,(S_a+S_b+S_c),
+$$
+
+e as tensões de fase resultam
+
+$$
+\begin{bmatrix} v_{an}\\ v_{bn}\\ v_{cn} \end{bmatrix}
+= \frac{V_{dc}}{3}
+\begin{bmatrix} 2 & -1 & -1\\ -1 & 2 & -1\\ -1 & -1 & 2 \end{bmatrix}
+\begin{bmatrix} S_a\\ S_b\\ S_c \end{bmatrix}.
+$$
+
+### Os oito estados
+
+```{r}
+estados <- expand.grid(Sc = 0:1, Sb = 0:1, Sa = 0:1)[, c("Sa", "Sb", "Sc")]
+estados <- estados[order(estados$Sa * 4 + estados$Sb * 2 + estados$Sc), ]
+Sm <- as.matrix(estados)
+vfase <- (Sm %*% matrix(c(2, -1, -1, -1, 2, -1, -1, -1, 2), 3, 3)) / 3  # x Vdc
+fr <- function(x) {
+  n <- as.integer(round(x * 3))
+  ifelse(n == 0L, "0", sprintf("%+d/3", n))
+}
+tab <- data.frame(
+  Estado = 0:7,
+  `(Sa Sb Sc)` = apply(Sm, 1, paste, collapse = " "),
+  `van/Vdc` = fr(vfase[, 1]),
+  `vbn/Vdc` = fr(vfase[, 2]),
+  `vcn/Vdc` = fr(vfase[, 3]),
+  check.names = FALSE
+)
+knitr::kable(tab, align = "ccccc")
+```
+
+Os estados $(0\,0\,0)$ e $(1\,1\,1)$ aplicam tensão nula à carga (vetores nulos); os
+outros seis produzem os vetores ativos.
+
+## Transformação de Clarke: referencial $\alpha\beta$
+
+A transformação de Clarke (invariante em amplitude) leva as grandezas trifásicas para um
+referencial estacionário de dois eixos ortogonais:
+
+$$
+\begin{bmatrix} x_\alpha\\ x_\beta \end{bmatrix}
+= \frac{2}{3}
+\begin{bmatrix} 1 & -\tfrac12 & -\tfrac12\\[2pt] 0 & \tfrac{\sqrt3}{2} & -\tfrac{\sqrt3}{2} \end{bmatrix}
+\begin{bmatrix} x_a\\ x_b\\ x_c \end{bmatrix}.
+$$
+
+Equivalentemente, com $\mathbf{a} = e^{j2\pi/3}$, o **vetor espacial** é
+
+$$
+\mathbf{x} = x_\alpha + j x_\beta = \frac{2}{3}\left(x_a + \mathbf{a}\,x_b + \mathbf{a}^2 x_c\right).
+$$
+
+Aplicando à tensão de saída do inversor, cada estado $(S_a S_b S_c)$ produz um vetor
+
+$$
+\mathbf{v}_k = \frac{2}{3}\,V_{dc}\,e^{\,j(k-1)\pi/3}, \quad k = 1,\dots,6,
+\qquad \mathbf{v}_0 = \mathbf{v}_7 = 0.
+$$
+
+```{r, fig.width=5.5, fig.height=5.5}
+a  <- exp(1i * 2 * pi / 3)
+vv <- (2 / 3) * (Sm[, 1] + a * Sm[, 2] + a^2 * Sm[, 3])  # x Vdc
+par(mar = c(2.5, 2.5, 1, 1), pty = "s")
+plot(NA, xlim = c(-0.85, 0.85), ylim = c(-0.85, 0.85), xlab = "", ylab = "",
+     asp = 1, axes = FALSE)
+abline(h = 0, v = 0, col = "grey75")
+ativos <- vv[c(5, 7, 3, 4, 2, 6)]   # ordem angular: 0°, 60°, ..., 300°
+polygon(Re(ativos), Im(ativos), border = "grey55", lty = 2)
+for (i in 1:8) {
+  if (Mod(vv[i]) > 1e-9) {
+    arrows(0, 0, Re(vv[i]), Im(vv[i]), length = 0.09, lwd = 2.2, col = "#002C6F")
+    text(1.14 * Re(vv[i]), 1.14 * Im(vv[i]),
+         sprintf("(%s)", paste(Sm[i, ], collapse = "")), cex = 0.95)
+  }
+}
+points(0, 0, pch = 19, cex = 1.2)
+text(0.07, -0.07, "(000)\n(111)", adj = c(0, 1), cex = 0.85)
+text(0.80, -0.06, expression(alpha))
+text(0.06, 0.82, expression(beta))
+```
+
+Os seis vetores ativos têm módulo $2V_{dc}/3$ e formam um hexágono; a maior tensão de fase
+senoidal obtenível **sem sobremodulação** é o raio do círculo inscrito,
+$V_{dc}/\sqrt{3}$ (SVPWM), ante $V_{dc}/2$ do SPWM — um ganho de
+$2/\sqrt{3}\approx 1{,}155$.
+
+## Modelo médio e modulação
+
+Em um período de chaveamento $T_s = 1/f_{sw}$, o valor médio da tensão de polo é
+$\bar v_{xN} = d_x V_{dc}$, com razão cíclica $d_x\in[0,1]$. Para modulação senoidal
+(SPWM) com índice de modulação $m$ e frequência fundamental $\omega$:
+
+$$
+d_x = \frac12 + \frac{m}{2}\cos\!\left(\omega t - \theta_x\right),
+\qquad \theta_a = 0,\ \theta_b = \tfrac{2\pi}{3},\ \theta_c = -\tfrac{2\pi}{3},
+$$
+
+de modo que a tensão de fase média tem amplitude de pico
+
+$$
+\hat V_{f} = m\,\frac{V_{dc}}{2}, \qquad 0 \le m \le 1 \ \text{(região linear)}.
+$$
+
+Para $V_{dc} = `r Vdc`$ V e $m = 0{,}9$, $\hat V_f = `r 0.9 * Vdc / 2`$ V. O modelo médio
+substitui o inversor por um **ganho estático** entre a razão cíclica (ou o índice de
+modulação) e a tensão aplicada — é a entrada do modelo de corrente que segue.
+
+## Modelo com carga RL
+
+Para a carga RL série em estrela, de resistência $R$ e indutância $L$ por fase,
+
+$$
+v_{xn} = R\,i_x + L\frac{di_x}{dt}, \qquad x\in\{a,b,c\}.
+$$
+
+### Referencial $\alpha\beta$
+
+Como a transformação de Clarke é linear e a carga é equilibrada, as duas equações
+resultantes são **desacopladas**, e idênticas:
+
+$$
+L\frac{di_\alpha}{dt} = v_\alpha - R\,i_\alpha, \qquad
+L\frac{di_\beta}{dt} = v_\beta - R\,i_\beta,
+$$
+
+ou, em função de transferência, $\dfrac{I_{\alpha\beta}(s)}{V_{\alpha\beta}(s)}=\dfrac{1}{Ls+R}$.
+
+### Referencial síncrono $dq$
+
+A transformação de Park gira o referencial $\alpha\beta$ com o ângulo $\theta=\omega t$:
+
+$$
+\begin{bmatrix} x_d\\ x_q \end{bmatrix}
+=
+\begin{bmatrix} \cos\theta & \sin\theta\\ -\sin\theta & \cos\theta \end{bmatrix}
+\begin{bmatrix} x_\alpha\\ x_\beta \end{bmatrix}.
+$$
+
+Derivando, aparece um **acoplamento cruzado** entre os eixos:
+
+$$
+\begin{aligned}
+L\frac{di_d}{dt} &= v_d - R\,i_d + \omega L\, i_q,\\
+L\frac{di_q}{dt} &= v_q - R\,i_q - \omega L\, i_d.
+\end{aligned}
+$$
+
+Em regime senoidal permanente equilibrado, $i_d$ e $i_q$ são **constantes** — por isso
+um PI basta no referencial $dq$ — mas os termos $\pm\omega L$ precisam ser
+desacoplados (feedforward) no controlador.
+
+## Parâmetros da bancada
+
+Com os valores adotados em [Carga Trifásica RL](../Bancada/carga_rl_trifasica.qmd)
+($R = `r R_load`\ \Omega$, $L = `r L_load*1e3`\ \text{mH}$, $f = `r f_rede`\ \text{Hz}$):
+
+```{r}
+tau   <- L_load / R_load
+w     <- 2 * pi * f_rede
+XL    <- w * L_load
+par_tab <- data.frame(
+  Grandeza = c("Constante de tempo  τ = L/R", "Polo  f = 1/(2πτ)",
+               "Reatância  X_L = ωL", "Fator de potência  cos φ",
+               "Período de chaveamento  T_s"),
+  Valor = c(sprintf("%.2f ms", tau * 1e3), sprintf("%.0f Hz", 1 / (2 * pi * tau)),
+            sprintf("%.2f Ω", XL), sprintf("%.2f", R_load / sqrt(R_load^2 + XL^2)),
+            sprintf("%.0f µs", Ts * 1e6))
+)
+knitr::kable(par_tab, align = "lr")
+```
+
+## Modelo discreto para identificação
+
+O controlador digital atualiza $v$ a cada $T_s$ (segurador de ordem zero) e amostra a
+corrente na mesma taxa. A discretização exata da planta $1/(Ls+R)$ é
+
+$$
+i[k+1] = a\,i[k] + b\,v[k],
+\qquad a = e^{-RT_s/L},\quad b = \frac{1-a}{R},
+$$
+
+para cada eixo ($\alpha$ e $\beta$, ou $d$ e $q$ desprezando o acoplamento). Na prática
+há ainda **um período de atraso** de computação/PWM, de modo que o modelo efetivo é
+$i[k+1] = a\,i[k] + b\,v[k-1]$ — exatamente a estrutura ARX de baixa ordem a ser
+estimada por MQC/RLS na Etapa 5, entre o índice de modulação (a tensão aplicada é
+$v = m V_{dc}/2$) e a corrente de carga.
+
+```{r}
+a_d <- exp(-R_load * Ts / L_load)
+b_d <- (1 - a_d) / R_load
+cat(sprintf("Com R = %.1f Ω, L = %.1f mH, Ts = %.0f µs:  a = %.5f,  b = %.5f  A/V\n",
+            R_load, L_load * 1e3, Ts * 1e6, a_d, b_d))
+```
+
+## Resumo
+
+| Referencial | Modelo da corrente | Observação |
+|---|---|---|
+| $abc$ | $L\,\dot i_x = v_{xn} - R\,i_x$ | três equações; $\sum i_x = 0$ (neutro isolado) |
+| $\alpha\beta$ | $L\,\dot i_{\alpha\beta} = v_{\alpha\beta} - R\,i_{\alpha\beta}$ | desacoplado; grandezas senoidais (PR) |
+| $dq$ | $L\,\dot i_{dq} = v_{dq} - R\,i_{dq} + \omega L\,\mathbf{J}\,i_{dq}$ | acoplado; grandezas contínuas (PI) |
+| discreto | $i[k+1] = a\,i[k] + b\,v[k-1]$ | ARX de 1ª ordem (identificação) |
+
+## Referências
+
+- Holmes, D. G.; Lipo, T. A. *Pulse Width Modulation for Power Converters: Principles and Practice*. Wiley-IEEE Press, 2003.
+- Kazmierkowski, M. P.; Malesani, L. Current control techniques for three-phase voltage-source PWM converters: A survey. *IEEE Trans. Industrial Electronics*, v. 45, n. 5, 1998.
+- Krause, P. C. et al. *Analysis of Electric Machinery and Drive Systems*. 3ª ed. Wiley-IEEE Press, 2013.
+- Rodriguez, J.; Cortes, P. *Predictive Control of Power Converters and Electrical Drives*. Wiley-IEEE Press, 2012.
