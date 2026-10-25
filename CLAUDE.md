@@ -7,6 +7,9 @@ arquivados com redirecionamento. `ControleCC2CC` ficou de fora (IC com colaborad
 
 - Um único projeto Quarto na raiz: **não criar `_quarto.yml` em subpastas** (viraria outro projeto).
   Páginas novas entram em `project.render` e no menu do sistema em `website.navbar.right`.
+- **Uma só página índice** (`index.qmd` da raiz), com uma seção por sistema e links diretos para o
+  conteúdo; não criar índices por subpasta. Âncoras fixas usadas na navbar: `#buck`, `#firmware-buck`,
+  `#inversor`, `#carga-rl`, `#firmware-inversor`, `#conectado-rede`, `#microrredes`.
 - Caminhos para a raiz: tema `TemaRTx.scss` e `imgs/ufpa-colorido.png` com `../` conforme a profundidade.
 - Bibliografia do Buck em `Buck/_metadata.yml`; as notas do ConectadoRede e do Microrredes declaram a sua.
 - Firmware: `Buck/Firmware/` e `InversorTrifasico/Firmware/` são workspaces do CCS (`.theia/`); a numeração

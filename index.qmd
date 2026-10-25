@@ -2,6 +2,10 @@
 pagetitle: "Conversores de Potência"
 ---
 
+<!-- Página única do repositório: cada sistema tem uma seção com links diretos para o conteúdo.
+     Âncoras fixas (#buck, #inversor, #carga-rl, #conectado-rede, #firmware-buck,
+     #firmware-inversor, #microrredes) usadas na navbar do _quarto.yml. -->
+
 ::: {.rtx-hero}
 [Pesquisa · Eletrônica de potência]{.rtx-eyebrow}
 
@@ -14,7 +18,7 @@ LAUNCHXL-F28379D.
 [Prof. Dr. Raphael Teixeira · UFPA, Campus de Tucuruí]{.rtx-meta}
 
 ::: {.rtx-acoes}
-[GitHub](https://github.com/raphateixeira/ConversoresPotencia){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+[Conversor Buck](#buck){.rtx-btn .rtx-btn-primario} [Inversor trifásico](#inversor){.rtx-btn} [Microrredes](#microrredes){.rtx-btn} [GitHub](https://github.com/raphateixeira/ConversoresPotencia){.rtx-btn}
 :::
 :::
 
@@ -23,50 +27,159 @@ Inteligência Computacional Aplicados a Conversores de Potência e Acionamentos 
 sistema percorre a mesma sequência: modelo → simulação → firmware → ensaio na bancada →
 identificação → controle (clássico, preditivo e baseado em dados).
 
-## Sistemas
+## Conversor Buck {#buck}
 
-```{=html}
-<div class="categoria-grid">
-<a class="categoria-card" href="Buck/index.html">
-  <h3>CC-CC · Iniciação científica</h3>
-  <p>Conversor Buck: fonte CC controlada</p>
-</a>
-<a class="categoria-card" href="InversorTrifasico/index.html">
-  <h3>CC-CA</h3>
-  <p>Inversor trifásico: carga RL e conectado à rede</p>
-</a>
-<a class="categoria-card" href="Microrredes/index.html">
-  <h3>Sistemas</h3>
-  <p>Microrredes: controle hierárquico, MPC e controle baseado em dados</p>
-</a>
-</div>
+Fonte CC controlada baseada em conversor Buck (30 V → 10 V, chave única e diodo): a LaunchPad
+comanda a razão cíclica pelo PWM e mede a tensão de saída no ADC. Iniciação científica de
+**Kauã dos Santos Oliveira** — [plano de trabalho](Buck/Plano/PlanoIC01.qmd)
+([PDF assinado](Buck/Plano/PlanoIC01.pdf)).
+
+### Modelagem e projeto
+
+* [Modelagem simbólica do conversor Buck](Buck/Modelagem/ModelagemBuck.ipynb) — dedução das equações de espaço de estados via `sympy` (notebook).
+* [Apresentação — Modelagem simbólica](Buck/Modelagem/Apresentacao.qmd) — a mesma dedução em slides, com o código Python executado ao vivo (modos de chaveamento, SSA, pequenos sinais e verificação simbólica).
+* [Apresentação — Modelagem e pequenos sinais](Buck/Apresentacao/Apresentacao.qmd) — versão narrativa: motivação, modelo médio, pequenos sinais e revisão da literatura.
+* [Apresentação — Projeto da fonte CC controlada](Buck/FonteControlada/Apresentacao.qmd) — dimensionamento da ponte retificadora + Buck e conferência projeto × simulação (script [`FonteControlada.m`](https://github.com/raphateixeira/ConversoresPotencia/blob/main/Buck/FonteControlada/FonteControlada.m)).
+
+### Ensaios na bancada
+
+* [Identificação do conversor Buck](Buck/Ensaios/IdentificacaoBuckPRBS/index.qmd) — escolha de $T_s$ e da duração do bit da PRBS, identificação ARX(2,2,2) e validação, simuladas em MATLAB.
+* Projeto do controlador PI (`Buck/Ensaios/ControleBuck/analise/projeto_pi.m`) — em preparação.
+
+::: {.callout-note appearance="simple"}
+Etapas 3–8 do plano (simulação Simulink, bancada, identificação, controladores PI/PI tipo 2/MPC,
+testes embarcados e redação final) entram aqui conforme o andamento da IC.
+:::
+
+### Firmware {#firmware-buck}
+
+Projetos do Code Composer Studio em `Buck/Firmware/` (descompactar o `.zip`, abrir a pasta com
+*File → Open Folder* e fazer *Clean* + *Rebuild*). A placa e o primeiro projeto no CCS estão na
+[nota da LaunchPad](https://raphateixeira.github.io/ProjetosCCS/Notas/Nota01LaunchPadF28379D.html).
+
+| Projeto | Ensaio | Código |
+|---|---|---|
+| `BK01Degrau` | malha aberta: rampa até 10 V e onda quadrada 10 ↔ 12 V, PWM de 20 kHz, $T_s$ = 50 µs | [.zip](downloads/BK01Degrau.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/Buck/Firmware/BK01Degrau) |
+| `PWM_prbs` | malha aberta: PRBS de 9 bits na razão cíclica, $T_b$ = 200 µs, $T_s$ = 50 µs | [.zip](downloads/PWM_prbs.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/Buck/Firmware/PWM_prbs) |
+
+## Inversor trifásico {#inversor}
+
+Inversor fonte de tensão (VSI) trifásico de dois níveis: LAUNCHXL-F28379D + **BOOSTXL-3PHGANINV**
+(GaN, 12 a 60 V, sensores de corrente INA240 com shunt de 5 mΩ). Primeiro com carga RL na bancada,
+depois conectado à rede em simulação. A numeração `VSINN` é a mesma no firmware e nas simulações.
+
+### Carga RL — iniciação científica {#carga-rl}
+
+Iniciação científica de **Alessandra Gabrielly Costa de Sousa**: modelagem, identificação e controle
+clássico e preditivo do inversor alimentando uma carga RL trifásica equilibrada —
+[plano de trabalho](InversorTrifasico/CargaRL/Plano/PlanoIC03.qmd)
+([PDF assinado](InversorTrifasico/CargaRL/Plano/PlanoIC03.pdf)).
+
+* [Nota 01 — Modelagem do inversor trifásico (VSI)](InversorTrifasico/CargaRL/Notas/Nota01ModelagemVSI.qmd) — estados de chaveamento, vetores espaciais, Clarke e Park, modelo médio e modelo da corrente com carga RL ($abc$, $\alpha\beta$, $dq$ e discreto/ARX).
+* [Carga trifásica RL da bancada](InversorTrifasico/CargaRL/Bancada/carga_rl_trifasica.qmd) — dimensionamento das cargas em função dos limites do BOOSTXL-3PHGANINV.
+
+### Ensaios na bancada
+
+Carga RL trifásica em estrela (R = 4,7 Ω e L = 1 mH por fase).
+
+* [Inversor trifásico em malha aberta](InversorTrifasico/Ensaios/InversorMalhaAberta/index.qmd) — primeiro experimento, para quem está começando: braço do inversor, PWM na placa (com animações), montagem das placas, osciloscópio e valores esperados.
+* [Controle de corrente do inversor trifásico](InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd) — hardware a partir da documentação da TI, conversões para A e V, proteção, sequência segura e o projeto `VSI02ControleCorrente`.
+
+### Firmware {#firmware-inversor}
+
+Projetos do Code Composer Studio em `InversorTrifasico/Firmware/`.
+
+| Projeto | Ensaio | Código |
+|---|---|---|
+| `VSI01MalhaAberta` | só o chaveamento: 50 % nas três fases, 25/50/75 % e senoidal, PWM de 20 kHz, tempo morto de 100 ns; grava as tensões das fases; roteiro em `TUTORIAL.md` | [.zip](downloads/VSI01MalhaAberta.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAberta) |
+| `VSI01MalhaAbertaSemGravacao` | a mesma versão sem a gravação das tensões, testada na placa em 23/10/2026 | [.zip](downloads/VSI01MalhaAbertaSemGravacao.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAbertaSemGravacao) |
+| `VSI02ControleCorrente` | corrente da carga RL: PWM de 50 %, malha aberta, PI em dq com desacoplamento e identificação (PRBS, degrau, multisseno); comandos pela UART | [.zip](downloads/VSI02ControleCorrente.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI02ControleCorrente) |
+
+### Conectado à rede — simulação {#conectado-rede}
+
+Simulações MATLAB/Simulink do VSI conectado à rede por um filtro L, comparando sobre a mesma
+planta o PI clássico, o controle preditivo de conjunto finito (MPC-FSC) e técnicas baseadas em
+dados. Nas coordenadas $\alpha\beta$, discretizando por Euler com período $T_s$:
+
+$$
+\mathbf{i}(k+1) = \left(1 - \frac{R_s T_s}{L_s}\right)\mathbf{i}(k) + \frac{T_s}{L_s}\big(\mathbf{v}(k) - \mathbf{v}_g(k)\big),
+\qquad P + jQ = \tfrac{3}{2}\,\mathbf{v}_g\,\mathbf{i}^* ,
+$$
+
+com $\mathbf{v}$ um dos 8 vetores de chaveamento. Parâmetros nominais em `Comum/Parametros.m`:
+$T_s \approx 20{,}8\,\mu$s (48 kHz), $V_{cc}$ = 350 V, rede de 110 V/60 Hz, $R_s$ = 0,1 Ω,
+$L_s$ = 10 mH; os da bancada (40 V, 20 kHz) ficam na struct `Bancada`.
+
+| Etapa | Estratégia | Status |
+|---|---|---|
+| [VSI01 — Malha aberta](InversorTrifasico/ConectadoRede/VSI01MalhaAberta/index.qmd) | senoides trifásicas sem realimentação (bancada) | **simulação pronta** (firmware precisa de correção) |
+| [VSI02 — Controle de corrente PI](InversorTrifasico/ConectadoRede/VSI02ControleCorrentePI/index.qmd) | PI em $dq$ | planejada |
+| [VSI03 — Controle de potência PI](InversorTrifasico/ConectadoRede/VSI03ControlePotenciaPI/index.qmd) | malhas de $P$/$Q$ externas ao PI de corrente | planejada |
+| [VSI04 — Controle de corrente MPC](InversorTrifasico/ConectadoRede/VSI04ControleCorrenteMPC/index.qmd) | MPC-FSC de corrente (Rodríguez et al., 2007) | planejada |
+| [VSI05 — Controle de potência MPC-FSC](InversorTrifasico/ConectadoRede/VSI05ControlePotenciaMPC/index.qmd) | MPC-FSC de potência direta | **simulação pronta** |
+| [VSI06 — Identificação ARX (RLS)](InversorTrifasico/ConectadoRede/VSI06IdentificacaoARX/index.qmd) | ARX de $i_\alpha$, $i_\beta$ estimado por RLS | **simulação pronta** |
+| [VSI07 — Controle RST via ARX](InversorTrifasico/ConectadoRede/VSI07ControleRST2ARX/index.qmd) | RST projetado sobre o ARX identificado | planejada |
+| [VSI08 — MPC adaptativo (RLS)](InversorTrifasico/ConectadoRede/VSI08MPCAdaptativoRLS/index.qmd) | RLS → ARX → MPC-FSC em linha | em andamento |
+| [VSI09 — Aprendizagem por reforço](InversorTrifasico/ConectadoRede/VSI09ControlePotenciaRL/index.qmd) | agente DQN no lugar do MPC-FSC | em andamento |
+
+* [Nota 01 — Malha aberta do VSI na bancada](InversorTrifasico/ConectadoRede/Notas/Nota01MalhaAbertaBancada.qmd) — slides: a bancada, o modelo com carga RL, dimensionamento pelos limites da placa, amostragem e atraso, tempo morto, os modelos Simulink do VSI01 contra a teoria e o roteiro da primeira energização.
+
+Para rodar (MATLAB R2024a, Simscape Electrical; VSI09 precisa da Reinforcement Learning Toolbox),
+a partir de `InversorTrifasico/ConectadoRede/`:
+
+```matlab
+IniciarProjeto   % Comum/ no path; caches do Simulink em cache/
+Parametros       % Ts, Vcc, Vg, Rs, Ls, C e a matriz de Clarke no workspace
+open_system('VSI05ControlePotenciaMPC/MPCFSC.slx')
 ```
 
-## Iniciação científica
+Depois de editar um bloco MATLAB Function, rode `python3 scripts/extrai_blocos.py` para atualizar
+a cópia em texto em `VSINN*/blocos/` (deixa a lei de controle visível no `git diff`).
 
-```{=html}
-<div class="categoria-grid">
-<a class="categoria-card" href="Buck/index.html">
-  <h3>Kauã dos Santos Oliveira</h3>
-  <p>Fonte CC controlada baseada em conversor Buck</p>
-</a>
-<a class="categoria-card" href="InversorTrifasico/CargaRL/index.html">
-  <h3>Alessandra Gabrielly Costa de Sousa</h3>
-  <p>Inversor trifásico com carga RL</p>
-</a>
-</div>
-```
+## Microrredes {#microrredes}
 
-## Organização do repositório
+Sistemas elétricos de pequeno porte que agregam geração distribuída, armazenamento e cargas sob
+controle coordenado, conectados à rede ou ilhados. Como quase tudo se conecta por conversores de
+potência, a microrrede junta eletrônica de potência, controle clássico e preditivo e controle
+baseado em dados. Objetivos: arquiteturas CA/CC/híbridas; conversores formadores (*grid-forming*)
+e seguidores (*grid-following*) de rede; controle hierárquico (*droop*, secundário, terciário);
+MPC e controle baseado em dados (DeePC, Koopman); validação em simulação e depois na bancada C2000.
 
-| Pasta | Conteúdo |
-|---|---|
-| `Buck/` | IC do conversor Buck: modelagem, fonte controlada, apresentações; `Ensaios/` e `Firmware/` |
-| `InversorTrifasico/CargaRL/` | IC do inversor com carga RL: plano, bancada, modelagem do VSI |
-| `InversorTrifasico/ConectadoRede/` | simulações MATLAB/Simulink, etapas `VSI01`–`VSI09` |
-| `InversorTrifasico/Ensaios/` | apresentações dos ensaios na placa (malha aberta, controle de corrente) |
-| `InversorTrifasico/Firmware/` | projetos do Code Composer Studio, mesma numeração das simulações |
-| `Microrredes/` | notas em slides sobre microrredes |
+* [Nota 01 — Introdução às microrredes](Microrredes/Notas/Nota01IntroducaoMicrorredes.qmd) — da rede convencional à microrrede: PCC, conversores como interface, controle centralizado/descentralizado/distribuído, arquiteturas, formadores e seguidores de rede, fluxo de potência, *droop* e controle hierárquico.
+* [Nota 02 — Controle descentralizado e hierárquico](Microrredes/Notas/Nota02ControleDescentralizadoHierarquico.qmd) *(rascunho)* — papéis dos conversores, *droop* para linhas quaisquer, impedância virtual, estabilidade de pequenos sinais, ilhamento e reconexão (Guerrero et al., 2013).
+
+## Referências
+
+::: {.callout-note collapse="true" appearance="simple"}
+## Conversor Buck
+
+* Dilger (2018) — *Desenvolvimento de uma Fonte Chaveada para Uso em Laboratório de Graduação* (TCC, UTFPR).
+* Erickson, R. W.; Maksimović, D. *Fundamentals of Power Electronics*. 2ª ed. Springer, 2001.
+:::
+
+::: {.callout-note collapse="true" appearance="simple"}
+## Inversor trifásico
+
+* Holmes, D. G.; Lipo, T. A. *Pulse Width Modulation for Power Converters: Principles and Practice*. Wiley-IEEE Press, 2003.
+* Rodríguez, J.; Pontt, J.; Silva, C. A.; Correa, P.; Lezana, P.; Cortés, P.; Ammann, U. Predictive current control of a voltage source inverter. *IEEE Trans. Industrial Electronics*, v. 54, n. 1, p. 495–503, 2007.
+* Rodríguez, J.; Cortés, P. *Predictive Control of Power Converters and Electrical Drives*. Wiley-IEEE Press, 2012.
+* Kazmierkowski, M. P.; Malesani, L. Current control techniques for three-phase voltage-source PWM converters: A survey. *IEEE Trans. Industrial Electronics*, v. 45, n. 5, 1998.
+* Krause, P. C. et al. *Analysis of Electric Machinery and Drive Systems*. 3ª ed. Wiley-IEEE Press, 2013.
+* Aguirre, L. A. *Introdução à Identificação de Sistemas*. 4ª ed. Editora UFMG, 2015.
+* Texas Instruments. *LAUNCHXL-F28379D* e *BOOSTXL-3PHGANINV* — User's Guides.
+* Wolfspeed. *CCB021M12FM3 — 1200 V, 21 mΩ SiC six-pack power module*. Datasheet.
+:::
+
+::: {.callout-note collapse="true" appearance="simple"}
+## Microrredes
+
+* Lasseter, R. H. MicroGrids. *IEEE Power Engineering Society Winter Meeting*, 2002.
+* Hatziargyriou, N. et al. Microgrids. *IEEE Power and Energy Magazine*, v. 5, n. 4, 2007.
+* Guerrero, J. M. et al. Advanced control architectures for intelligent microgrids — Part I: decentralized and hierarchical control. *IEEE Trans. Industrial Electronics*, v. 60, n. 4, 2013.
+* Guerrero, J. M. et al. Hierarchical control of droop-controlled AC and DC microgrids — a general approach toward standardization. *IEEE Trans. Industrial Electronics*, v. 58, n. 1, 2011.
+* Rocabert, J. et al. Control of power converters in AC microgrids. *IEEE Trans. Power Electronics*, v. 27, n. 11, 2012.
+* Olivares, D. E. et al. Trends in microgrid control. *IEEE Trans. Smart Grid*, v. 5, n. 4, 2014.
+:::
 
 ## Relacionados
 

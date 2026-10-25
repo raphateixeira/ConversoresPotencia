@@ -13,7 +13,7 @@ format:
 engine: knitr
 ---
 
-[⬅ Índice do projeto](../index.qmd)
+[⬅ Conversores de Potência](../../../index.qmd#carga-rl)
 
 ## Objetivo
 

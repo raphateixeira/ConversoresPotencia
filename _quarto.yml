@@ -7,7 +7,6 @@ project:
   render:
     - index.qmd
     # Conversor Buck (ex-ControleBuck + ensaios/firmware do ProjetosCCS)
-    - Buck/index.qmd
     - Buck/Plano/PlanoIC01.qmd
     - Buck/Modelagem/ModelagemBuck.ipynb
     - Buck/Modelagem/Apresentacao.qmd
@@ -15,17 +14,13 @@ project:
     - Buck/FonteControlada/Apresentacao.qmd
     - Buck/Ensaios/*/index.qmd
     # Inversor trifásico (ex-ControleInversor3f, ex-ControleVSI + ensaios/firmware do ProjetosCCS)
-    - InversorTrifasico/index.qmd
-    - InversorTrifasico/CargaRL/index.qmd
     - InversorTrifasico/CargaRL/Plano/PlanoIC03.qmd
     - InversorTrifasico/CargaRL/Notas/Nota01ModelagemVSI.qmd
     - InversorTrifasico/CargaRL/Bancada/carga_rl_trifasica.qmd
-    - InversorTrifasico/ConectadoRede/index.qmd
     - InversorTrifasico/ConectadoRede/VSI*/index.qmd
     - InversorTrifasico/ConectadoRede/Notas/Nota*.qmd
     - InversorTrifasico/Ensaios/*/index.qmd
     # Microrredes (ex-MicroGrids)
-    - Microrredes/index.qmd
     - Microrredes/Notas/Nota*.qmd
 
 execute:
@@ -50,31 +45,29 @@ website:
       - text: "Conversor Buck"
         menu:
           - text: "Visão geral"
-            href: Buck/index.qmd
+            href: index.qmd#buck
           - text: "Plano de trabalho (IC)"
             href: Buck/Plano/PlanoIC01.qmd
           - text: "---"
           - text: "Modelagem simbólica (notebook)"
             href: Buck/Modelagem/ModelagemBuck.ipynb
-          - text: "Apresentação — Modelagem simbólica"
+          - text: "Modelagem simbólica (slides)"
             href: Buck/Modelagem/Apresentacao.qmd
-          - text: "Apresentação — Modelagem e pequenos sinais"
+          - text: "Modelagem e pequenos sinais"
             href: Buck/Apresentacao/Apresentacao.qmd
-          - text: "Apresentação — Projeto da fonte CC controlada"
+          - text: "Projeto da fonte CC controlada"
             href: Buck/FonteControlada/Apresentacao.qmd
           - text: "---"
           - text: "Identificação do conversor (ensaio)"
             href: Buck/Ensaios/IdentificacaoBuckPRBS/index.qmd
           - text: "Firmware"
-            href: Buck/index.qmd#firmware-code-composer-studio
+            href: index.qmd#firmware-buck
       - text: "Inversor Trifásico"
         menu:
           - text: "Visão geral"
-            href: InversorTrifasico/index.qmd
+            href: index.qmd#inversor
           - text: "---"
           - text: "Carga RL (IC)"
-          - text: "Visão geral da IC"
-            href: InversorTrifasico/CargaRL/index.qmd
           - text: "Plano de trabalho"
             href: InversorTrifasico/CargaRL/Plano/PlanoIC03.qmd
           - text: "Nota 01 — Modelagem do VSI"
@@ -82,23 +75,23 @@ website:
           - text: "Carga RL da bancada"
             href: InversorTrifasico/CargaRL/Bancada/carga_rl_trifasica.qmd
           - text: "---"
-          - text: "Conectado à rede (simulação)"
-          - text: "Etapas VSI01–VSI09"
-            href: InversorTrifasico/ConectadoRede/index.qmd
-          - text: "Nota 01 — Malha aberta na bancada"
-            href: InversorTrifasico/ConectadoRede/Notas/Nota01MalhaAbertaBancada.qmd
-          - text: "---"
           - text: "Ensaios e firmware"
           - text: "Inversor em malha aberta"
             href: InversorTrifasico/Ensaios/InversorMalhaAberta/index.qmd
           - text: "Controle de corrente"
             href: InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd
           - text: "Firmware"
-            href: InversorTrifasico/index.qmd#firmware
+            href: index.qmd#firmware-inversor
+          - text: "---"
+          - text: "Conectado à rede (simulação)"
+          - text: "Etapas VSI01–VSI09"
+            href: index.qmd#conectado-rede
+          - text: "Nota 01 — Malha aberta na bancada"
+            href: InversorTrifasico/ConectadoRede/Notas/Nota01MalhaAbertaBancada.qmd
       - text: "Microrredes"
         menu:
           - text: "Visão geral"
-            href: Microrredes/index.qmd
+            href: index.qmd#microrredes
           - text: "Nota 01 — Introdução às microrredes"
             href: Microrredes/Notas/Nota01IntroducaoMicrorredes.qmd
           - text: "Nota 02 — Controle descentralizado e hierárquico"

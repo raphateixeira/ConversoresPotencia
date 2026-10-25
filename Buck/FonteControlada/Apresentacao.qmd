@@ -27,7 +27,7 @@ execute:
 ## Objetivos da Apresentação
 
 - Apresentar a topologia completa: rede CA $\to$ ponte retificadora $\to$ buck $\to$ carga
-- Percorrer o **passo a passo** de dimensionamento (script [`FonteControlada.m`](FonteControlada.m))
+- Percorrer o **passo a passo** de dimensionamento (script [`FonteControlada.m`](https://github.com/raphateixeira/ConversoresPotencia/blob/main/Buck/FonteControlada/FonteControlada.m))
 - Verificar o projeto por **simulação comportamental** no tempo
 - Discutir a divergência encontrada entre projeto analítico e simulação
 - Apontar como o modelo de pequenos sinais do Buck (ver [outra apresentação](../Apresentacao/Apresentacao.html)) fecha essa lacuna
