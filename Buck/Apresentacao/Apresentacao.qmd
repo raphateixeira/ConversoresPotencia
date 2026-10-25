@@ -1,0 +1,270 @@
+---
+title: "Modelagem e Controle do Conversor Buck"
+subtitle: "Modelo Médio, Linearização de Pequenos Sinais e Perspectivas de Controle"
+institute: "UFPA — Campus Universitário de Tucuruí"
+author:
+  - "Kauã dos Santos Oliveira"
+  - "Orientador: Prof. Dr. Raphael Barros Teixeira"
+lang: pt
+format:
+  revealjs:
+    theme: [simple, ../TemaRTx.scss]
+    self-contained: true
+    transition: fade
+    slide-number: true
+    width: 1600
+    height: 900
+    footer: " "
+    center: false
+    title-slide-attributes:
+      data-background-image: "../imgs/ufpa-colorido.png"
+      data-background-size: "84px"
+      data-background-position: "top 45px center"
+execute:
+  enabled: false
+---
+
+## Objetivos da Apresentação
+
+- Apresentar o conversor Buck e seu princípio de funcionamento
+- Deduzir o modelo médio em espaço de estados (*state-space averaging*)
+- Linearizar o modelo médio em torno do ponto de operação (**pequenos sinais**)
+- Obter as funções de transferência controle-saída e linha-saída
+- Revisar trabalhos de referência sobre projeto de fontes chaveadas com Buck
+- Traçar os próximos passos rumo ao projeto de controle
+
+---
+
+# O Conversor Buck
+
+---
+
+## Princípio de Operação
+
+- Conversor CC-CC **abaixador de tensão**: $V_o \le V_i$
+- Uma chave $S$ (MOSFET/IGBT) comutada em alta frequência, com razão cíclica $d\in(0,1)$
+- Diodo de roda livre, indutor $L$ e capacitor $C$ formam um filtro passa-baixas na saída
+- Carga modelada como resistência $R$
+
+Em regime permanente, no modo de condução contínua (MCC):
+$$V_o = d\,V_i$$
+
+::: {.callout-note}
+Este ganho estático é a mesma relação vista em Eletrônica de Potência para o regulador *buck*; aqui o interesse é o **modelo dinâmico**, não apenas o ganho CC.
+:::
+
+---
+
+## Motivação
+
+- Presente em praticamente toda fonte de alimentação chaveada moderna
+- Base de projetos didáticos de fontes de bancada para laboratório [@dilger2018]
+- Ponto de partida comum para comparar estratégias de controle (PI, PID, MPC, …) [@ricardo2025]
+- Modelo simples o bastante para modelagem simbólica completa, mas rico o bastante para ilustrar todo o fluxo *modelagem → função de transferência → controle*
+
+---
+
+# Modelagem por Valores Médios no Espaço de Estados
+
+---
+
+## Premissas de Modelagem
+
+- Interruptor ideal (sem perdas de comutação/condução)
+- Modo de condução contínua (corrente no indutor nunca se anula)
+- Estados: corrente no indutor $i_L(t)$ e tensão no capacitor $v_C(t)$
+- Modelo obtido simbolicamente com `sympy` em [`ModelagemBuck.ipynb`](../Modelagem/ModelagemBuck.html)
+
+$$
+x = \begin{bmatrix} i_L \\ v_C \end{bmatrix}, \qquad
+u = V_i
+$$
+
+---
+
+## Modo 1 — Chave Fechada ($0 \le t < dT$)
+
+$$
+\begin{bmatrix}\dot{i}_L\\ \dot{v}_C\end{bmatrix} =
+\begin{bmatrix}0 & -\dfrac{1}{L}\\[4pt] \dfrac{1}{C} & -\dfrac{1}{CR}\end{bmatrix}
+\begin{bmatrix}i_L\\ v_C\end{bmatrix} +
+\begin{bmatrix}\dfrac{1}{L}\\ 0\end{bmatrix} V_i
+$$
+
+A fonte $V_i$ é conectada ao indutor; a topologia é a mesma de um filtro RLC alimentado.
+
+---
+
+## Modo 2 — Chave Aberta ($dT \le t < T$)
+
+$$
+\begin{bmatrix}\dot{i}_L\\ \dot{v}_C\end{bmatrix} =
+\begin{bmatrix}0 & -\dfrac{1}{L}\\[4pt] \dfrac{1}{C} & -\dfrac{1}{CR}\end{bmatrix}
+\begin{bmatrix}i_L\\ v_C\end{bmatrix} +
+\begin{bmatrix}0\\ 0\end{bmatrix} V_i
+$$
+
+O diodo de roda livre assume a corrente do indutor; a matriz de estados $A$ não muda, apenas a entrada é desconectada ($B_2=0$).
+
+---
+
+## Modelo Médio (SSA)
+
+Ponderando os dois modos pela razão cíclica $d$ (fração do período em que a chave está fechada):
+
+$$
+A_m = d\,A_1 + (1-d)\,A_2 = A_1 = A_2, \qquad
+B_m = d\,B_1 + (1-d)\,B_2 = \begin{bmatrix}\dfrac{d}{L}\\ 0\end{bmatrix}
+$$
+
+$$
+\begin{bmatrix}\dot{i}_L\\ \dot{v}_C\end{bmatrix} =
+\begin{bmatrix}0 & -\dfrac{1}{L}\\[4pt] \dfrac{1}{C} & -\dfrac{1}{CR}\end{bmatrix}
+\begin{bmatrix}i_L\\ v_C\end{bmatrix} +
+\begin{bmatrix}\dfrac{d}{L}\\ 0\end{bmatrix} V_i
+$$
+
+::: {.callout-insight}
+Como $A_1=A_2$ neste conversor, toda a dependência em $d$ fica isolada em $B_m$ — resultado característico do Buck (não se repete, por exemplo, no Boost).
+:::
+
+---
+
+## Função de Transferência Direta $H_0(s) = V_C(s)/d(s)$
+
+Com $C = \begin{bmatrix}0 & 1\end{bmatrix}$ e $H_0(s) = C(sI-A_m)^{-1}B_m/d$ (tratando $d$ como entrada direta, $V_i$ fixo em 1):
+
+$$
+\boxed{H_0(s) = \dfrac{R}{LCR\,s^2 + L\,s + R}}
+$$
+
+Forma canônica de 2ª ordem, com
+
+$$
+\omega_n = \frac{1}{\sqrt{LC}}, \qquad
+\zeta = \frac{1}{2R}\sqrt{\frac{L}{C}}
+$$
+
+::: {.callout-question}
+$H_0(s)$ ainda não é o modelo de pequenos sinais clássico: falta o ganho $V_i$ (ou $D$) da linearização, e falta a entrada de linha $v_i$. Os dois só aparecem ao perturbar $d$ **e** $v_i$ simultaneamente em torno do ponto de operação.
+:::
+
+---
+
+# Modelo de Pequenos Sinais
+
+---
+
+## Perturbação em Torno do Ponto de Operação
+
+Perturba-se simultaneamente entrada de controle, entrada de linha e estados em torno de um ponto de operação CC (letras maiúsculas):
+
+$$
+d(t) = D + \widehat{d}(t), \qquad
+v_i(t) = V_i + \widehat{v}_i(t), \qquad
+x(t) = X + \widehat{x}(t)
+$$
+
+com $\widehat d, \widehat v_i, \widehat x \ll D, V_i, X$ (pequenos sinais). Como $A_1=A_2=A$, a não linearidade do Buck está inteira no produto $d(t)\,v_i(t)$ que força o estado:
+
+$$
+\dot{x} = A\,x + B_1\,\big[\underbrace{D V_i}_{\text{CC}} + \underbrace{D\widehat v_i + V_i\widehat d}_{\text{CA (1ª ordem)}} + \underbrace{\widehat d\,\widehat v_i}_{\text{2ª ordem (desprezado)}}\big]
+$$
+
+::: {.callout-insight}
+O termo $\widehat d\,\widehat v_i$ é o produto de duas pequenas quantidades — desprezá-lo é exatamente a aproximação de "pequenos sinais" (linearização de 1ª ordem).
+:::
+
+---
+
+## Ponto de Operação CC
+
+Anulando a parcela CC ($\dot X = 0$), $0 = AX + B_1 D V_i$, resolve-se para o estado de equilíbrio:
+
+$$
+X = \begin{bmatrix} I_L \\ V_C \end{bmatrix} = \begin{bmatrix} D V_i / R \\ D V_i \end{bmatrix}
+$$
+
+::: {.callout-note}
+$V_C = D V_i$ recupera exatamente o ganho estático $V_o = dV_i$ já conhecido, e $I_L = V_C/R$ é a corrente média de carga — confirmação de consistência do modelo.
+:::
+
+---
+
+## Modelo Linearizado (CA)
+
+Descartado o termo CC (cancela com $\dot X=0$) e o termo de 2ª ordem, resta a dinâmica **linear** de pequenos sinais:
+
+$$
+\boxed{\dot{\widehat{x}} = A\,\widehat{x} + B_1 V_i\,\widehat{d} + B_1 D\,\widehat{v}_i}
+$$
+
+Duas entradas independentes, $\widehat d$ e $\widehat v_i$ — o sistema ganha uma segunda função de transferência que o modelo direto (com $d$ como entrada única) não tinha.
+
+---
+
+## Duas Funções de Transferência
+
+Por superposição (sistema linear), com $\widehat y = \widehat v_C = C\widehat x$:
+
+::: {.columns}
+:::: {.column width="50%"}
+**Controle → saída** ($\widehat v_i=0$)
+$$
+G_{vd}(s) = \dfrac{\widehat v_C(s)}{\widehat d(s)} = V_i\,H_0(s)
+$$
+::::
+:::: {.column width="50%"}
+**Linha → saída** ($\widehat d=0$)
+$$
+G_{vg}(s) = \dfrac{\widehat v_C(s)}{\widehat v_i(s)} = D\,H_0(s)
+$$
+::::
+:::
+
+onde $H_0(s) = \dfrac{R}{LCR\,s^2+Ls+R}$ é a mesma função de transferência "direta" do slide anterior.
+
+::: {.callout-insight}
+$H_0(s)$ não estava errada — era $G_{vd}(s)/V_i$ (equivalentemente $G_{vg}(s)/D$): o modelo direto já continha a dinâmica correta, só faltava o ganho DC da linearização.
+:::
+
+---
+
+# Revisão da Literatura
+
+---
+
+## Trabalhos de Referência
+
+| Trabalho | Foco | Contribuição relevante |
+|---|---|---|
+| Dilger (2018) [@dilger2018] | Fonte chaveada Buck para laboratório de graduação | Projeto físico completo (dimensionamento, driver, malha de controle) |
+| Ricardo (2025) [@ricardo2025] | Conversor Buck: dimensionamento, controle e otimização de modelos | Comparação de modelos e estratégias de controle |
+| Erickson & Maksimovic [@erickson2001] | Eletrônica de potência, referência clássica | Formalização do método SSA e do modelo de pequenos sinais |
+
+::: {.note}
+TCC de Dilger (2018) disponível em [`referencias/TCC_Dilger_FonteChaveada_Buck_2018.pdf`](../referencias/TCC_Dilger_FonteChaveada_Buck_2018.pdf).
+:::
+
+---
+
+# Próximos Passos
+
+---
+
+## Roadmap
+
+::: {.incremental}
+1. Validar o modelo de pequenos sinais contra simulação chaveada (ciclo a ciclo)
+2. Projetar controlador de tensão a partir de $G_{vd}(s)$ (PI/PID via IMC, e comparar com MPC)
+3. Usar $G_{vg}(s)$ para avaliar rejeição a distúrbios na tensão de entrada
+4. Avaliar desempenho: erro de regime, *overshoot*, rejeição a distúrbios de carga
+5. Comparar com as abordagens de projeto de [@dilger2018] e [@ricardo2025]
+:::
+
+---
+
+## Referências
+
+::: {#refs}
+:::

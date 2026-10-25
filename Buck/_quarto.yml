@@ -1,0 +1,24 @@
+project:
+  type: website
+  output-dir: _site
+  render:
+    - index.qmd
+    - Plano/PlanoIC01.qmd
+    - Modelagem/ModelagemBuck.ipynb
+    - Modelagem/Apresentacao.qmd
+    - Apresentacao/Apresentacao.qmd
+    - FonteControlada/Apresentacao.qmd
+
+bibliography: referencias.bib
+csl: apa.csl
+
+website:
+  title: "Controle do Conversor Buck"
+  site-url: https://raphateixeira.github.io/ControleBuck/
+  repo-url: https://github.com/raphateixeira/ControleBuck
+
+format:
+  html:
+    theme: [cosmo, TemaRTx.scss]
+    lang: pt-BR
+    toc: true

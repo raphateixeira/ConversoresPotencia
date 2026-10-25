@@ -1,0 +1,6 @@
+# requirements.txt
+jupyter
+pyyaml
+pandas
+numpy
+sympy
