@@ -1,0 +1,76 @@
+---
+pagetitle: "Conversores de Potência"
+---
+
+::: {.rtx-hero}
+[Pesquisa · Eletrônica de potência]{.rtx-eyebrow}
+
+# Conversores de Potência {.unnumbered .unlisted}
+
+Modelagem, identificação e controle de conversores de potência — do conversor Buck ao inversor
+trifásico conectado à rede e às microrredes —, da simulação ao firmware na plataforma
+LAUNCHXL-F28379D.
+
+[Prof. Dr. Raphael Teixeira · UFPA, Campus de Tucuruí]{.rtx-meta}
+
+::: {.rtx-acoes}
+[GitHub](https://github.com/raphateixeira/ConversoresPotencia){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+:::
+:::
+
+Vinculado ao projeto de pesquisa *Identificação, Estimação e Controle Baseados em Dados e
+Inteligência Computacional Aplicados a Conversores de Potência e Acionamentos Elétricos*. Cada
+sistema percorre a mesma sequência: modelo → simulação → firmware → ensaio na bancada →
+identificação → controle (clássico, preditivo e baseado em dados).
+
+## Sistemas
+
+```{=html}
+<div class="categoria-grid">
+<a class="categoria-card" href="Buck/index.html">
+  <h3>CC-CC · Iniciação científica</h3>
+  <p>Conversor Buck: fonte CC controlada</p>
+</a>
+<a class="categoria-card" href="InversorTrifasico/index.html">
+  <h3>CC-CA</h3>
+  <p>Inversor trifásico: carga RL e conectado à rede</p>
+</a>
+<a class="categoria-card" href="Microrredes/index.html">
+  <h3>Sistemas</h3>
+  <p>Microrredes: controle hierárquico, MPC e controle baseado em dados</p>
+</a>
+</div>
+```
+
+## Iniciação científica
+
+```{=html}
+<div class="categoria-grid">
+<a class="categoria-card" href="Buck/index.html">
+  <h3>Kauã dos Santos Oliveira</h3>
+  <p>Fonte CC controlada baseada em conversor Buck</p>
+</a>
+<a class="categoria-card" href="InversorTrifasico/CargaRL/index.html">
+  <h3>Alessandra Gabrielly Costa de Sousa</h3>
+  <p>Inversor trifásico com carga RL</p>
+</a>
+</div>
+```
+
+## Organização do repositório
+
+| Pasta | Conteúdo |
+|---|---|
+| `Buck/` | IC do conversor Buck: modelagem, fonte controlada, apresentações; `Ensaios/` e `Firmware/` |
+| `InversorTrifasico/CargaRL/` | IC do inversor com carga RL: plano, bancada, modelagem do VSI |
+| `InversorTrifasico/ConectadoRede/` | simulações MATLAB/Simulink, etapas `VSI01`–`VSI09` |
+| `InversorTrifasico/Ensaios/` | apresentações dos ensaios na placa (malha aberta, controle de corrente) |
+| `InversorTrifasico/Firmware/` | projetos do Code Composer Studio, mesma numeração das simulações |
+| `Microrredes/` | notas em slides sobre microrredes |
+
+## Relacionados
+
+* [ProjetosCCS](https://raphateixeira.github.io/ProjetosCCS/) — a placa LAUNCHXL-F28379D (primeiro projeto no CCS, ADC/DAC) e os ensaios com o filtro Sallen-Key.
+* [ControleCC2CC](https://raphateixeira.github.io/ControleCC2CC/) — IC sobre conversores Buck, Boost e Buck-Boost.
+* [DataDrivenControl](https://raphateixeira.github.io/DataDrivenControl/) — DeePC, Koopman, SINDy e aprendizagem por reforço.
+* [Conversores de Energia](https://raphateixeira.github.io/Notas/fundamentos/conversores-energia/) — fundamentos (Notas).

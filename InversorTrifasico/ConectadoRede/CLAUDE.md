@@ -4,16 +4,14 @@ Contexto para sessões futuras do Claude Code neste repositório.
 
 ## O que é
 
-`ControleVSI` (privado) reúne as simulações MATLAB/Simulink (R2024a, Specialized Power
-Systems) do VSI trifásico de dois níveis conectado à rede por filtro L. É um satélite do hub
-`raphateixeira.github.io`, mas **sem GitHub Pages** (repositório privado): o site Quarto é só
-local. Tema `TemaRTx.scss`, compartilhado e não versionado; não inventar paleta própria.
+Pasta `InversorTrifasico/ConectadoRede/` do `ConversoresPotencia` (ex-repositório `ControleVSI`) reúne as simulações MATLAB/Simulink (R2024a, Specialized Power
+Systems) do VSI trifásico de dois níveis conectado à rede por filtro L. Publicada no site do `ConversoresPotencia`. Tema `TemaRTx.scss`, compartilhado e não versionado; não inventar paleta própria.
 
 ## Organização
 
 - Uma pasta por etapa, `VSINN<Etapa>/` (sem hífen), com **a mesma numeração** de
-  `ProjetosCCS/ProjetosVSI/VSINN<Etapa>/` (firmware C2000). Etapa nova: criar a pasta, o
-  `index.qmd` e a entrada no menu "Etapas" do `_quarto.yml` e na tabela do `index.qmd`.
+  `InversorTrifasico/Firmware/VSINN<Etapa>/` (firmware C2000). Etapa nova: criar a pasta, o
+  `index.qmd` e a entrada em `project.render`/menu "Inversor Trifásico" do `_quarto.yml` da raiz e na tabela do `index.qmd`.
 - Cada `VSINN*/index.qmd` segue as seções: callout de status, objetivo/lei de controle,
   tabela **Arquivos**, **Como rodar** (se houver modelo), **Pendências**.
 - `Comum/Parametros.m` é o único arquivo de parâmetros; os modelos leem as variáveis do
@@ -24,6 +22,6 @@ local. Tema `TemaRTx.scss`, compartilhado e não versionado; não inventar palet
   em `VSI09ControlePotenciaRL/AgenteRL.m`).
 - Caches (`cache/`, `slprj/`, `*.slxc`) e PDFs de `Referencias/` são gitignorados.
 - `Notas/NotaNN<Tema>.qmd`: apresentações em slides no tema Nova (`format: nova-revealjs`,
-  extensão em `_extensions/nova/`, copiada de `GitRTx/NovaPresent`). Diagramas SVG em
+  extensão em `_extensions/nova/` da raiz, copiada de `GitRTx/NovaPresent`). Diagramas SVG em
   `Notas/anims/vsi.js`; figuras vêm de `VSI*/figuras/`. Nota nova: entrada no `index.qmd`
-  (seção "Notas") e no menu "Notas" do `_quarto.yml`.
+  (seção "Notas") e no menu "Inversor Trifásico" do `_quarto.yml` da raiz.

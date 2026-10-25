@@ -8,7 +8,7 @@ author:
 lang: pt
 format:
   revealjs:
-    theme: [simple, ../TemaRTx.scss]
+    theme: [simple, ../../TemaRTx.scss]
     self-contained: true
     transition: fade
     slide-number: true
@@ -243,7 +243,7 @@ $H_0(s)$ não estava errada — era $G_{vd}(s)/V_i$ (equivalentemente $G_{vg}(s)
 | Erickson & Maksimovic [@erickson2001] | Eletrônica de potência, referência clássica | Formalização do método SSA e do modelo de pequenos sinais |
 
 ::: {.note}
-TCC de Dilger (2018) disponível em [`referencias/TCC_Dilger_FonteChaveada_Buck_2018.pdf`](../referencias/TCC_Dilger_FonteChaveada_Buck_2018.pdf).
+TCC de Dilger (2018), UTFPR: consulte o repositório institucional da UTFPR (o PDF não é versionado aqui).
 :::
 
 ---

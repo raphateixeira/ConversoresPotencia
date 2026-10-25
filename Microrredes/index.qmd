@@ -13,7 +13,7 @@ Modelagem, controle e operação de microrredes com conversores de potência.
 [Prof. Dr. Raphael Teixeira]{.rtx-meta}
 
 ::: {.rtx-acoes}
-[GitHub](https://github.com/raphateixeira/MicroGrids){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+[GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/Microrredes){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
 :::
 :::
 
@@ -27,7 +27,7 @@ clássico e preditivo (MPC) e controle baseado em dados.
 O projeto está vinculado à linha de pesquisa *Identificação, Estimação e Controle
 Baseados em Dados e Inteligência Computacional Aplicados a Conversores de Potência e
 Acionamentos Elétricos* e reaproveita o trabalho em inversores trifásicos
-([ControleInversor3f](https://raphateixeira.github.io/ControleInversor3f/)), conversores
+([ControleInversor3f](../InversorTrifasico/CargaRL/index.qmd)), conversores
 CC-CC ([ControleCC2CC](https://raphateixeira.github.io/ControleCC2CC/)) e controle
 baseado em dados ([DataDrivenControl](https://raphateixeira.github.io/DataDrivenControl/)).
 

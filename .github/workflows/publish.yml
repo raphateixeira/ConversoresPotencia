@@ -13,6 +13,7 @@ jobs:
       id-token: write
     uses: raphateixeira/.github/.github/workflows/quarto-publish.yml@main
     with:
+      needs_python: true          # usa requirements.txt (notebook do Buck, script de empacotamento)
       needs_r: true
       r_packages: "knitr, rmarkdown, magick, pdftools"
       needs_magick_system_deps: true

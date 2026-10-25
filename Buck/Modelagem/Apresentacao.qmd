@@ -10,7 +10,7 @@ engine: jupyter
 jupyter: python3
 format:
   revealjs:
-    theme: [simple, ../TemaRTx.scss]
+    theme: [simple, ../../TemaRTx.scss]
     self-contained: true
     transition: fade
     slide-number: true

@@ -16,7 +16,7 @@ local (`quarto preview`).
 | `IniciarProjeto.m` | põe `Comum/` no path e manda os caches do Simulink para `cache/` |
 
 A numeração das etapas é a mesma dos projetos de firmware em
-[ProjetosCCS/ProjetosVSI](https://github.com/raphateixeira/ProjetosCCS/tree/main/ProjetosVSI).
+[ProjetosCCS/ProjetosVSI](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware).
 
 ## Uso
 

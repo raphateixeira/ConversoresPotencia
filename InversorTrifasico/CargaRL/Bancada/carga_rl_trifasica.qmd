@@ -6,7 +6,7 @@ author: "Prof. Dr. Raphael Teixeira"
 lang: pt
 format:
   revealjs:
-    theme: [simple, ../TemaRTx.scss]
+    theme: [simple, ../../../TemaRTx.scss]
     self-contained: true
     transition: fade
     slide-number: true

@@ -1,0 +1,59 @@
+# Quarto
+/.quarto/
+**/*.quarto_ipynb
+/_site/
+/_freeze/
+**/index_files/
+
+# Tema compartilhado: baixado de raphateixeira/.github no build (ver .github/scripts/atualizar-tema.sh na raiz de GitRTx)
+/TemaRTx.scss
+
+# Pacotes .zip dos projetos do CCS: gerados a cada renderização (scripts/empacota_projetos.py)
+/downloads/
+
+# PDFs de terceiros (direitos autorais): uso local, nunca versionar
+**/Referencias/*.pdf
+**/referencias/*.pdf
+Microrredes/*.pdf
+InversorTrifasico/Ensaios/ControleCorrenteVSI/docs/
+
+# MATLAB/Simulink: caches e temporários (regeneráveis)
+cache/
+slprj/
+*.slxc
+*.asv
+*.autosave
+*.slx.r20*
+*.mexmaci64
+*.mexmaca64
+*.mexa64
+*.mexw64
+savedAgents/
+AgenteFSC.mat
+
+# Code Composer Studio: workspace e artefatos de build
+.metadata/
+.launches/
+RemoteSystemsTempFiles/
+**/Debug/
+**/Release/
+**/CPU1_RAM/
+**/CPU1_FLASH/
+**/CPU2_RAM/
+**/CPU2_FLASH/
+**/*.obj
+**/*.out
+**/*.map
+**/*.pp
+**/*.d
+**/.clangd/
+**/.clangd
+**/.settings/org.eclipse.cdt.codan.core.prefs
+**/device/driverlib/
+**/targetConfigs/readme.txt
+
+# Sistema e ferramentas
+.DS_Store
+__pycache__/
+.claude/
+/.luarc.json

@@ -10,4 +10,4 @@ completos.
 
 As notas ficam todas em `Notas/`, organizadas em seções a partir do `index.qmd`.
 
-🔗 Site: https://raphateixeira.github.io/ControleInversor3f/
+🔗 Site: https://raphateixeira.github.io/ConversoresPotencia/InversorTrifasico/CargaRL/

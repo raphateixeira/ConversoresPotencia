@@ -13,7 +13,7 @@ Modelagem, identificação e controle clássico e preditivo de um inversor de fr
 [Alessandra Gabrielly Costa de Sousa · orientação: Prof. Dr. Raphael Teixeira]{.rtx-meta}
 
 ::: {.rtx-acoes}
-[Plano de trabalho](Plano/PlanoIC03.html){.rtx-btn .rtx-btn-primario} [GitHub](https://github.com/raphateixeira/ControleInversor3f){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
+[Plano de trabalho](Plano/PlanoIC03.html){.rtx-btn .rtx-btn-primario} [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/CargaRL){.rtx-btn} [Site do professor](https://raphateixeira.github.io){.rtx-btn}
 :::
 :::
 

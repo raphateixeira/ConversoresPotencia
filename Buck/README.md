@@ -7,4 +7,4 @@ Oliveira, orientação do Prof. Dr. Raphael Barros Teixeira (UFPA-CAMTUC-FEE).
 Ver [Plano de Trabalho](Plano/PlanoIC01.pdf) para objetivos, metodologia e
 cronograma completos.
 
-🔗 Site: https://raphateixeira.github.io/ControleBuck/
+🔗 Site: https://raphateixeira.github.io/ConversoresPotencia/Buck/

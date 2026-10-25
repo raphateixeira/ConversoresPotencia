@@ -8,7 +8,7 @@ date-modified: last-modified
 lang: pt
 format:
   revealjs:
-    theme: [simple, ../../TemaRTx.scss]
+    theme: [simple, ../../../TemaRTx.scss]
     self-contained: true
     transition: fade
     slide-number: true
@@ -19,7 +19,7 @@ format:
     html-math-method: mathjax
     code-line-numbers: false
     title-slide-attributes:
-      data-background-image: "../../imgs/ufpa-colorido.png"
+      data-background-image: "../../../imgs/ufpa-colorido.png"
       data-background-size: "5%"
       data-background-position: "top 3% center"
 ---

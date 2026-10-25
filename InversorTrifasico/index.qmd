@@ -1,0 +1,66 @@
+---
+pagetitle: "Inversor Trifásico"
+---
+
+::: {.rtx-hero}
+[Pesquisa · Eletrônica de potência]{.rtx-eyebrow}
+
+# Inversor Trifásico {.unnumbered .unlisted}
+
+Inversor fonte de tensão (VSI) trifásico de dois níveis na bancada LAUNCHXL-F28379D +
+BOOSTXL-3PHGANINV: modelagem, identificação e controle, primeiro com carga RL e depois conectado à
+rede.
+
+[Prof. Dr. Raphael Teixeira]{.rtx-meta}
+
+::: {.rtx-acoes}
+[Carga RL](CargaRL/index.qmd){.rtx-btn .rtx-btn-primario} [Conectado à rede](ConectadoRede/index.qmd){.rtx-btn} [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico){.rtx-btn}
+:::
+:::
+
+O mesmo inversor aparece em quatro frentes, que se alimentam: a **simulação** define a lei de
+controle, o **firmware** a implementa na placa, os **ensaios** comparam as medições com a teoria e a
+**iniciação científica** percorre o caminho completo com a carga RL.
+
+```{=html}
+<div class="categoria-grid">
+<a class="categoria-card" href="CargaRL/index.html">
+  <h3>Iniciação científica</h3>
+  <p>Carga RL: modelagem, identificação e controle de corrente</p>
+</a>
+<a class="categoria-card" href="ConectadoRede/index.html">
+  <h3>Simulação · VSI01–VSI09</h3>
+  <p>Conectado à rede: PI, MPC-FSC, ARX/RLS, MPC adaptativo e RL</p>
+</a>
+<a class="categoria-card" href="#ensaios-na-bancada">
+  <h3>Ensaios na bancada</h3>
+  <p>Malha aberta e controle de corrente na placa</p>
+</a>
+<a class="categoria-card" href="#firmware">
+  <h3>Firmware</h3>
+  <p>Projetos do Code Composer Studio com a mesma numeração das simulações</p>
+</a>
+</div>
+```
+
+## Ensaios na bancada
+
+Inversor GaN **BOOSTXL-3PHGANINV** (12 a 60 V, sensores de corrente INA240 em linha com shunt de
+5 mΩ) nos *headers* J1–J4 da LaunchPad, alimentando uma carga RL trifásica em estrela
+(R = 4,7 Ω e L = 1 mH por fase).
+
+* [Inversor Trifásico em Malha Aberta](Ensaios/InversorMalhaAberta/index.qmd) — primeiro experimento, para quem está começando: o que é um braço do inversor, como a placa gera o PWM (com animações), como encaixar as placas, onde ligar o osciloscópio e os valores esperados com a carga RL.
+* [Controle de Corrente do Inversor Trifásico](Ensaios/ControleCorrenteVSI/index.qmd) — hardware a partir da documentação da TI, conversões para A e V, proteção, sequência segura e o projeto `VSI02ControleCorrente` (níveis 1 → 2 → 3 → identificação, comandos pela UART).
+
+## Firmware
+
+Projetos para a LAUNCHXL-F28379D em `InversorTrifasico/Firmware/`, com a mesma numeração das etapas
+de [simulação](ConectadoRede/index.qmd): o firmware `VSI01` corresponde à simulação `VSI01`. Cada `.zip`
+traz os fontes e as configurações (descompactar, abrir a pasta no CCS com *File → Open Folder* e fazer
+*Clean* + *Rebuild*).
+
+| Projeto | Ensaio | Código |
+|---|---|---|
+| `VSI01MalhaAberta` | primeiro experimento, só o chaveamento: 50 % nas três fases, 25/50/75 % e senoidal (índice e frequência ajustáveis), PWM de 20 kHz, tempo morto de 100 ns; grava as tensões das fases (exportadas para CSV); roteiro em `TUTORIAL.md` | [.zip](../downloads/VSI01MalhaAberta.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAberta) |
+| `VSI01MalhaAbertaSemGravacao` | a mesma versão sem a gravação das tensões, testada na placa em 23/10/2026 | [.zip](../downloads/VSI01MalhaAbertaSemGravacao.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAbertaSemGravacao) |
+| `VSI02ControleCorrente` | corrente da carga RL: PWM de 50 %, malha aberta, PI em dq com desacoplamento e identificação (PRBS, degrau, multisseno); comandos e dados pela UART | [.zip](../downloads/VSI02ControleCorrente.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI02ControleCorrente) |

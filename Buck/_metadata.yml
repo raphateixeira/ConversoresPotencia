@@ -1,0 +1,3 @@
+# Bibliografia das páginas do Buck (antes no _quarto.yml do ControleBuck)
+bibliography: referencias.bib
+csl: apa.csl

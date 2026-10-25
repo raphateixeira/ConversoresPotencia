@@ -5,7 +5,7 @@ author: "Controle do Inversor Trifásico — UFPA/CAMTUC"
 lang: pt-BR
 format:
   html:
-    theme: [cosmo, ../TemaRTx.scss]
+    theme: [cosmo, ../../../TemaRTx.scss]
     toc: true
     toc-depth: 3
     html-math-method: mathjax

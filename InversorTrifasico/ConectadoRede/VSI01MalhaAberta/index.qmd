@@ -5,7 +5,7 @@ subtitle: "Senoides trifásicas sem realimentação, na bancada LAUNCHXL-F28379D
 
 ::: {.callout-note}
 **Simulação pronta** (2026-10-16). O modelo reproduz o firmware
-[ProjetosCCS/ProjetosVSI/VSI01MalhaAberta](https://github.com/raphateixeira/ProjetosCCS/tree/main/ProjetosVSI/VSI01MalhaAberta)
+[Firmware/VSI01MalhaAberta](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAberta)
 contagem a contagem do ePWM. **O firmware tem um erro que impede o inversor de chavear**
 (polaridade do enable, ver [Avaliação crítica](#avaliação-crítica)). Os parâmetros de operação
 foram redimensionados para a placa (ver [Dimensionamento](#dimensionamento)): $V_{cc}$ = 40 V,
@@ -168,7 +168,7 @@ médias por período de PWM; a fase de $i_a$ é medida em relação a $v_a^*$.
 
 ## Avaliação crítica
 
-### Firmware (ProjetosCCS/ProjetosVSI/VSI01MalhaAberta)
+### Firmware (InversorTrifasico/Firmware/VSI01MalhaAberta)
 
 1. **Bloqueante: polaridade do enable invertida.** O guia SLUUBP1A diz que o enable do PWM do
    BOOSTXL-3PHGANINV é ativo em nível baixo. O exemplo da TI para F2837x com esta placa

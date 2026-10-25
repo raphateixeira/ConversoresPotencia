@@ -8,7 +8,7 @@ date-modified: last-modified
 lang: pt
 format:
   revealjs:
-    theme: [simple, ../../TemaRTx.scss]
+    theme: [simple, ../../../TemaRTx.scss]
     self-contained: true
     transition: fade
     slide-number: true
@@ -19,7 +19,7 @@ format:
     html-math-method: mathjax
     code-line-numbers: false
     title-slide-attributes:
-      data-background-image: "../../imgs/ufpa-colorido.png"
+      data-background-image: "../../../imgs/ufpa-colorido.png"
       data-background-size: "5%"
       data-background-position: "top 3% center"
 ---
@@ -159,7 +159,7 @@ AtualizaPWM()                a cada 50 µs (contador = 0)
 └─ LeTensoes()               lê as tensões e grava, se pedido
 ```
 
-`ProjetosVSI/VSI01MalhaAberta/main.c`: cerca de 300 linhas, com comentários em cada passo.
+`InversorTrifasico/Firmware/VSI01MalhaAberta/main.c`: cerca de 300 linhas, com comentários em cada passo.
 
 ## Variáveis que você pode mudar
 
@@ -247,7 +247,7 @@ metade de cima, perto da USB, e não J5–J8.]{style="font-size:0.6em"}
 
 ## No Code Composer Studio (Mac)
 
-1. *File → Open Folder*: a pasta `ProjetosVSI` (ou a pasta descompactada do `.zip`);
+1. *File → Open Folder*: a pasta `InversorTrifasico/Firmware` (ou a pasta descompactada do `.zip`);
 2. Selecionar o projeto `VSI01MalhaAberta` e compilar (ícone do martelo, *Build*);
 3. Ligar a LaunchPad na USB e iniciar a depuração (ícone do inseto, *Debug*): o programa é
    gravado e fica parado no início do `main`;

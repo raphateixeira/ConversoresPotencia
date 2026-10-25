@@ -65,7 +65,7 @@ $f_{PWM}$ = 20 kHz, medição da placa, carga) ficam na struct `Bancada` do mesm
 ## Etapas
 
 Cada etapa é uma pasta `VSINN<Etapa>/`. A numeração é a mesma dos projetos de firmware em
-[ProjetosCCS/ProjetosVSI](https://github.com/raphateixeira/ProjetosCCS/tree/main/ProjetosVSI):
+[Firmware](../index.qmd#firmware):
 a simulação `VSI01` corresponde ao firmware `VSI01` na LAUNCHXL-F28379D.
 
 | Etapa | Estratégia | Status |
@@ -106,10 +106,10 @@ Depois de editar um bloco MATLAB Function no Simulink, rode
 `python3 scripts/extrai_blocos.py` para atualizar a cópia em `VSINN*/blocos/`. Essa cópia
 em texto deixa as mudanças da lei de controle visíveis no `git diff`.
 
-## Repositórios relacionados
+## Relacionados
 
-- [ProjetosCCS](https://github.com/raphateixeira/ProjetosCCS): firmware C2000 das mesmas etapas (`ProjetosVSI/`).
-- [ControleInversor3f](https://github.com/raphateixeira/ControleInversor3f): IC sobre o inversor trifásico com carga RL (modelagem do VSI na Nota 01).
+- [Firmware](../index.qmd#firmware): projetos C2000 das mesmas etapas (`InversorTrifasico/Firmware/`).
+- [Carga RL](../CargaRL/index.qmd): IC sobre o inversor trifásico com carga RL (modelagem do VSI na Nota 01).
 - [DataDrivenControl](https://github.com/raphateixeira/DataDrivenControl): notas de Koopman, DeePC e RL; os estudos de Koopman/EDMD ficam em `Codigos/Koopman/`.
 - [MScOseias](https://github.com/raphateixeira/MScOseias): dissertação sobre MPC-FSC de VSC conectado à rede.
 

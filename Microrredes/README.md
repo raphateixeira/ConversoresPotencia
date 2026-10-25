@@ -4,7 +4,7 @@ Repositório de pesquisa sobre microrredes (*microgrids*): arquiteturas CA/CC/h�
 conversores formadores e seguidores de rede, controle hierárquico (*droop*, secundário,
 terciário), MPC e controle baseado em dados.
 
-Site: <https://raphateixeira.github.io/MicroGrids/> (publicado pelo workflow
+Site: <https://raphateixeira.github.io/ConversoresPotencia/Microrredes/> (publicado pelo workflow
 reutilizável de `raphateixeira/.github`).
 
 ## Estrutura

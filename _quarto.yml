@@ -1,0 +1,120 @@
+project:
+  type: website
+  output-dir: _site
+  pre-render: scripts/empacota_projetos.py   # downloads/<Projeto>.zip de cada projeto do CCS (*/Firmware/*)
+  resources:
+    - downloads/*.zip
+  render:
+    - index.qmd
+    # Conversor Buck (ex-ControleBuck + ensaios/firmware do ProjetosCCS)
+    - Buck/index.qmd
+    - Buck/Plano/PlanoIC01.qmd
+    - Buck/Modelagem/ModelagemBuck.ipynb
+    - Buck/Modelagem/Apresentacao.qmd
+    - Buck/Apresentacao/Apresentacao.qmd
+    - Buck/FonteControlada/Apresentacao.qmd
+    - Buck/Ensaios/*/index.qmd
+    # Inversor trifásico (ex-ControleInversor3f, ex-ControleVSI + ensaios/firmware do ProjetosCCS)
+    - InversorTrifasico/index.qmd
+    - InversorTrifasico/CargaRL/index.qmd
+    - InversorTrifasico/CargaRL/Plano/PlanoIC03.qmd
+    - InversorTrifasico/CargaRL/Notas/Nota01ModelagemVSI.qmd
+    - InversorTrifasico/CargaRL/Bancada/carga_rl_trifasica.qmd
+    - InversorTrifasico/ConectadoRede/index.qmd
+    - InversorTrifasico/ConectadoRede/VSI*/index.qmd
+    - InversorTrifasico/ConectadoRede/Notas/Nota*.qmd
+    - InversorTrifasico/Ensaios/*/index.qmd
+    # Microrredes (ex-MicroGrids)
+    - Microrredes/index.qmd
+    - Microrredes/Notas/Nota*.qmd
+
+execute:
+  freeze: auto
+
+website:
+  title: "Conversores de Potência"
+  description: "Modelagem, identificação e controle de conversores de potência — Prof. Dr. Raphael Teixeira (UFPA-CAMTUC-FEE)"
+  site-url: https://raphateixeira.github.io/ConversoresPotencia/
+  repo-url: https://github.com/raphateixeira/ConversoresPotencia
+  reader-mode: true
+  navbar:
+    background: "#FFFFFF"   # navbar branca (camada "Site" do TemaRTx.scss)
+    foreground: "#0F1B33"
+    title: "Conversores de Potência"
+    left:
+      - text: "Início"
+        href: https://raphateixeira.github.io/index.html
+      - text: "Conversores de Potência"
+        href: index.qmd
+    right:
+      - text: "Conversor Buck"
+        menu:
+          - text: "Visão geral"
+            href: Buck/index.qmd
+          - text: "Plano de trabalho (IC)"
+            href: Buck/Plano/PlanoIC01.qmd
+          - text: "---"
+          - text: "Modelagem simbólica (notebook)"
+            href: Buck/Modelagem/ModelagemBuck.ipynb
+          - text: "Apresentação — Modelagem simbólica"
+            href: Buck/Modelagem/Apresentacao.qmd
+          - text: "Apresentação — Modelagem e pequenos sinais"
+            href: Buck/Apresentacao/Apresentacao.qmd
+          - text: "Apresentação — Projeto da fonte CC controlada"
+            href: Buck/FonteControlada/Apresentacao.qmd
+          - text: "---"
+          - text: "Identificação do conversor (ensaio)"
+            href: Buck/Ensaios/IdentificacaoBuckPRBS/index.qmd
+          - text: "Firmware"
+            href: Buck/index.qmd#firmware-code-composer-studio
+      - text: "Inversor Trifásico"
+        menu:
+          - text: "Visão geral"
+            href: InversorTrifasico/index.qmd
+          - text: "---"
+          - text: "Carga RL (IC)"
+          - text: "Visão geral da IC"
+            href: InversorTrifasico/CargaRL/index.qmd
+          - text: "Plano de trabalho"
+            href: InversorTrifasico/CargaRL/Plano/PlanoIC03.qmd
+          - text: "Nota 01 — Modelagem do VSI"
+            href: InversorTrifasico/CargaRL/Notas/Nota01ModelagemVSI.qmd
+          - text: "Carga RL da bancada"
+            href: InversorTrifasico/CargaRL/Bancada/carga_rl_trifasica.qmd
+          - text: "---"
+          - text: "Conectado à rede (simulação)"
+          - text: "Etapas VSI01–VSI09"
+            href: InversorTrifasico/ConectadoRede/index.qmd
+          - text: "Nota 01 — Malha aberta na bancada"
+            href: InversorTrifasico/ConectadoRede/Notas/Nota01MalhaAbertaBancada.qmd
+          - text: "---"
+          - text: "Ensaios e firmware"
+          - text: "Inversor em malha aberta"
+            href: InversorTrifasico/Ensaios/InversorMalhaAberta/index.qmd
+          - text: "Controle de corrente"
+            href: InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd
+          - text: "Firmware"
+            href: InversorTrifasico/index.qmd#firmware
+      - text: "Microrredes"
+        menu:
+          - text: "Visão geral"
+            href: Microrredes/index.qmd
+          - text: "Nota 01 — Introdução às microrredes"
+            href: Microrredes/Notas/Nota01IntroducaoMicrorredes.qmd
+          - text: "Nota 02 — Controle descentralizado e hierárquico"
+            href: Microrredes/Notas/Nota02ControleDescentralizadoHierarquico.qmd
+      - icon: github
+        href: https://github.com/raphateixeira/ConversoresPotencia
+        aria-label: Repositório no GitHub
+  page-footer:
+    border: false
+    center: "©2026 Prof. Dr. Raphael Teixeira — UFPA-CAMTUC-FEE"
+
+format:
+  html:
+    theme: [cosmo, TemaRTx.scss]
+    lang: pt-BR
+    toc: true
+    toc-depth: 3
+    code-copy: true
+    fig-align: center
