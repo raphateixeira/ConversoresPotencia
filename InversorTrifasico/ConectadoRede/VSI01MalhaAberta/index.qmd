@@ -46,11 +46,11 @@ Os limites vêm da placa (guia SLUUBP1A, `user_mtr1.h` do SDK) e do microcontrol
 | $d$ | ≥ 0,08 (INA240), ≤ 0,95 (bootstrap do lado alto) | **[0,10; 0,90]** | com $V_p$ = 16 V; máximo de 16,8 V em SPWM, 19,4 V com injeção de sequência zero |
 | $V_p$ | linear: $V_{cc}/2$ = 20 V (SPWM), $V_{cc}/\sqrt{3}$ = 23,1 V (SVPWM) | **16 V** ($m$ = 0,8) | respeita a faixa de $d$ e deixa margem para malha fechada |
 
-**Carga (10 Ω + 5 mH).** É segura e suficiente para o VSI01–VSI03: 1,56 A de pico, 36 W
+**Carga (10 Ω + 5 mH).** É segura e suficiente para o VSI01–VSI05: 1,56 A de pico, 36 W
 no total, 12 W por resistor (usar resistores de pelo menos 25 W), ondulação de ~46 mA pp e 192
 LSB de corrente no ADC. A dinâmica, porém, é pouco indutiva: $\tau = L/R$ = 0,5 ms e a corrente
 atrasa só 10,7° da tensão, e o acoplamento $dq$ ($\omega L$ = 1,9 Ω contra 10 Ω) é fraco. Para
-ver melhor a dinâmica e o desacoplamento no PI em $dq$ (VSI02), é melhor uma carga mais indutiva:
+ver melhor a dinâmica e o desacoplamento no PI em $dq$ (VSI03), é melhor uma carga mais indutiva:
 
 | R | L | $\tau$ | fase | $\lvert I\rvert$ pico | P por resistor | ondulação |
 |---|---|---|---|---|---|---|
@@ -80,7 +80,7 @@ moderada.
 | `Integral v` | média exata das tensões em cada período de PWM (para as métricas) |
 
 Os parâmetros ficam em `Comum/Parametros.m`, na struct `Bancada` (separada das variáveis do
-VSI conectado à rede de 350 V, usadas pelo VSI05–09).
+VSI conectado à rede de 350 V, usadas pelo VSI06–09).
 
 ## Arquivos
 
@@ -202,7 +202,7 @@ médias por período de PWM; a fase de $i_a$ é medida em relação a $v_a^*$.
    de 0,08. Limitar a [0,08; 0,95] (`Bancada.dMin`, `Bancada.dMax`). Com $V_p$ = 16 V,
    $d \in [0{,}10; 0{,}90]$.
 8. **Atraso de $1{,}5\,T_s$** (sombra carregada em `CTR = 0`): irrelevante em malha aberta, mas
-   tem de entrar no projeto do PI (VSI02) e na compensação de atraso do MPC-FSC (VSI04/05). O
+   tem de entrar no projeto do PI (VSI03) e na compensação de atraso do MPC-FSC (VSI04/05). O
    modelo já o reproduz.
 9. **Jumper J6 do BOOSTXL:** remover quando a LaunchPad for alimentada pela USB (aviso do guia).
    A saída de corrente tem polaridade invertida (sinal −1 no SDK).

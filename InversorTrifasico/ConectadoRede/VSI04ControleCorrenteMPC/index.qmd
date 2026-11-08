@@ -17,7 +17,7 @@ $$
 g = |i_\alpha^* - i_\alpha(k+1)| + |i_\beta^* - i_\beta(k+1)| .
 $$
 
-O código pode partir de `VSI05ControlePotenciaMPC/blocos/FSC.m`, trocando a função
+O código pode partir de `VSI06ControlePotenciaMPC/blocos/FSC.m`, trocando a função
 custo de potência pela de corrente.
 
 ## Arquivos

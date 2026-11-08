@@ -437,7 +437,7 @@ corrente com valores bem menores, desligue e confira a montagem.
 ## Próximo passo
 
 - Com o chaveamento conferido, o experimento seguinte mede as correntes no próprio
-  microcontrolador e controla a corrente da carga: projeto `VSI02ControleCorrente`,
+  microcontrolador e controla a corrente da carga: projeto `VSI03ControlePI`,
   apresentação [Controle de Corrente do Inversor Trifásico](../ControleCorrenteVSI/index.html);
 - Documentos da TI usados aqui: guia do BOOSTXL-3PhGaNInv (SLUUBP1A), guia da LaunchPad
   (SPRUI77C) e o projeto de referência TIDA-00909 (TIDUCE7B).

@@ -1,6 +1,6 @@
 ---
 title: "Controle de Corrente do Inversor Trifásico"
-subtitle: "LAUNCHXL-F28379D + BOOSTXL-3PHGANINV com carga RL: hardware, medidas, proteção e o projeto VSI02ControleCorrente"
+subtitle: "LAUNCHXL-F28379D + BOOSTXL-3PHGANINV com carga RL: hardware, medidas, proteção e o projeto VSI03ControlePI"
 institute: "Universidade Federal do Pará"
 author: "Prof. Dr. Raphael Teixeira"
 date: "2026-10-19"
@@ -194,7 +194,7 @@ O SDK calcula o DAC do CMPSS como $2048 \pm 2048\,I_{lim}/13{,}5$:
 - Com a referência de 3,3 V, 2048 = 1,65 V: o ponto médio está **certo**;
 - A inclinação 2048/13,5 equivale a 0,122 V/A, mas o sensor dá 0,1 V/A: o limite de 9 A do
   SDK dispara, na verdade, perto de **11 A**;
-- No VSI02, o limiar fica em torno do offset **medido** de cada fase:
+- No VSI03, o limiar fica em torno do offset **medido** de cada fase:
 
 $$
 N_{DAC} = \frac{4096}{3{,}3}\left(\frac{3{,}0\,N_0}{4096} \pm 0{,}1\,I_{lim}\right)
@@ -204,7 +204,7 @@ $$
 
 ## Tempo morto
 
-- O VSI02 usa 0,5 µs (o mesmo valor do SDK), o VSI01 usa 100 ns e o TIDA-00909 opera o
+- O VSI03 usa 0,5 µs (o mesmo valor do SDK), o VSI01 usa 100 ns e o TIDA-00909 opera o
   LMG5200 com só 12,5 ns;
 - Durante o tempo morto, a tensão do braço depende do sinal da corrente: o erro médio é
 
@@ -217,7 +217,7 @@ $$
 - Reduzir $t_m$ é um ensaio a fazer depois, com o osciloscópio (o LMG5200 tem atraso de
   propagação de 29,5 ns).
 
-## O projeto VSI02ControleCorrente
+## O projeto VSI03ControlePI
 
 | Arquivo | Conteúdo |
 |---|---|

@@ -176,7 +176,7 @@ Escolha: $V_p$ = [16 V]{.hl} ($m$ = 0,8), com $d \in [0{,}10;\ 0{,}90]$.
 :::
 
 ::: {.callout-important title="Herança para as próximas etapas" .fragment}
-Esse atraso entra no projeto do PI (VSI02) e na compensação de atraso do MPC (VSI04/05).
+Esse atraso entra no projeto do PI (VSI03) e na compensação de atraso do MPC (VSI04/05).
 :::
 
 ## O tempo morto
@@ -369,14 +369,14 @@ Malha aberta validada contra a bancada
 ::: {.arrow}
 :::
 ::: {.panel}
-**VSI02**
+**VSI03**
 
 PI de corrente em $dq$ com o atraso de $1{,}5\,T_s$
 :::
 ::: {.arrow}
 :::
 ::: {.panel}
-**VSI03**
+**VSI05**
 
 Potência $P$/$Q$ sobre o PI de corrente
 :::

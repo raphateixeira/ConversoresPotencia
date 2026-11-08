@@ -9,7 +9,7 @@ subtitle: "Controlador polinomial RST projetado sobre o modelo ARX identificado"
 
 ## Objetivo
 
-Usar o modelo ARX estimado na [VSI06](../VSI06IdentificacaoARX/index.qmd) para projetar
+Usar o modelo ARX estimado na [VSI02](../VSI02IdentificacaoARX/index.qmd) para projetar
 um controlador RST por alocação de polos,
 
 $$

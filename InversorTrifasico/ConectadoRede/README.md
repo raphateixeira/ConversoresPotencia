@@ -23,7 +23,7 @@ A numeração das etapas é a mesma dos projetos de firmware em
 ```matlab
 IniciarProjeto
 Parametros
-open_system('VSI05ControlePotenciaMPC/MPCFSC.slx')
+open_system('VSI06ControlePotenciaMPC/MPCFSC.slx')
 ```
 
 Depois de editar um bloco MATLAB Function: `python3 scripts/extrai_blocos.py`.

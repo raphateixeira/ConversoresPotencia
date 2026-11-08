@@ -14,6 +14,9 @@ arquivados com redirecionamento. `ControleCC2CC` ficou de fora (IC com colaborad
 - Bibliografia do Buck em `Buck/_metadata.yml`; as notas do ConectadoRede e do Microrredes declaram a sua.
 - Firmware: `Buck/Firmware/` e `InversorTrifasico/Firmware/` são workspaces do CCS (`.theia/`); a numeração
   `VSINN` do firmware é a mesma das simulações em `InversorTrifasico/ConectadoRede/`.
+  Sequência (renumerada em 2026-11-08): VSI01 malha aberta → VSI02 identificação ARX → VSI03 controle PI →
+  VSI04 controle FCS (MPC de corrente) → VSI05 potência PI → VSI06 potência MPC → VSI07–09 iguais. Antes:
+  VSI02 = ControleCorrente(PI), VSI03 = PotênciaPI, VSI05 = PotênciaMPC, VSI06 = IdentificaçãoARX.
 - Detalhes das simulações: `InversorTrifasico/ConectadoRede/CLAUDE.md`.
 - Visual: cabeçalho `.rtx-hero` e cartões `.categoria-card` do TemaRTx (não inventar paleta).
 
@@ -39,7 +42,7 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   EPWM1 no zero, lidos na ISR depois do ADCINT1; `grava` = 1 → 2 (gravando) → 0 enche
   `tensaoA/B/C` (2000 floats, `ramgs0..2`), exportados da Watch para CSV e lidos por
   `InversorTrifasico/Ensaios/InversorMalhaAberta/analise/plota_tensoes.py`. Com o ADC, o `.text` do `main.obj`
-  passou de 2 K palavras: `--gen_func_subsections=on` no `.cproject` (como no VSI02).
+  passou de 2 K palavras: `--gen_func_subsections=on` no `.cproject` (como no VSI03).
   `VSI01MalhaAbertaSemGravacao/` = cópia da versão **testada na placa** em 2026-10-23 (modos
   0–3, sem ADC; código de máquina do `main.obj` idêntico ao build que funcionou). Na versão com
   ADC, as funções do PWM (`ConfiguraPinos`, `ConfiguraModuloPWM`, `EscreveRazao`) têm código de
@@ -50,7 +53,40 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   inclui o mapa dos pinos (`imgs/pinos_launchpad.png`, serigrafia da SPRUI77C fig. 18 girada) e
   um filtro RC de 10 kΩ/100 nF (corte de 159 Hz) para ver a senoide do modo 2, nos pinos J4 ou
   nos bornes VA/VB/VC.
-  `VSI02ControleCorrente/`: carga RL (4,7 Ω, 1 mH, estrela); estrutura pedida pelo professor
+  `VSI01MalhaAbertaCargaRL/` (2026-11-04, **testado na placa**): o `main.c` do VSI01MalhaAberta com um
+  modo só (senoides, `AMPLITUDE` = 0,4 fixa, sem `indice`), carga 25 Ω/10 mH, Vdc = 20 V. ADC: SOC0 =
+  tensão (ADCIN3, como no VSI01), SOC1 = corrente (ADCIN2), INT1 no fim do SOC1 da ADCA; zero dos INA240
+  por média móvel enquanto `habilita` = 0; `grava` enche `tensaoA/B/C` e `correnteA/B/C` (`ramgs0..5`).
+  **Sem proteção por software**: a de 1 A desligava no 1º período (iC lia −1,2 A falsos ao ligar), por
+  isso o inversor parecia não chavear. Mapeamento dos pinos conferido nos `.syscfg.json` do MotorControl
+  SDK (BOOSTXL-3PhGaNInv e LAUNCHXL_F28379D). Corrente medida a 20 V com a carga: 0,32 A de pico.
+  `VSI02IdentificacaoARX/` (2026-11-05, ainda não testado na placa): base `VSI01MalhaAbertaCargaRL`;
+  v_dq = (tensaoD0, tensaoQ0) + amplitudePRBS·PRBS (9 bits, **polinômios diferentes** em d e q:
+  x^9+x^5+1 e x^9+x^4+1, |xcorr| < 0,09; mesmo polinômio com sementes diferentes repete a sequência
+  com atraso de 382 bits), `eixoPRBS` 0 dq / 1 d / 2 q, `amostrasPorBit` = 4 → N = 2044 = um período;
+  `grava` = 1 reinicia a PRBS. Park inversa (invariante em amplitude, vA = vd cos θ), d = 0,5 + v/Vdc
+  (Vdc filtrado). Corrente combinada no firmware (zero se d ≥ 0,5, topo se d < 0,5, offsets próprios).
+  Grava 12 vetores (`ramgs0..6`, `ramgs8..12`). Padrão 5 V ± 3 V (|v| ≤ 8,5 V < 0,45 Vdc); simulação
+  do ensaio: sem ruído recupera polo 0,8825, com 10 mA o LS dá 0,86 (viés de erro de equação).
+  Ensaio real (2026-11-06, 20 V, 1 período, `Dados3FRL/Identificacao/`): melhor ARX = MIMO 1,2,2 sem
+  tensão cruzada, IV (R ≈ 26 Ω, L ≈ 10 mH, ajuste 85 % = teto do ruído; atraso 2 + fração pela mistura
+  zero/topo). **Média síncrona** (2026-11-06): `periodosMedia` (padrão 8) descarta o 1º período e
+  acumula id/iq nos seguintes; divisão no laço principal (`grava` = 3), não na ISR. Simulação: 40 V
+  (10 ± 6 V) + 8 períodos → ajuste ≈ 96 %. Padrão `periodosMedia` = 16 (fonte só até 20 V).
+  Desde 2026-11-08 grava numa matriz só, `Dados3F[12][2044]` (linhas iA iB iC dA dB dC Vdc θ vd vq id iq),
+  seção `Dados3F` na faixa `RAMGS0_12` (RAMGS0–12 fundidos nos dois `.cmd`; 49056 de 53248 palavras);
+  exporta-se `Dados3F` no Graph (24528 floats) ou Save Memory; `analise/organiza_dados3f.py` e
+  `identifica.le_dados3f()` leem .csv/.bin/.dat.
+  Ensaio de 2026-11-08 (`Dados3FRL/Dados01A.csv`): o Graph do CCS exporta **no máximo 16383 valores**
+  (perdeu vd, vq, id, iq); soma iA+iB+iC = 0,2 A e topo 25 mA abaixo do zero (zero mal medido).
+  Por isso: linhas reordenadas (vd vq id iq iA iB iC θ | Vdc dA dB dC; exportar 16352 = 8 linhas;
+  `CANAIS_ANTIGOS` lê o Dados01A) e **calibração chaveando** ao habilitar (110 ms a 50 %, `calibrando`
+  = 1, somas inteiras de 2000 amostras; `grava` espera o fim). `identifica.corrige_salto()` corrige o
+  salto pela soma das correntes (sem modelo).
+  Desde 2026-11-08 a apresentação `IdentificacaoARXDados` usa **só mínimos quadrados** (com a média de 16
+  períodos LS = IV). A variável instrumental fica guardada para uso futuro (ruído maior, um período só:
+  LS dá R ≈ 31 Ω): `estima(..., "IV")` e `METODO`/`METODOS` em `identifica.py`; a apresentação de simulação a mostra.
+  `VSI03ControlePI/`: carga RL (4,7 Ω, 1 mH, estrela); estrutura pedida pelo professor
   (`main.c`, `hal.c/h`, `controle.c/h`, `tarefas.c/h`, não `placa.c`). ISR = ADCA INT1 (SOCA do
   EPWM1 no zero, a cada `nControle` períodos); correntes ADCINC2/B2/A2 (iA/iB/iC), vA/vB/vC em
   C3/B3/A3, Vdc em ADCIN14 (ADCD); i = −7,32 mA·(N − N0) (REF5030 de 3,0 V, INA240 0,1 V/A,

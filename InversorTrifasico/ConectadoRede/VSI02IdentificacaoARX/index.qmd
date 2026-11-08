@@ -1,0 +1,47 @@
+---
+title: "VSI02 — Identificação ARX (RLS)"
+subtitle: "Estimação recursiva dos modelos ARX das correntes αβ"
+---
+
+::: {.callout-tip}
+**Simulação pronta.** `RLS_LIT.slx` (passo fixo 10 μs, 0,6 s) e o script offline `RLSARX.m`.
+:::
+
+## Estrutura do modelo
+
+Cada componente de corrente é modelada como ARX com as duas tensões como entradas:
+
+$$
+A(q)\,i_\alpha(k) = B(q)\,v_\alpha(k) + C(q)\,v_\beta(k) + e(k), \qquad
+\boldsymbol\theta = [a_1 \dots a_{n_A}\;\; b_1 \dots b_{n_B}\;\; c_1 \dots c_{n_B}]^\top,
+$$
+
+(idem para $i_\beta$), estimada pelo RLS com fator de esquecimento $\lambda$:
+
+$$
+\mathbf{K} = \frac{\mathbf{P}\boldsymbol\varphi}{\lambda + \boldsymbol\varphi^\top\mathbf{P}\boldsymbol\varphi}, \quad
+\hat{\boldsymbol\theta} \leftarrow \hat{\boldsymbol\theta} + \mathbf{K}\,(i - \boldsymbol\varphi^\top\hat{\boldsymbol\theta}), \quad
+\mathbf{P} \leftarrow \frac{\mathbf{P} - \mathbf{K}\boldsymbol\varphi^\top\mathbf{P}}{\lambda}.
+$$
+
+| | `RLS_LIT.slx` (bloco `RLS`) | `RLSARX.m` |
+|---|---|---|
+| ordens | $n_A = 3$, $n_B = 2$ (7 parâmetros) | $n_A = n_B = 2$ (6 parâmetros) |
+| $\lambda$ | 0,99 | 0,98 |
+| $\mathbf{P}_0$ | $10^8\,\mathbf{I}$ | $10^3\,\mathbf{I}$ |
+| dados | senoides em filtros discretos (planta de referência `thetaAref`/`thetaBref`) | ARX sintético com ruído branco, $N = 100$ |
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| `RLS_LIT.slx` | RLS em linha no Simulink, comparando $\hat{\boldsymbol\theta}$ com os parâmetros de referência |
+| `blocos/RLS.m` | código do bloco MATLAB Function (extraído, somente leitura) |
+| `RLSARX.m` | versão preliminar offline, com gráficos da convergência dos coeficientes |
+
+## Pendências
+
+- Unificar as ordens ($n_A$, $n_B$) e a convenção de sinal dos dois códigos. Hoje o
+  comentário de `RLSARX.m` usa $A(q) = 1 - a_1q^{-1} - \dots$, enquanto o regressor usa
+  $-i(k-1)$.
+- Identificar a partir de dados da planta chaveada (modelo da VSI06) e não só de sinais sintéticos.

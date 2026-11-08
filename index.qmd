@@ -83,7 +83,11 @@ clássico e preditivo do inversor alimentando uma carga RL trifásica equilibrad
 Carga RL trifásica em estrela (R = 4,7 Ω e L = 1 mH por fase).
 
 * [Inversor trifásico em malha aberta](InversorTrifasico/Ensaios/InversorMalhaAberta/index.qmd) — primeiro experimento, para quem está começando: braço do inversor, PWM na placa (com animações), montagem das placas, osciloscópio e valores esperados.
-* [Controle de corrente do inversor trifásico](InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd) — hardware a partir da documentação da TI, conversões para A e V, proteção, sequência segura e o projeto `VSI02ControleCorrente`.
+* [Inversor em malha aberta com carga RL](InversorTrifasico/Ensaios/MalhaAbertaCargaRL/index.qmd) — tensões e correntes das três fases medidas pela LaunchPad (carga de 25 Ω e 10 mH, 20 V): medido × esperado, plano αβ e o projeto `VSI01MalhaAbertaCargaRL`.
+* [O código do inversor em malha aberta](InversorTrifasico/Ensaios/CodigoMalhaAbertaCargaRL/index.qmd) — o `main.c` do `VSI01MalhaAbertaCargaRL` parte por parte, para quem está aprendendo C na LaunchPad: tipos, `volatile`, PWM, interrupção, ADC e gravação.
+* [Identificação ARX: simulação do ensaio](InversorTrifasico/Ensaios/IdentificacaoARXSimulacao/index.qmd) — PRBS em v~d~ e v~q~ (projeto `VSI02IdentificacaoARX`) simulada com a lógica do firmware: correntes esperadas, ARX em dq, viés do LS e variável instrumental.
+* [Identificação ARX: dados reais](InversorTrifasico/Ensaios/IdentificacaoARXDados/index.qmd) — modelagem abc → dq e discretização, PRBS e correlação, estruturas SISO e MIMO por mínimos quadrados, o modelo escolhido (R ≈ 26 Ω, L ≈ 10 mH) e o projeto inicial do PI.
+* [Controle de corrente do inversor trifásico](InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd) — hardware a partir da documentação da TI, conversões para A e V, proteção, sequência segura e o projeto `VSI03ControlePI`.
 
 ### Firmware {#firmware-inversor}
 
@@ -93,7 +97,9 @@ Projetos do Code Composer Studio em `InversorTrifasico/Firmware/`.
 |---|---|---|
 | `VSI01MalhaAberta` | só o chaveamento: 50 % nas três fases, 25/50/75 % e senoidal, PWM de 20 kHz, tempo morto de 100 ns; grava as tensões das fases; roteiro em `TUTORIAL.md` | [.zip](downloads/VSI01MalhaAberta.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAberta) |
 | `VSI01MalhaAbertaSemGravacao` | a mesma versão sem a gravação das tensões, testada na placa em 23/10/2026 | [.zip](downloads/VSI01MalhaAbertaSemGravacao.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAbertaSemGravacao) |
-| `VSI02ControleCorrente` | corrente da carga RL: PWM de 50 %, malha aberta, PI em dq com desacoplamento e identificação (PRBS, degrau, multisseno); comandos pela UART | [.zip](downloads/VSI02ControleCorrente.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI02ControleCorrente) |
+| `VSI01MalhaAbertaCargaRL` | malha aberta com carga RL (25 Ω, 10 mH): senoides nas três fases, grava tensões, correntes (zero e topo do contador), razões e barramento; testado na placa | [.zip](downloads/VSI01MalhaAbertaCargaRL.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAbertaCargaRL) |
+| `VSI02IdentificacaoARX` | identificação: PRBS em v~d~ e v~q~, média síncrona de 16 períodos, zero dos sensores medido chaveando; grava a matriz `Dados3F` | [.zip](downloads/VSI02IdentificacaoARX.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI02IdentificacaoARX) |
+| `VSI03ControlePI` | corrente da carga RL: PWM de 50 %, malha aberta, PI em dq com desacoplamento e identificação (PRBS, degrau, multisseno); comandos pela UART | [.zip](downloads/VSI03ControlePI.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI03ControlePI) |
 
 ### Conectado à rede — simulação {#conectado-rede}
 
@@ -113,11 +119,11 @@ $L_s$ = 10 mH; os da bancada (40 V, 20 kHz) ficam na struct `Bancada`.
 | Etapa | Estratégia | Status |
 |---|---|---|
 | [VSI01 — Malha aberta](InversorTrifasico/ConectadoRede/VSI01MalhaAberta/index.qmd) | senoides trifásicas sem realimentação (bancada) | **simulação pronta** (firmware precisa de correção) |
-| [VSI02 — Controle de corrente PI](InversorTrifasico/ConectadoRede/VSI02ControleCorrentePI/index.qmd) | PI em $dq$ | planejada |
-| [VSI03 — Controle de potência PI](InversorTrifasico/ConectadoRede/VSI03ControlePotenciaPI/index.qmd) | malhas de $P$/$Q$ externas ao PI de corrente | planejada |
+| [VSI02 — Identificação ARX (RLS)](InversorTrifasico/ConectadoRede/VSI02IdentificacaoARX/index.qmd) | ARX de $i_\alpha$, $i_\beta$ estimado por RLS | **simulação pronta** |
+| [VSI03 — Controle de corrente PI](InversorTrifasico/ConectadoRede/VSI03ControleCorrentePI/index.qmd) | PI em $dq$ | planejada |
 | [VSI04 — Controle de corrente MPC](InversorTrifasico/ConectadoRede/VSI04ControleCorrenteMPC/index.qmd) | MPC-FSC de corrente (Rodríguez et al., 2007) | planejada |
-| [VSI05 — Controle de potência MPC-FSC](InversorTrifasico/ConectadoRede/VSI05ControlePotenciaMPC/index.qmd) | MPC-FSC de potência direta | **simulação pronta** |
-| [VSI06 — Identificação ARX (RLS)](InversorTrifasico/ConectadoRede/VSI06IdentificacaoARX/index.qmd) | ARX de $i_\alpha$, $i_\beta$ estimado por RLS | **simulação pronta** |
+| [VSI05 — Controle de potência PI](InversorTrifasico/ConectadoRede/VSI05ControlePotenciaPI/index.qmd) | malhas de $P$/$Q$ externas ao PI de corrente | planejada |
+| [VSI06 — Controle de potência MPC-FSC](InversorTrifasico/ConectadoRede/VSI06ControlePotenciaMPC/index.qmd) | MPC-FSC de potência direta | **simulação pronta** |
 | [VSI07 — Controle RST via ARX](InversorTrifasico/ConectadoRede/VSI07ControleRST2ARX/index.qmd) | RST projetado sobre o ARX identificado | planejada |
 | [VSI08 — MPC adaptativo (RLS)](InversorTrifasico/ConectadoRede/VSI08MPCAdaptativoRLS/index.qmd) | RLS → ARX → MPC-FSC em linha | em andamento |
 | [VSI09 — Aprendizagem por reforço](InversorTrifasico/ConectadoRede/VSI09ControlePotenciaRL/index.qmd) | agente DQN no lugar do MPC-FSC | em andamento |
@@ -130,7 +136,7 @@ a partir de `InversorTrifasico/ConectadoRede/`:
 ```matlab
 IniciarProjeto   % Comum/ no path; caches do Simulink em cache/
 Parametros       % Ts, Vcc, Vg, Rs, Ls, C e a matriz de Clarke no workspace
-open_system('VSI05ControlePotenciaMPC/MPCFSC.slx')
+open_system('VSI06ControlePotenciaMPC/MPCFSC.slx')
 ```
 
 Depois de editar um bloco MATLAB Function, rode `python3 scripts/extrai_blocos.py` para atualizar

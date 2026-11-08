@@ -13,7 +13,7 @@ A = (2/3)*[1 -1/2 -1/2; 0 sqrt(3)/2 -sqrt(3)/2];
 %THD = power_fftscope(out.Iabc);
 
 %% Bancada: LAUNCHXL-F28379D + BOOSTXL-3PHGANINV (VSI01 em diante)
-% Separada das variáveis acima (VSI conectado à rede de 350 V, usadas pelo VSI05-09).
+% Separada das variáveis acima (VSI conectado à rede de 350 V, usadas pelo VSI06-09).
 % Placa: guia SLUUBP1A da TI e MotorControl SDK (user_mtr1.h, BXL_3PHGANINV).
 
 % Operação (valores a usar também no firmware; justificativa em VSI01MalhaAberta/index.qmd)

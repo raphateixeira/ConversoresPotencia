@@ -1,0 +1,23 @@
+% Fonte trifasica (inversor, tensoes medias de fase) ligada a carga RL em estrela, neutro isolado.
+% Compilar: pdflatex circuito_rl.tex && pdftocairo -png -r 250 -singlefile circuito_rl.pdf ../imgs/circuito_rl
+\documentclass[border=6pt]{standalone}
+\usepackage[siunitx,american]{circuitikz}
+\usepackage{xcolor}
+\definecolor{azul}{HTML}{1F5FBF}\definecolor{verm}{HTML}{D62828}\definecolor{verde}{HTML}{2A9D3A}
+\begin{document}
+\sffamily\large
+\begin{circuitikz}[line width=1pt]
+  \foreach \y/\f/\c in {4/A/azul, 2/B/verm, 0/C/verde} {
+    \draw[color=\c] (0,\y) to[sV, l=$v_\f$, color=\c] (2.6,\y)
+      to[short, i=$i_\f$] (4,\y) to[R, l=$R$] (6.5,\y) to[L, l=$L$] (9,\y) -- (9.6,\y);
+  }
+  \draw (0,0) -- (0,4); \draw (9.6,0) -- (9.6,4);
+  \fill (0,2) circle (2.5pt) node[left=3pt] {\Large N};
+  \fill (9.6,2) circle (2.5pt) node[right=3pt] {\Large n};
+  \draw[dashed, gray] (-0.9,-0.8) rectangle (3.0,4.9);
+  \node[gray, align=center] at (1.05,5.4) {inversor\\(fonte trifásica)};
+  \draw[dashed, gray] (3.8,-0.8) rectangle (10.4,4.9);
+  \node[gray] at (7.1,5.4) {carga RL em estrela};
+  \node[gray, align=center] at (5.1,-1.5) {N e n não conectados: $i_A + i_B + i_C = 0$};
+\end{circuitikz}
+\end{document}

@@ -10,7 +10,7 @@ subtitle: "Agente DQN escolhendo o estado de chaveamento no lugar do MPC-FSC"
 ## Formulação
 
 O bloco `AgenteFSC` (RL Agent) substitui o bloco `FSC` da
-[VSI05](../VSI05ControlePotenciaMPC/index.qmd) no mesmo circuito:
+[VSI06](../VSI06ControlePotenciaMPC/index.qmd) no mesmo circuito:
 
 - **ação:** um dos 8 estados de chaveamento (`rlFiniteSetSpec(1:8)`);
 - **observação** (bloco `ObsRew`): $[P^*, Q^*, v_\alpha, v_\beta, i_\alpha, i_\beta]$;
@@ -39,6 +39,6 @@ O nome do modelo (`MPCFSCRL`) é usado em `AgenteRL.m` e não deve ser mudado se
   $\exp(-e^2) \approx 0$ quase sempre e o agente não recebe gradiente útil. Normalize os erros
   (por exemplo, por $P_{nom}$).
 - **Potência:** `ObsRew` calcula $P = v_\alpha i_\alpha + v_\beta i_\beta$ sem o fator $3/2$
-  usado nas VSI05/VSI08.
+  usado nas VSI06/VSI08.
 - **Episódio:** `MaxStepsPerEpisode = 200` com `Ts = 10e-6` dá 2 ms, mas `done` só encerra em
   40 ms. Alinhe os dois.

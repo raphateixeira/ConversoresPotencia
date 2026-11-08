@@ -1,0 +1,22 @@
+---
+title: "VSI05 — Controle de potência PI"
+subtitle: "Malhas de potência ativa e reativa sobre o PI de corrente"
+---
+
+::: {.callout-note}
+**Planejada.** Simulação ainda não criada.
+:::
+
+## Objetivo
+
+Gerar as referências $i_d^*$, $i_q^*$ a partir de $P^*$ e $Q^*$, por cálculo direto
+($i_d^* = \tfrac{2}{3}P^*/v_{gd}$, $i_q^* = -\tfrac{2}{3}Q^*/v_{gd}$) ou por malhas PI
+externas, sobre o controle de corrente da [VSI03](../VSI03ControleCorrentePI/index.qmd).
+É a contraparte clássica do controle de potência MPC-FSC da
+[VSI06](../VSI06ControlePotenciaMPC/index.qmd), com os mesmos degraus de $P^*$/$Q^*$.
+
+## Arquivos
+
+| Arquivo | Conteúdo |
+|---|---|
+| — | ainda não criado |

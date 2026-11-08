@@ -80,6 +80,14 @@ website:
           - text: "Ensaios e firmware"
           - text: "Inversor em malha aberta"
             href: InversorTrifasico/Ensaios/InversorMalhaAberta/index.qmd
+          - text: "Malha aberta com carga RL"
+            href: InversorTrifasico/Ensaios/MalhaAbertaCargaRL/index.qmd
+          - text: "O código da malha aberta"
+            href: InversorTrifasico/Ensaios/CodigoMalhaAbertaCargaRL/index.qmd
+          - text: "Identificação ARX (simulação)"
+            href: InversorTrifasico/Ensaios/IdentificacaoARXSimulacao/index.qmd
+          - text: "Identificação ARX (dados reais)"
+            href: InversorTrifasico/Ensaios/IdentificacaoARXDados/index.qmd
           - text: "Controle de corrente"
             href: InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd
           - text: "Firmware"
