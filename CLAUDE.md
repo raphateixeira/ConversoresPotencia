@@ -86,7 +86,15 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   Desde 2026-11-08 a apresentação `IdentificacaoARXDados` usa **só mínimos quadrados** (com a média de 16
   períodos LS = IV). A variável instrumental fica guardada para uso futuro (ruído maior, um período só:
   LS dá R ≈ 31 Ω): `estima(..., "IV")` e `METODO`/`METODOS` em `identifica.py`; a apresentação de simulação a mostra.
-  `VSI03ControlePI/`: carga RL (4,7 Ω, 1 mH, estrela); estrutura pedida pelo professor
+  `VSI03ControlePI/` (2026-11-08, ainda não testado na placa): base `VSI02IdentificacaoARX` (hardware, leitura
+  zero/topo, calibração chaveando, `Dados3F` idênticos); PI por eixo com kp = 2πfcL, ki = 2πfcR (`bandaPI` = 300 Hz,
+  R = 26,2 Ω, L = 9,8 mH), desacoplamento ωL (`desacopla`), |v| ≤ 0,45 Vdc com anti-windup (integrador para quando
+  satura), proteção por software `correnteMaxima` (0,8 A, só após a calibração; `falha`), `modo` 0 = malha aberta.
+  Referências: `referenciaD0` 0,15 A + `degrauD` 0,1 A (10–60 ms), `referenciaQ0` 0 + `degrauQ` −0,05 A (35–85 ms),
+  perfil de 2044 amostras repetido (média síncrona). `Dados3F`: idRef iqRef id iq vd vq (médias) iA iB (iC = −iA − iB).
+  Park das correntes e inversa com o mesmo ângulo (como no VSI02). Simulação e leitura dos dados:
+  `Ensaios/ControlePIDados/analise/simula_pi.py` (300 Hz: subida ≈ 1 ms, |v| ≤ 6,7 V).
+  `VSI03ControlePIModular/` (ex-VSI02ControleCorrente, nunca testado): carga RL (4,7 Ω, 1 mH, estrela); estrutura pedida pelo professor
   (`main.c`, `hal.c/h`, `controle.c/h`, `tarefas.c/h`, não `placa.c`). ISR = ADCA INT1 (SOCA do
   EPWM1 no zero, a cada `nControle` períodos); correntes ADCINC2/B2/A2 (iA/iB/iC), vA/vB/vC em
   C3/B3/A3, Vdc em ADCIN14 (ADCD); i = −7,32 mA·(N − N0) (REF5030 de 3,0 V, INA240 0,1 V/A,

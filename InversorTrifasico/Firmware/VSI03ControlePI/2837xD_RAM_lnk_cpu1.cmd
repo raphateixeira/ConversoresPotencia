@@ -41,24 +41,12 @@ PAGE 1 :
 
    RAMLS5      : origin = 0x00A800, length = 0x000800
 
-   RAMGS0      : origin = 0x00C000, length = 0x001000
-   RAMGS1      : origin = 0x00D000, length = 0x001000
-   RAMGS2      : origin = 0x00E000, length = 0x001000
-   RAMGS3      : origin = 0x00F000, length = 0x001000
-   RAMGS4      : origin = 0x010000, length = 0x001000
-   RAMGS5      : origin = 0x011000, length = 0x001000
-   RAMGS6      : origin = 0x012000, length = 0x001000
-   RAMGS7      : origin = 0x013000, length = 0x001000
-   RAMGS8      : origin = 0x014000, length = 0x001000
-   RAMGS9      : origin = 0x015000, length = 0x001000
-   RAMGS10     : origin = 0x016000, length = 0x001000
+   RAMGS0_12   : origin = 0x00C000, length = 0x00D000     /* VSI02: RAMGS0 a RAMGS12 juntos (matriz Dados3F) */
 
 //   RAMGS11     : origin = 0x017000, length = 0x000FF8   /* Uncomment for F28374D, F28376D devices */
 
 //   RAMGS11_RSVD : origin = 0x017FF8, length = 0x000008    /* Reserve and do not use for code as per the errata advisory "Memory: Prefetching Beyond Valid Memory" */
 
-   RAMGS11     : origin = 0x017000, length = 0x001000     /* Only Available on F28379D, F28377D, F28375D devices. Remove line on other devices. */
-   RAMGS12     : origin = 0x018000, length = 0x001000     /* Only Available on F28379D, F28377D, F28375D devices. Remove line on other devices. */
    RAMGS13     : origin = 0x019000, length = 0x001000     /* Only Available on F28379D, F28377D, F28375D devices. Remove line on other devices. */
    RAMGS14     : origin = 0x01A000, length = 0x001000     /* Only Available on F28379D, F28377D, F28375D devices. Remove line on other devices. */
    RAMGS15     : origin = 0x01B000, length = 0x000FF8     /* Only Available on F28379D, F28377D, F28375D devices. Remove line on other devices. */
@@ -87,7 +75,7 @@ SECTIONS
    .bss             : > RAMLS5,    PAGE = 1
    .bss:output      : > RAMLS3,    PAGE = 0
    .init_array      : > RAMM0,     PAGE = 0
-   .const           : >> RAMLS5 | RAMGS5,    PAGE = 1   /* VSI03: strings dos ASSERT (DEBUG) */
+   .const           : > RAMLS5,    PAGE = 1
    .data            : > RAMLS5,    PAGE = 1
    .sysmem          : > RAMLS5,    PAGE = 1
 #else
@@ -97,14 +85,10 @@ SECTIONS
    .esysmem         : > RAMLS5,    PAGE = 1
 #endif
 
-   Filter_RegsFile  : > RAMGS0,    PAGE = 1
+   Filter_RegsFile  : > RAMGS0_12,    PAGE = 1
 
 
-   ramgs0           : > RAMGS0,    PAGE = 1
-   ramgs1           : > RAMGS1,    PAGE = 1
-   ramgs2           : > RAMGS2,    PAGE = 1
-   ramgs3           : > RAMGS3,    PAGE = 1   /* VSI03: 4o canal do registro */
-   ramgs4           : > RAMGS4,    PAGE = 1   /* VSI03: tabela do multisseno */
+   Dados3F          : > RAMGS0_12,  PAGE = 1   /* VSI02: matriz Dados3F[8][2044] */
 
 #ifdef __TI_COMPILER_VERSION__
    #if __TI_COMPILER_VERSION__ >= 15009000
@@ -130,11 +114,11 @@ SECTIONS
     }
 
     /* The following section definition are for SDFM examples */
-   Filter1_RegsFile : > RAMGS1, PAGE = 1, fill=0x1111
-   Filter2_RegsFile : > RAMGS2, PAGE = 1, fill=0x2222
-   Filter3_RegsFile : > RAMGS3, PAGE = 1, fill=0x3333
-   Filter4_RegsFile : > RAMGS4, PAGE = 1, fill=0x4444
-   Difference_RegsFile : >RAMGS5,   PAGE = 1, fill=0x3333
+   Filter1_RegsFile : > RAMGS0_12, PAGE = 1, fill=0x1111
+   Filter2_RegsFile : > RAMGS0_12, PAGE = 1, fill=0x2222
+   Filter3_RegsFile : > RAMGS0_12, PAGE = 1, fill=0x3333
+   Filter4_RegsFile : > RAMGS0_12, PAGE = 1, fill=0x4444
+   Difference_RegsFile : >RAMGS0_12,   PAGE = 1, fill=0x3333
 }
 
 /*

@@ -1,6 +1,6 @@
 ---
 title: "Controle de Corrente do Inversor Trifásico"
-subtitle: "LAUNCHXL-F28379D + BOOSTXL-3PHGANINV com carga RL: hardware, medidas, proteção e o projeto VSI03ControlePI"
+subtitle: "LAUNCHXL-F28379D + BOOSTXL-3PHGANINV com carga RL: hardware, medidas, proteção e o projeto VSI03ControlePIModular"
 institute: "Universidade Federal do Pará"
 author: "Prof. Dr. Raphael Teixeira"
 date: "2026-10-19"
@@ -217,7 +217,7 @@ $$
 - Reduzir $t_m$ é um ensaio a fazer depois, com o osciloscópio (o LMG5200 tem atraso de
   propagação de 29,5 ns).
 
-## O projeto VSI03ControlePI
+## O projeto VSI03ControlePIModular
 
 | Arquivo | Conteúdo |
 |---|---|

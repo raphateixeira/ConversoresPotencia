@@ -88,6 +88,8 @@ website:
             href: InversorTrifasico/Ensaios/IdentificacaoARXSimulacao/index.qmd
           - text: "Identificação ARX (dados reais)"
             href: InversorTrifasico/Ensaios/IdentificacaoARXDados/index.qmd
+          - text: "Controle de corrente PI (ensaio)"
+            href: InversorTrifasico/Ensaios/ControlePIDados/index.qmd
           - text: "Controle de corrente"
             href: InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd
           - text: "Firmware"
