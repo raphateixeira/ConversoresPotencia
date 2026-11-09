@@ -13,9 +13,11 @@ arquivados com redirecionamento. `ControleCC2CC` ficou de fora (IC com colaborad
 - Caminhos para a raiz: tema `TemaRTx.scss` e `imgs/ufpa-colorido.png` com `../` conforme a profundidade.
 - Bibliografia do Buck em `Buck/_metadata.yml`; as notas do ConectadoRede e do Microrredes declaram a sua.
 - Firmware: `Buck/Firmware/` e `InversorTrifasico/Firmware/` são workspaces do CCS (`.theia/`); a numeração
-  `VSINN` do firmware é a mesma das simulações em `InversorTrifasico/ConectadoRede/`.
-  Sequência (renumerada em 2026-11-08): VSI01 malha aberta → VSI02 identificação ARX → VSI03 controle PI →
-  VSI04 controle FCS (MPC de corrente) → VSI05 potência PI → VSI06 potência MPC → VSI07–09 iguais. Antes:
+  `VSINN` do firmware é a mesma das simulações em `InversorTrifasico/ConectadoRede/` até VSI04; o firmware VSI05
+  (FCS + RLS) corresponde à simulação VSI08.
+  Firmware (2026-11-08): VSI01 malha aberta → VSI02 identificação ARX → VSI03 controle PI → VSI04 FCS-MPC →
+  VSI05 FCS + RLS (o PI modular antigo foi retirado). Simulações: VSI01–04 iguais, VSI05 potência PI, VSI06 potência
+  MPC, VSI07 RST, VSI08 MPC adaptativo RLS, VSI09. Antes da renumeração:
   VSI02 = ControleCorrente(PI), VSI03 = PotênciaPI, VSI05 = PotênciaMPC, VSI06 = IdentificaçãoARX.
 - Detalhes das simulações: `InversorTrifasico/ConectadoRede/CLAUDE.md`.
 - Visual: cabeçalho `.rtx-hero` e cartões `.categoria-card` do TemaRTx (não inventar paleta).
@@ -94,18 +96,37 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   perfil de 2044 amostras repetido (média síncrona). `Dados3F`: idRef iqRef id iq vd vq (médias) iA iB (iC = −iA − iB).
   Park das correntes e inversa com o mesmo ângulo (como no VSI02). Simulação e leitura dos dados:
   `Ensaios/ControlePIDados/analise/simula_pi.py` (300 Hz: subida ≈ 1 ms, |v| ≤ 6,7 V).
-  `VSI03ControlePIModular/` (ex-VSI02ControleCorrente, nunca testado): carga RL (4,7 Ω, 1 mH, estrela); estrutura pedida pelo professor
-  (`main.c`, `hal.c/h`, `controle.c/h`, `tarefas.c/h`, não `placa.c`). ISR = ADCA INT1 (SOCA do
-  EPWM1 no zero, a cada `nControle` períodos); correntes ADCINC2/B2/A2 (iA/iB/iC), vA/vB/vC em
-  C3/B3/A3, Vdc em ADCIN14 (ADCD); i = −7,32 mA·(N − N0) (REF5030 de 3,0 V, INA240 0,1 V/A,
-  invertido), V = 24,7·vADC; CMPSS6/3/1 + GPIO24 → TRIP4 → DCAEVT1 → OST; limiar em torno do
-  offset medido. Níveis 1 (50 %), 2 (malha aberta), 3 (PI dq + desacoplamento, kp = 2πfcL,
-  ki = 2πfcR), 4 (identificação: PRBS 9 bits/degrau/multisseno Schroeder em v_dq). Registro de 4
-  canais × 2000 em `ramgs0..3`, multisseno em `ramgs4`. UART SCIA 115200 com comandos de texto
-  (S, H, D, L, C, N, F, V, R, P, E, I, M, G, B; ver `tarefas.h`). Precisa de
-  `--gen_func_subsections=on` (no `.cproject`); no `.cmd` de FLASH o `.text` não usa a FLASHB.
-  Compilado fora do CCS com o cl2000 de `/Applications/Texas/ccs2101` (RAM e FLASH linkam).
-  Pendentes: script Python do PC (Etapa 3) e `TUTORIAL.md` (Etapa 4).
+  VSI03 testado na placa em 2026-11-08 (`Dados3FRL/DadosControlePI01.csv`, 300 Hz com desacoplamento): subida
+  0,9 ms, sem sobressinal, igual à simulação; regime dá R = 25,3 Ω (o ARX superestima 3 %). Apresentação
+  `Ensaios/ControlePIDados` (`analise/analisa_pi.py`).
+  `VSI04ControleFCS/` (2026-11-08, testado: `Dados3FRL/ControleFCS01.csv` cru, `ControleFCS02.csv` média 16; subida
+  0,15 ms, sobressinal 5 %, ondulação ±30 mA, fsw 3,40 kHz reconstruído dos estados = simulação; `analise/analisa_fcs.py`): base VSI03; `modo` 2 = FCS-MPC (padrão), 1 = PI, 0 = malha aberta.
+  Testa os 8 estados a cada 50 µs em αβ (a = e^(−RTs/L), b = (1−a)/R; meio passo para compensar o atraso),
+  custo |i* − î(k+3/2)|² + `lambdaComutacao`·n; chaveia por forçamento contínuo das saídas A do ePWM
+  (`EPWM_setActionQualifierContSWForceAction`, sombra no TOPO) e lê a corrente no zero; volta ao PWM com
+  `LiberaPWM`. `frequenciaChaveamento` (média, janela de 1 s). R = 25,3 Ω. Simulação e apresentação:
+  `Ensaios/ControleFCS` (`analise/simula_fcs.py`; 20 V: fsw ≈ 3,4 kHz, erro rms 16 mA; 15 V: 12 mA).
+  `VSI05MPCAdaptativoRLS/` (2026-11-08, testado; ex-VSI08; simulação equivalente: ConectadoRede/VSI08): base VSI04;
+  RLS de 3 parâmetros em αβ, i(k+1) = θ1 i(k) + θ2 v(k−1) + θ3 v(k) (v/Vdc), 2 atualizações por amostra, λ = 0,999,
+  P0 = 100 I, limites R 0,5–1,5× e L/R 0,5–2× do modelo inicial (`rejeicoes`), proteção de P (`reinicioP`); o RLS roda
+  depois da decisão; FCS prevê i(k+2) com θ. `metodoRLS` 1 = variável instrumental POR PREDIÇÃO
+  (z = [î(k−1|k−2), v(k−2), v̂(k−1)], v̂ = vetor que o FCS escolheria com a corrente prevista; `InstrumentoIV`).
+  Variável `cenario` 1–4 configura o ensaio (1 modelo errado fixo 35 Ω/14 mH, média 16; 2 RLS recomeça, cru;
+  3 adaptativo, média 16; 4 IV por predição, cru); cenário e modelo tratados na interrupção (o laço principal pode
+  ficar sem CPU). Compilar com -O2 e `--fp_mode=relaxed` (TMU): sem isso a interrupção não cabia. Dados3F: θ1 θ3 id iq
+  vd vq iA iB; tempos por CPU Timer 1 (Watch `tempoMedio*`, `tempoMaximoTotal`, `folgaMinima`, `perdasPrazo`;
+  matriz `Tempos[4][2044]`, export 8176).
+  Ensaio (`Dados3FRL/DadosRLS01..04`, `Tempos02/04`): RLS converge de 35 Ω/14 mH em ~10 ms para 25,3 Ω/9,0 mH;
+  erro em regime −11 → +6 mA; IV por predição: 25,7 Ω/10,0 mH em ~10 ms (sem viés de L); ISR 15,9 µs (RLS) e
+  19,3 µs (IV) de 50 µs. Tentativas descartadas: IV atrasada (instrumento fraco, divergiu) e IV com FCS simulado
+  em malha fechada (instável). Análise: `Ensaios/ControleFCSRLS/analise/` (`simula_rls.py`, `analisa_rls.py`,
+  `analisa_ensaio_rls.py`, `fig_iv_ensaio.py`).
+  Próximo passo possível (não iniciado): aprendizagem por reforço no lugar do FCS e do RLS — ação discreta
+  (8 estados, tipo DQN), recompensa = −custo do FCS; treino em simulação com R, L, Vdc, ruído, atraso e tempo morto
+  variados (base `simula_rls.py`), começando por imitação do FCS; adaptação pelo histórico/rede recorrente ou θ do
+  RLS como entrada; na placa só a inferência, FCS+RLS como alternativa de segurança. Variante de menor risco: RL
+  residual/supervisora ajustando o custo do FCS. Comparar pelos cenários 1–4.
+
 - `Buck/Firmware/` — projetos do CCS do conversor buck da IC (`Buck/`: Vin = 30 V,
   L = 525 µH, C = 41,7 µF, R = 1 Ω, MOSFET + diodo → uma chave só). Outro *workspace* do CCS
   (pasta própria com `.theia/`). Saída da placa por **PWM** (EPWM1A, GPIO0, J4.40), não pelo DAC;

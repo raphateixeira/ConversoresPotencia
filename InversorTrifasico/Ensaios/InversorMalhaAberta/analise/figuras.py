@@ -26,7 +26,7 @@ from PIL import Image
 
 AQUI = Path(__file__).resolve().parent
 IMGS = AQUI.parent / "imgs"
-TI = AQUI.parent.parent / "ControleCorrenteVSI"          # figuras recortadas dos PDFs da TI
+TI = AQUI.parent.parent / "HardwareInversor"          # figuras recortadas dos PDFs da TI
 IMGS.mkdir(exist_ok=True)
 
 # Cores do tema (TemaRTx): fases A, B, C e destaques

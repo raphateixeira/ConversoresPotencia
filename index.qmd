@@ -88,7 +88,9 @@ Carga RL trifásica em estrela (R = 4,7 Ω e L = 1 mH por fase).
 * [Identificação ARX: simulação do ensaio](InversorTrifasico/Ensaios/IdentificacaoARXSimulacao/index.qmd) — PRBS em v~d~ e v~q~ (projeto `VSI02IdentificacaoARX`) simulada com a lógica do firmware: correntes esperadas, ARX em dq, viés do LS e variável instrumental.
 * [Identificação ARX: dados reais](InversorTrifasico/Ensaios/IdentificacaoARXDados/index.qmd) — modelagem abc → dq e discretização, PRBS e correlação, estruturas SISO e MIMO por mínimos quadrados, o modelo escolhido (R ≈ 26 Ω, L ≈ 10 mH) e o projeto inicial do PI.
 * [Controle de corrente PI: ensaio](InversorTrifasico/Ensaios/ControlePIDados/index.qmd) — firmware `VSI03ControlePI`: PI em dq com desacoplamento sobre o modelo identificado; degraus em i~d~ e i~q~, medido × simulado (subida de 0,9 ms, sem sobressinal).
-* [Controle de corrente do inversor trifásico](InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd) — hardware a partir da documentação da TI, conversões para A e V, proteção, sequência segura e o projeto `VSI03ControlePI`.
+* [Controle preditivo FCS-MPC](InversorTrifasico/Ensaios/ControleFCS/index.qmd) — os 8 estados das chaves, predição em αβ com compensação do atraso, custo, simulação e **ensaio** contra o PI (subida de 0,15 ms contra 0,95 ms, ondulação de ±30 mA, chaveamento médio de 3,4 kHz); firmware `VSI04ControleFCS`.
+* [FCS-MPC adaptativo com RLS](InversorTrifasico/Ensaios/ControleFCSRLS/index.qmd) — o modelo da carga atualizado em tempo real (RLS) e usado pelo FCS: modelo para o RLS com o atraso, simulação e **ensaio** (RLS corrige o modelo errado em ≈ 10 ms; erro em regime de −11 para +6 mA; interrupção de 16 µs de 50 µs); firmware `VSI05MPCAdaptativoRLS`.
+* [Hardware do inversor trifásico](InversorTrifasico/Ensaios/HardwareInversor/index.qmd) — LaunchPad e BoosterPack a partir da documentação da TI: pinos, sensores, conversões para A e V, amostragem, proteção e tempo morto.
 
 ### Firmware {#firmware-inversor}
 
@@ -101,7 +103,8 @@ Projetos do Code Composer Studio em `InversorTrifasico/Firmware/`.
 | `VSI01MalhaAbertaCargaRL` | malha aberta com carga RL (25 Ω, 10 mH): senoides nas três fases, grava tensões, correntes (zero e topo do contador), razões e barramento; testado na placa | [.zip](downloads/VSI01MalhaAbertaCargaRL.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI01MalhaAbertaCargaRL) |
 | `VSI02IdentificacaoARX` | identificação: PRBS em v~d~ e v~q~, média síncrona de 16 períodos, zero dos sensores medido chaveando; grava a matriz `Dados3F` | [.zip](downloads/VSI02IdentificacaoARX.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI02IdentificacaoARX) |
 | `VSI03ControlePI` | controle de corrente PI em dq (base VSI02): ganhos pelo modelo identificado, desacoplamento ωL, limite de tensão com anti-windup, degraus de referência em d e q; grava referências, correntes e sinais de controle em `Dados3F` | [.zip](downloads/VSI03ControlePI.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI03ControlePI) |
-| `VSI03ControlePIModular` | corrente da carga RL: PWM de 50 %, malha aberta, PI em dq com desacoplamento e identificação (PRBS, degrau, multisseno); comandos pela UART (versão modular anterior, não testada) | [.zip](downloads/VSI03ControlePIModular.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI03ControlePIModular) |
+| `VSI04ControleFCS` | controle preditivo FCS-MPC (base VSI03): testa os 8 estados a cada 50 µs, predição em αβ com compensação do atraso, chaveia no topo do contador; mantém o PI (`modo` = 1) para comparar | [.zip](downloads/VSI04ControleFCS.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI04ControleFCS) |
+| `VSI05MPCAdaptativoRLS` | FCS-MPC adaptativo (base VSI04): RLS de 3 parâmetros em αβ a cada amostra, FCS com o modelo estimado, variável instrumental opcional; grava θ e as correntes | [.zip](downloads/VSI05MPCAdaptativoRLS.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/Firmware/VSI05MPCAdaptativoRLS) |
 
 ### Conectado à rede — simulação {#conectado-rede}
 
@@ -127,7 +130,7 @@ $L_s$ = 10 mH; os da bancada (40 V, 20 kHz) ficam na struct `Bancada`.
 | [VSI05 — Controle de potência PI](InversorTrifasico/ConectadoRede/VSI05ControlePotenciaPI/index.qmd) | malhas de $P$/$Q$ externas ao PI de corrente | planejada |
 | [VSI06 — Controle de potência MPC-FSC](InversorTrifasico/ConectadoRede/VSI06ControlePotenciaMPC/index.qmd) | MPC-FSC de potência direta | **simulação pronta** |
 | [VSI07 — Controle RST via ARX](InversorTrifasico/ConectadoRede/VSI07ControleRST2ARX/index.qmd) | RST projetado sobre o ARX identificado | planejada |
-| [VSI08 — MPC adaptativo (RLS)](InversorTrifasico/ConectadoRede/VSI08MPCAdaptativoRLS/index.qmd) | RLS → ARX → MPC-FSC em linha | em andamento |
+| [VSI08 — MPC adaptativo (RLS)](InversorTrifasico/ConectadoRede/VSI05MPCAdaptativoRLS/index.qmd) | RLS → ARX → MPC-FSC em linha | em andamento |
 | [VSI09 — Aprendizagem por reforço](InversorTrifasico/ConectadoRede/VSI09ControlePotenciaRL/index.qmd) | agente DQN no lugar do MPC-FSC | em andamento |
 
 * [Nota 01 — Malha aberta do VSI na bancada](InversorTrifasico/ConectadoRede/Notas/Nota01MalhaAbertaBancada.qmd) — slides: a bancada, o modelo com carga RL, dimensionamento pelos limites da placa, amostragem e atraso, tempo morto, os modelos Simulink do VSI01 contra a teoria e o roteiro da primeira energização.

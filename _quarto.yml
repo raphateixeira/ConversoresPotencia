@@ -90,8 +90,12 @@ website:
             href: InversorTrifasico/Ensaios/IdentificacaoARXDados/index.qmd
           - text: "Controle de corrente PI (ensaio)"
             href: InversorTrifasico/Ensaios/ControlePIDados/index.qmd
-          - text: "Controle de corrente"
-            href: InversorTrifasico/Ensaios/ControleCorrenteVSI/index.qmd
+          - text: "Controle preditivo FCS-MPC"
+            href: InversorTrifasico/Ensaios/ControleFCS/index.qmd
+          - text: "FCS-MPC adaptativo (RLS)"
+            href: InversorTrifasico/Ensaios/ControleFCSRLS/index.qmd
+          - text: "Hardware do inversor"
+            href: InversorTrifasico/Ensaios/HardwareInversor/index.qmd
           - text: "Firmware"
             href: index.qmd#firmware-inversor
           - text: "---"
