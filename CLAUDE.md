@@ -11,15 +11,21 @@ arquivados com redirecionamento. `ControleCC2CC` ficou de fora (IC com colaborad
   conteúdo; não criar índices por subpasta. Âncoras fixas usadas na navbar: `#buck`, `#firmware-buck`,
   `#inversor`, `#carga-rl`, `#firmware-inversor`, `#conectado-rede`, `#microrredes`.
 - Caminhos para a raiz: tema `TemaRTx.scss` e `imgs/ufpa-colorido.png` com `../` conforme a profundidade.
-- Bibliografia do Buck em `Buck/_metadata.yml`; as notas do ConectadoRede e do Microrredes declaram a sua.
-- Firmware: `Buck/Firmware/` e `InversorTrifasico/Firmware/` são workspaces do CCS (`.theia/`); a numeração
-  `VSINN` do firmware é a mesma das simulações em `InversorTrifasico/ConectadoRede/` até VSI04; o firmware VSI05
+- Bibliografia do Buck em `Buck/_metadata.yml`; as notas das SimulacoesMatlab e do Microrredes declaram a sua.
+- Inversor (reorganizado em 2026-11-08): `InversorTrifasico/` tem uma pasta por etapa de ensaio,
+  `01MalhaAberta/` … `06ControleKoopman/`, cada uma com `firmware/` (projetos do CCS), `dados/` (CSV exportados)
+  e `apresentacoes/<Nome>/` (index.qmd, `imgs/`, `analise/`); `00Bancada/` (HardwareInversor e ModeloInversor:
+  fonte trifásica, carga 25 Ω/10 mH, estados, PWM, Clarke/Park, dq, discreto; substitui a Nota 01 e o dimensionamento antigo de 4,7 Ω/6,8 mH), `PlanoIC03/` (IC da Alessandra) e `SimulacoesMatlab/` (ex-ConectadoRede: simulações
+  MATLAB/Simulink VSI01–09, conteúdo intocado). Scripts de análise acham os dados e os scripts de outras etapas
+  por `AQUI.parents[2] / "dados"` e `AQUI.parents[3] / "<etapa>/apresentacoes/<Nome>" / "analise"`.
+- Firmware: `Buck/Firmware/` e `InversorTrifasico/` são workspaces do CCS (`.theia/`); a numeração
+  `VSINN` do firmware é a mesma das simulações em `InversorTrifasico/SimulacoesMatlab/` até VSI04; o firmware VSI05
   (FCS + RLS) corresponde à simulação VSI08.
   Firmware (2026-11-08): VSI01 malha aberta → VSI02 identificação ARX → VSI03 controle PI → VSI04 FCS-MPC →
   VSI05 FCS + RLS (o PI modular antigo foi retirado). Simulações: VSI01–04 iguais, VSI05 potência PI, VSI06 potência
   MPC, VSI07 RST, VSI08 MPC adaptativo RLS, VSI09. Antes da renumeração:
   VSI02 = ControleCorrente(PI), VSI03 = PotênciaPI, VSI05 = PotênciaMPC, VSI06 = IdentificaçãoARX.
-- Detalhes das simulações: `InversorTrifasico/ConectadoRede/CLAUDE.md`.
+- Detalhes das simulações: `InversorTrifasico/SimulacoesMatlab/CLAUDE.md`.
 - Visual: cabeçalho `.rtx-hero` e cartões `.categoria-card` do TemaRTx (não inventar paleta).
 
 ## Firmware (anotações trazidas do CLAUDE.md do ProjetosCCS)
@@ -27,7 +33,7 @@ arquivados com redirecionamento. `ControleCC2CC` ficou de fora (IC com colaborad
 Padrões comuns aos projetos da LaunchPad (struct de parâmetros, `placa.c/.h`, exportação pela Watch,
 cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
 
-- `InversorTrifasico/Firmware/` — projetos do CCS do inversor trifásico (LAUNCHXL-F28379D + **BOOSTXL-3PHGANINV**
+- `InversorTrifasico/<etapa>/firmware/` — projetos do CCS do inversor trifásico (LAUNCHXL-F28379D + **BOOSTXL-3PHGANINV**
   em J1–J4: ePWM1/2/3 = braços A/B/C em GPIO0–5, GPIO124 = /PWM enable **ativo em nível
   baixo** (0 liga o buffer; o VSI01 antigo estava invertido), como no
   MotorControl SDK `solutions/boostxl_3phganinv/f2837x`). Sem barramento, o BoosterPack fica
@@ -43,13 +49,13 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   (ADCINC3/B3/A3 = vA/vB/vC, ×24,7, filtro de 1 kHz) e o barramento (ADCIN14, ADCD), SOCA do
   EPWM1 no zero, lidos na ISR depois do ADCINT1; `grava` = 1 → 2 (gravando) → 0 enche
   `tensaoA/B/C` (2000 floats, `ramgs0..2`), exportados da Watch para CSV e lidos por
-  `InversorTrifasico/Ensaios/InversorMalhaAberta/analise/plota_tensoes.py`. Com o ADC, o `.text` do `main.obj`
+  `InversorTrifasico/01MalhaAberta/apresentacoes/InversorMalhaAberta/analise/plota_tensoes.py`. Com o ADC, o `.text` do `main.obj`
   passou de 2 K palavras: `--gen_func_subsections=on` no `.cproject` (como no VSI03).
   `VSI01MalhaAbertaSemGravacao/` = cópia da versão **testada na placa** em 2026-10-23 (modos
   0–3, sem ADC; código de máquina do `main.obj` idêntico ao build que funcionou). Na versão com
   ADC, as funções do PWM (`ConfiguraPinos`, `ConfiguraModuloPWM`, `EscreveRazao`) têm código de
   máquina idêntico ao testado; só entraram as chamadas a `ConfiguraADC`/`LeTensoes`. `TUTORIAL.md` na
-  pasta. Apresentação `InversorTrifasico/Ensaios/InversorMalhaAberta/` (revealjs, 31 slides, figuras e GIFs gerados
+  pasta. Apresentação `InversorTrifasico/01MalhaAberta/apresentacoes/InversorMalhaAberta/` (revealjs, 31 slides, figuras e GIFs gerados
   por `analise/figuras.py`, inclusive a montagem das placas a partir das figuras da TI e a
   simulação da carga RL a 12 V). Modo 3 = razão manual (`razaoManual[3]`). A apresentação
   inclui o mapa dos pinos (`imgs/pinos_launchpad.png`, serigrafia da SPRUI77C fig. 18 girada) e
@@ -70,7 +76,7 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   (Vdc filtrado). Corrente combinada no firmware (zero se d ≥ 0,5, topo se d < 0,5, offsets próprios).
   Grava 12 vetores (`ramgs0..6`, `ramgs8..12`). Padrão 5 V ± 3 V (|v| ≤ 8,5 V < 0,45 Vdc); simulação
   do ensaio: sem ruído recupera polo 0,8825, com 10 mA o LS dá 0,86 (viés de erro de equação).
-  Ensaio real (2026-11-06, 20 V, 1 período, `Dados3FRL/Identificacao/`): melhor ARX = MIMO 1,2,2 sem
+  Ensaio real (2026-11-06, 20 V, 1 período, `02IdentificacaoARX/dados/` (dados antigos apagados)): melhor ARX = MIMO 1,2,2 sem
   tensão cruzada, IV (R ≈ 26 Ω, L ≈ 10 mH, ajuste 85 % = teto do ruído; atraso 2 + fração pela mistura
   zero/topo). **Média síncrona** (2026-11-06): `periodosMedia` (padrão 8) descarta o 1º período e
   acumula id/iq nos seguintes; divisão no laço principal (`grava` = 3), não na ISR. Simulação: 40 V
@@ -79,7 +85,7 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   seção `Dados3F` na faixa `RAMGS0_12` (RAMGS0–12 fundidos nos dois `.cmd`; 49056 de 53248 palavras);
   exporta-se `Dados3F` no Graph (24528 floats) ou Save Memory; `analise/organiza_dados3f.py` e
   `identifica.le_dados3f()` leem .csv/.bin/.dat.
-  Ensaio de 2026-11-08 (`Dados3FRL/Dados01A.csv`): o Graph do CCS exporta **no máximo 16383 valores**
+  Ensaio de 2026-11-08 (`InversorTrifasico/02IdentificacaoARX/dados/Dados01A.csv`): o Graph do CCS exporta **no máximo 16383 valores**
   (perdeu vd, vq, id, iq); soma iA+iB+iC = 0,2 A e topo 25 mA abaixo do zero (zero mal medido).
   Por isso: linhas reordenadas (vd vq id iq iA iB iC θ | Vdc dA dB dC; exportar 16352 = 8 linhas;
   `CANAIS_ANTIGOS` lê o Dados01A) e **calibração chaveando** ao habilitar (110 ms a 50 %, `calibrando`
@@ -95,18 +101,18 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   Referências: `referenciaD0` 0,15 A + `degrauD` 0,1 A (10–60 ms), `referenciaQ0` 0 + `degrauQ` −0,05 A (35–85 ms),
   perfil de 2044 amostras repetido (média síncrona). `Dados3F`: idRef iqRef id iq vd vq (médias) iA iB (iC = −iA − iB).
   Park das correntes e inversa com o mesmo ângulo (como no VSI02). Simulação e leitura dos dados:
-  `Ensaios/ControlePIDados/analise/simula_pi.py` (300 Hz: subida ≈ 1 ms, |v| ≤ 6,7 V).
-  VSI03 testado na placa em 2026-11-08 (`Dados3FRL/DadosControlePI01.csv`, 300 Hz com desacoplamento): subida
+  `InversorTrifasico/03ControlePI/apresentacoes/ControlePIDados/analise/simula_pi.py` (300 Hz: subida ≈ 1 ms, |v| ≤ 6,7 V).
+  VSI03 testado na placa em 2026-11-08 (`InversorTrifasico/03ControlePI/dados/DadosControlePI01.csv`, 300 Hz com desacoplamento): subida
   0,9 ms, sem sobressinal, igual à simulação; regime dá R = 25,3 Ω (o ARX superestima 3 %). Apresentação
-  `Ensaios/ControlePIDados` (`analise/analisa_pi.py`).
-  `VSI04ControleFCS/` (2026-11-08, testado: `Dados3FRL/ControleFCS01.csv` cru, `ControleFCS02.csv` média 16; subida
+  `InversorTrifasico/03ControlePI/apresentacoes/ControlePIDados` (`analise/analisa_pi.py`).
+  `VSI04ControleFCS/` (2026-11-08, testado: `InversorTrifasico/04ControleFCS/dados/ControleFCS01.csv` cru, `ControleFCS02.csv` média 16; subida
   0,15 ms, sobressinal 5 %, ondulação ±30 mA, fsw 3,40 kHz reconstruído dos estados = simulação; `analise/analisa_fcs.py`): base VSI03; `modo` 2 = FCS-MPC (padrão), 1 = PI, 0 = malha aberta.
   Testa os 8 estados a cada 50 µs em αβ (a = e^(−RTs/L), b = (1−a)/R; meio passo para compensar o atraso),
   custo |i* − î(k+3/2)|² + `lambdaComutacao`·n; chaveia por forçamento contínuo das saídas A do ePWM
   (`EPWM_setActionQualifierContSWForceAction`, sombra no TOPO) e lê a corrente no zero; volta ao PWM com
   `LiberaPWM`. `frequenciaChaveamento` (média, janela de 1 s). R = 25,3 Ω. Simulação e apresentação:
-  `Ensaios/ControleFCS` (`analise/simula_fcs.py`; 20 V: fsw ≈ 3,4 kHz, erro rms 16 mA; 15 V: 12 mA).
-  `VSI05MPCAdaptativoRLS/` (2026-11-08, testado; ex-VSI08; simulação equivalente: ConectadoRede/VSI08): base VSI04;
+  `InversorTrifasico/04ControleFCS/apresentacoes/ControleFCS` (`analise/simula_fcs.py`; 20 V: fsw ≈ 3,4 kHz, erro rms 16 mA; 15 V: 12 mA).
+  `VSI05MPCAdaptativoRLS/` (2026-11-08, testado; ex-VSI08; simulação equivalente: SimulacoesMatlab/VSI08): base VSI04;
   RLS de 3 parâmetros em αβ, i(k+1) = θ1 i(k) + θ2 v(k−1) + θ3 v(k) (v/Vdc), 2 atualizações por amostra, λ = 0,999,
   P0 = 100 I, limites R 0,5–1,5× e L/R 0,5–2× do modelo inicial (`rejeicoes`), proteção de P (`reinicioP`); o RLS roda
   depois da decisão; FCS prevê i(k+2) com θ. `metodoRLS` 1 = variável instrumental POR PREDIÇÃO
@@ -116,16 +122,27 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   ficar sem CPU). Compilar com -O2 e `--fp_mode=relaxed` (TMU): sem isso a interrupção não cabia. Dados3F: θ1 θ3 id iq
   vd vq iA iB; tempos por CPU Timer 1 (Watch `tempoMedio*`, `tempoMaximoTotal`, `folgaMinima`, `perdasPrazo`;
   matriz `Tempos[4][2044]`, export 8176).
-  Ensaio (`Dados3FRL/DadosRLS01..04`, `Tempos02/04`): RLS converge de 35 Ω/14 mH em ~10 ms para 25,3 Ω/9,0 mH;
+  Ensaio (`InversorTrifasico/05FCSAdaptativoRLS/dados/DadosRLS01..04`, `Tempos02/04`): RLS converge de 35 Ω/14 mH em ~10 ms para 25,3 Ω/9,0 mH;
   erro em regime −11 → +6 mA; IV por predição: 25,7 Ω/10,0 mH em ~10 ms (sem viés de L); ISR 15,9 µs (RLS) e
   19,3 µs (IV) de 50 µs. Tentativas descartadas: IV atrasada (instrumento fraco, divergiu) e IV com FCS simulado
-  em malha fechada (instável). Análise: `Ensaios/ControleFCSRLS/analise/` (`simula_rls.py`, `analisa_rls.py`,
+  em malha fechada (instável). Análise: `InversorTrifasico/05FCSAdaptativoRLS/apresentacoes/ControleFCSRLS/analise/` (`simula_rls.py`, `analisa_rls.py`,
   `analisa_ensaio_rls.py`, `fig_iv_ensaio.py`).
   Próximo passo possível (não iniciado): aprendizagem por reforço no lugar do FCS e do RLS — ação discreta
   (8 estados, tipo DQN), recompensa = −custo do FCS; treino em simulação com R, L, Vdc, ruído, atraso e tempo morto
   variados (base `simula_rls.py`), começando por imitação do FCS; adaptação pelo histórico/rede recorrente ou θ do
   RLS como entrada; na placa só a inferência, FCS+RLS como alternativa de segurança. Variante de menor risco: RL
   residual/supervisora ajustando o custo do FCS. Comparar pelos cenários 1–4.
+
+  `06ControleKoopman/` (2026-11-10): controle baseado em dados (Koopman/EDMD). Projeto em MATLAB (`matlab/principal.m`,
+  scripts k01–k05, funções em arquivos próprios; figuras em `apresentacoes/ControleKoopman/imgs`): k01 EDMD nos dados da
+  PRBS (dicionário de atrasos: FIT 63 → 96 %; monômios não ajudam; autovalores 0,875 ± j0,016); k02 EDMD nos dados do FCS
+  (z = [i; s(k−1)], u = s(k), αβ; R/L 24,9 Ω/8,9 mH, validado no ensaio do RLS); k03 ensaio proposto em malha aberta com
+  vetores pseudoaleatórios (LFSR 0xACE1/0xB400, 2 amostras/símbolo) + média de 16 → 25,4 Ω/9,8 mH (malha fechada vicia L);
+  Koopman-FCS simulado = FCS físico (+0,2 mA); custo em k+3/2 (média de î(k+1), î(k+2)) — custo em k+2 dá +5 mA (explica
+  o +6 mA do VSI05); k04 indutor saturável (hipótese): levantado prevê melhor mas não ganha em malha fechada.
+  Firmware `VSI06ControleKoopman` (base VSI05, não testado): cenário 1 identificação + EDMD na placa (`CalculaEDMD`, 6×6
+  double, laço principal) → `koopmanG`, `modeloPronto`; 2 Koopman-FCS média 16; 3 físico média 16; 4 Koopman cru.
+  LFSR e EDMD conferidos com o MATLAB (idênticos). Dados em `06ControleKoopman/dados/Koopman0N.csv` (`k05_analisa_ensaio.m`).
 
 - `Buck/Firmware/` — projetos do CCS do conversor buck da IC (`Buck/`: Vin = 30 V,
   L = 525 µH, C = 41,7 µF, R = 1 Ω, MOSFET + diodo → uma chave só). Outro *workspace* do CCS

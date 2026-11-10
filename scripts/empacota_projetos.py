@@ -1,7 +1,7 @@
 """Empacota cada projeto do CCS num .zip para download no site.
 
 Roda antes de cada renderização (pre-render no _quarto.yml), localmente e no GitHub.
-Para cada pasta */Firmware/<Projeto>/ que tem um .project (projeto do CCS), grava
+Para cada pasta de firmware (Buck/Firmware/<Projeto>/ ou InversorTrifasico/<etapa>/firmware/<Projeto>/) que tem um .project (projeto do CCS), grava
 downloads/<Projeto>.zip só com os fontes e as configurações do projeto: ficam de fora
 os artefatos de build, a cópia da driverlib e os arquivos do sistema.
 
@@ -41,7 +41,7 @@ def empacota(projeto: Path) -> Path:
 
 def main() -> None:
     SAIDA.mkdir(exist_ok=True)
-    for projeto in sorted(RAIZ.glob("*/Firmware/*/.project")):
+    for projeto in sorted(list(RAIZ.glob("*/Firmware/*/.project")) + list(RAIZ.glob("*/*/firmware/*/.project"))):
         empacota(projeto.parent)
         print(f"downloads/{projeto.parent.name}.zip")
 

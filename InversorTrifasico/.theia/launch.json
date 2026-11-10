@@ -1,0 +1,221 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "VSI01MalhaAberta",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI01MalhaAberta",
+        "resourceId": "/VSI01MalhaAberta"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    },
+    {
+      "name": "VSI01MalhaAbertaSemGravacao",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI01MalhaAbertaSemGravacao",
+        "resourceId": "/VSI01MalhaAbertaSemGravacao"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    },
+    {
+      "name": "VSI01MalhaAbertaCargaRL",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI01MalhaAbertaCargaRL",
+        "resourceId": "/VSI01MalhaAbertaCargaRL"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    },
+    {
+      "name": "VSI03ControlePI",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI03ControlePI",
+        "resourceId": "/VSI03ControlePI"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    },
+    {
+      "name": "VSI02IdentificacaoARX",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI02IdentificacaoARX",
+        "resourceId": "/VSI02IdentificacaoARX"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    },
+    {
+      "name": "VSI04ControleFCS",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI04ControleFCS",
+        "resourceId": "/VSI04ControleFCS"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    },
+    {
+      "name": "VSI05MPCAdaptativoRLS",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI05MPCAdaptativoRLS",
+        "resourceId": "/VSI05MPCAdaptativoRLS"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    },
+    {
+      "name": "VSI06ControleKoopman",
+      "type": "ccs-debug",
+      "request": "launch",
+      "projectInfo": {
+        "name": "VSI06ControleKoopman",
+        "resourceId": "/VSI06ControleKoopman"
+      },
+      "connections": [
+        {
+          "name": "Texas Instruments XDS100v2 USB Debug Probe_0",
+          "cores": [
+            {
+              "name": "C28xx_CPU1",
+              "debuggerSettings": {
+                "data": "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\" ?>\n<PropertyValues/>\n"
+              }
+            }
+          ]
+        }
+      ],
+      "launchSettings": {
+        "coresToLoadForProjectLaunch": [
+          "C28xx_CPU1"
+        ]
+      }
+    }
+  ]
+}

@@ -1,7 +1,7 @@
 project:
   type: website
   output-dir: _site
-  pre-render: scripts/empacota_projetos.py   # downloads/<Projeto>.zip de cada projeto do CCS (*/Firmware/*)
+  pre-render: scripts/empacota_projetos.py   # downloads/<Projeto>.zip de cada projeto do CCS
   resources:
     - downloads/*.zip
   render:
@@ -14,12 +14,12 @@ project:
     - Buck/FonteControlada/Apresentacao.qmd
     - Buck/Ensaios/*/index.qmd
     # Inversor trifásico (ex-ControleInversor3f, ex-ControleVSI + ensaios/firmware do ProjetosCCS)
-    - InversorTrifasico/CargaRL/Plano/PlanoIC03.qmd
-    - InversorTrifasico/CargaRL/Notas/Nota01ModelagemVSI.qmd
-    - InversorTrifasico/CargaRL/Bancada/carga_rl_trifasica.qmd
-    - InversorTrifasico/ConectadoRede/VSI*/index.qmd
-    - InversorTrifasico/ConectadoRede/Notas/Nota*.qmd
-    - InversorTrifasico/Ensaios/*/index.qmd
+    - InversorTrifasico/PlanoIC03/PlanoIC03.qmd
+    - InversorTrifasico/00Bancada/ModeloInversor/index.qmd
+    - InversorTrifasico/SimulacoesMatlab/VSI*/index.qmd
+    - InversorTrifasico/SimulacoesMatlab/Notas/Nota*.qmd
+    - InversorTrifasico/0*/apresentacoes/*/index.qmd
+    - InversorTrifasico/00Bancada/HardwareInversor/index.qmd
     # DFIG (ex-ControleDFIG)
     - DFIG/Presents/0*.qmd
     # Microrredes (ex-MicroGrids)
@@ -69,33 +69,33 @@ website:
           - text: "Visão geral"
             href: index.qmd#inversor
           - text: "---"
-          - text: "Carga RL (IC)"
+          - text: "Bancada e plano (IC)"
           - text: "Plano de trabalho"
-            href: InversorTrifasico/CargaRL/Plano/PlanoIC03.qmd
-          - text: "Nota 01 — Modelagem do VSI"
-            href: InversorTrifasico/CargaRL/Notas/Nota01ModelagemVSI.qmd
-          - text: "Carga RL da bancada"
-            href: InversorTrifasico/CargaRL/Bancada/carga_rl_trifasica.qmd
+            href: InversorTrifasico/PlanoIC03/PlanoIC03.qmd
+          - text: "Bancada e modelo do inversor"
+            href: InversorTrifasico/00Bancada/ModeloInversor/index.qmd
           - text: "---"
           - text: "Ensaios e firmware"
           - text: "Inversor em malha aberta"
-            href: InversorTrifasico/Ensaios/InversorMalhaAberta/index.qmd
+            href: InversorTrifasico/01MalhaAberta/apresentacoes/InversorMalhaAberta/index.qmd
           - text: "Malha aberta com carga RL"
-            href: InversorTrifasico/Ensaios/MalhaAbertaCargaRL/index.qmd
+            href: InversorTrifasico/01MalhaAberta/apresentacoes/MalhaAbertaCargaRL/index.qmd
           - text: "O código da malha aberta"
-            href: InversorTrifasico/Ensaios/CodigoMalhaAbertaCargaRL/index.qmd
+            href: InversorTrifasico/01MalhaAberta/apresentacoes/CodigoMalhaAbertaCargaRL/index.qmd
           - text: "Identificação ARX (simulação)"
-            href: InversorTrifasico/Ensaios/IdentificacaoARXSimulacao/index.qmd
+            href: InversorTrifasico/02IdentificacaoARX/apresentacoes/IdentificacaoARXSimulacao/index.qmd
           - text: "Identificação ARX (dados reais)"
-            href: InversorTrifasico/Ensaios/IdentificacaoARXDados/index.qmd
+            href: InversorTrifasico/02IdentificacaoARX/apresentacoes/IdentificacaoARXDados/index.qmd
           - text: "Controle de corrente PI (ensaio)"
-            href: InversorTrifasico/Ensaios/ControlePIDados/index.qmd
+            href: InversorTrifasico/03ControlePI/apresentacoes/ControlePIDados/index.qmd
           - text: "Controle preditivo FCS-MPC"
-            href: InversorTrifasico/Ensaios/ControleFCS/index.qmd
+            href: InversorTrifasico/04ControleFCS/apresentacoes/ControleFCS/index.qmd
           - text: "FCS-MPC adaptativo (RLS)"
-            href: InversorTrifasico/Ensaios/ControleFCSRLS/index.qmd
+            href: InversorTrifasico/05FCSAdaptativoRLS/apresentacoes/ControleFCSRLS/index.qmd
+          - text: "Controle baseado em dados (Koopman/EDMD)"
+            href: InversorTrifasico/06ControleKoopman/apresentacoes/ControleKoopman/index.qmd
           - text: "Hardware do inversor"
-            href: InversorTrifasico/Ensaios/HardwareInversor/index.qmd
+            href: InversorTrifasico/00Bancada/HardwareInversor/index.qmd
           - text: "Firmware"
             href: index.qmd#firmware-inversor
           - text: "---"
@@ -103,7 +103,7 @@ website:
           - text: "Etapas VSI01–VSI09"
             href: index.qmd#conectado-rede
           - text: "Nota 01 — Malha aberta na bancada"
-            href: InversorTrifasico/ConectadoRede/Notas/Nota01MalhaAbertaBancada.qmd
+            href: InversorTrifasico/SimulacoesMatlab/Notas/Nota01MalhaAbertaBancada.qmd
       - text: "DFIG"
         menu:
           - text: "Visão geral"

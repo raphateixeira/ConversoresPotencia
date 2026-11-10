@@ -11,14 +11,14 @@ de cada um.
 |---|---|---|
 | `Buck/` | IC do conversor Buck (Kauã): modelagem, fonte controlada, apresentações | ControleBuck |
 | `Buck/Ensaios/`, `Buck/Firmware/` | identificação na placa; projetos do CCS | ProjetosCCS |
-| `InversorTrifasico/CargaRL/` | IC do inversor com carga RL (Alessandra) | ControleInversor3f |
-| `InversorTrifasico/ConectadoRede/` | simulações MATLAB/Simulink, etapas VSI01–VSI09 | ControleVSI |
-| `InversorTrifasico/Ensaios/`, `InversorTrifasico/Firmware/` | malha aberta e controle de corrente na placa; projetos do CCS | ProjetosCCS |
+| `InversorTrifasico/00Bancada/`, `InversorTrifasico/PlanoIC03/` | hardware, carga RL, modelagem; plano da IC (Alessandra) | ControleInversor3f |
+| `InversorTrifasico/SimulacoesMatlab/` | simulações MATLAB/Simulink, etapas VSI01–VSI09 | ControleVSI |
+| `InversorTrifasico/01MalhaAberta/` … `05FCSAdaptativoRLS/` | uma pasta por etapa de ensaio: `firmware/` (CCS), `dados/`, `apresentacoes/` | ProjetosCCS |
 | `Microrredes/` | notas em slides (tema Nova) | MicroGrids |
 
 - Tema `TemaRTx.scss` compartilhado (raphateixeira/.github), não versionado; extensão de slides Nova em `_extensions/nova/`.
-- `scripts/empacota_projetos.py` (pre-render) gera `downloads/<Projeto>.zip` de cada `*/Firmware/<Projeto>/`.
-- As pastas `*/Firmware/` são *workspaces* do Code Composer Studio: abrir com *File → Open Folder* e fazer Clean + Rebuild.
+- `scripts/empacota_projetos.py` (pre-render) gera `downloads/<Projeto>.zip` de cada projeto do CCS (`Buck/Firmware/*`, `InversorTrifasico/*/firmware/*`).
+- *Workspaces* do Code Composer Studio: `Buck/Firmware/` e `InversorTrifasico/` (abrir com *File → Open Folder*, importar os projetos e fazer Clean + Rebuild).
 - PDFs de terceiros ficam só na máquina local (gitignorados).
 
 ```bash
