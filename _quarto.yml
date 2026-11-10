@@ -15,11 +15,8 @@ project:
     - Buck/Ensaios/*/index.qmd
     # Inversor trifásico (ex-ControleInversor3f, ex-ControleVSI + ensaios/firmware do ProjetosCCS)
     - InversorTrifasico/PlanoIC03/PlanoIC03.qmd
-    - InversorTrifasico/00Bancada/ModeloInversor/index.qmd
     - InversorTrifasico/SimulacoesMatlab/VSI*/index.qmd
-    - InversorTrifasico/SimulacoesMatlab/Notas/Nota*.qmd
     - InversorTrifasico/0*/apresentacoes/*/index.qmd
-    - InversorTrifasico/00Bancada/HardwareInversor/index.qmd
     # DFIG (ex-ControleDFIG)
     - DFIG/Presents/0*.qmd
     # Microrredes (ex-MicroGrids)
@@ -72,16 +69,16 @@ website:
           - text: "Bancada e plano (IC)"
           - text: "Plano de trabalho"
             href: InversorTrifasico/PlanoIC03/PlanoIC03.qmd
-          - text: "Bancada e modelo do inversor"
-            href: InversorTrifasico/00Bancada/ModeloInversor/index.qmd
+          - text: "Bancada: teoria, modelo e placas"
+            href: InversorTrifasico/00Bancada/apresentacoes/BancadaInversor/index.qmd
           - text: "---"
           - text: "Ensaios e firmware"
-          - text: "Inversor em malha aberta"
-            href: InversorTrifasico/01MalhaAberta/apresentacoes/InversorMalhaAberta/index.qmd
-          - text: "Malha aberta com carga RL"
-            href: InversorTrifasico/01MalhaAberta/apresentacoes/MalhaAbertaCargaRL/index.qmd
-          - text: "O código da malha aberta"
-            href: InversorTrifasico/01MalhaAberta/apresentacoes/CodigoMalhaAbertaCargaRL/index.qmd
+          - text: "Malha aberta: roteiro"
+            href: InversorTrifasico/01MalhaAberta/apresentacoes/RoteiroMalhaAberta/index.qmd
+          - text: "Malha aberta: o código"
+            href: InversorTrifasico/01MalhaAberta/apresentacoes/CodigoMalhaAberta/index.qmd
+          - text: "Malha aberta: ensaio com carga RL"
+            href: InversorTrifasico/01MalhaAberta/apresentacoes/EnsaioMalhaAberta/index.qmd
           - text: "Identificação ARX (simulação)"
             href: InversorTrifasico/02IdentificacaoARX/apresentacoes/IdentificacaoARXSimulacao/index.qmd
           - text: "Identificação ARX (dados reais)"
@@ -94,16 +91,12 @@ website:
             href: InversorTrifasico/05FCSAdaptativoRLS/apresentacoes/ControleFCSRLS/index.qmd
           - text: "Controle baseado em dados (Koopman/EDMD)"
             href: InversorTrifasico/06ControleKoopman/apresentacoes/ControleKoopman/index.qmd
-          - text: "Hardware do inversor"
-            href: InversorTrifasico/00Bancada/HardwareInversor/index.qmd
           - text: "Firmware"
             href: index.qmd#firmware-inversor
           - text: "---"
           - text: "Conectado à rede (simulação)"
           - text: "Etapas VSI01–VSI09"
             href: index.qmd#conectado-rede
-          - text: "Nota 01 — Malha aberta na bancada"
-            href: InversorTrifasico/SimulacoesMatlab/Notas/Nota01MalhaAbertaBancada.qmd
       - text: "DFIG"
         menu:
           - text: "Visão geral"

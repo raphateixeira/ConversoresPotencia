@@ -91,23 +91,26 @@ $$
 
 ## Razão cíclica e tensão média
 
+::: {style="font-size:0.85em"}
 Num período de PWM ($T_s$ = 50 µs) a chave de cima fica ligada uma fração $d$ do tempo, a
-**razão cíclica**. A tensão média do braço em relação ao GND é $d\,V_{dc}$; em relação ao centro
-da estrela,
+**razão cíclica**: a média do braço em relação ao GND é $d\,V_{dc}$. Em relação ao centro da estrela:
 
 $$
-v_x = \Big(d_x - \tfrac12\Big)V_{dc} \;\Rightarrow\; d_x = 0{,}5 + \frac{v_x}{V_{dc}},\qquad
-0{,}05 \le d_x \le 0{,}95 \;\Rightarrow\; |v| \le 0{,}45\,V_{dc} = 9\ \text{V}\ (20\ \text{V})
+v_x = \Big(d_x - \tfrac12\Big)V_{dc} \;\Rightarrow\; d_x = 0{,}5 + \frac{v_x}{V_{dc}},
+\qquad 0{,}05 \le d_x \le 0{,}95 \;\Rightarrow\; |v| \le 0{,}45\,V_{dc} = 9\ \text{V}
 $$
 
-| [$d$]{style="text-transform:none"} | Chave de cima ligada | Média do braço (20 V) | Tensão de fase |
+| [$d$]{style="text-transform:none"} | Chave de cima ligada | Média do braço | Tensão de fase |
 |---|---|---|---|
 | 25 % | 12,5 µs de 50 µs | 5 V | −5 V |
 | 50 % | 25 µs | 10 V | 0 |
 | 75 % | 37,5 µs | 15 V | +5 V |
 
-- Variando $d$ como senoide, a tensão média vira senoide. Modulação linear até 0,45 V~dc~ (com
-  SVPWM chegaria a $V_{dc}/\sqrt3$ = 11,5 V). Etapas 01–03 usam PWM; 04–06 aplicam os estados.
+: {tbl-colwidths="[16,34,25,25]"}
+
+- Valores com V~dc~ = 20 V. Variando $d$ como senoide, a média vira senoide; modulação linear até
+  0,45 V~dc~ (com SVPWM, $V_{dc}/\sqrt3$ = 11,5 V). Etapas 01–03 usam PWM; 04–06 aplicam os estados.
+:::
 
 ## Como a placa gera o PWM
 
@@ -542,7 +545,7 @@ chaves; o ■ encerra a sessão e desconecta a placa.
 
 ## Resumo dos números
 
-::: {style="font-size:0.95em"}
+::: {style="font-size:0.85em"}
 | Grandeza | Valor |
 |---|---|
 | Carga por fase | R = 25 Ω, L = 10 mH, estrela, neutro isolado |

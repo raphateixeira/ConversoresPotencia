@@ -14,8 +14,10 @@ arquivados com redirecionamento. `ControleCC2CC` ficou de fora (IC com colaborad
 - Bibliografia do Buck em `Buck/_metadata.yml`; as notas das SimulacoesMatlab e do Microrredes declaram a sua.
 - Inversor (reorganizado em 2026-11-08): `InversorTrifasico/` tem uma pasta por etapa de ensaio,
   `01MalhaAberta/` … `06ControleKoopman/`, cada uma com `firmware/` (projetos do CCS), `dados/` (CSV exportados)
-  e `apresentacoes/<Nome>/` (index.qmd, `imgs/`, `analise/`); `00Bancada/` (HardwareInversor e ModeloInversor:
-  fonte trifásica, carga 25 Ω/10 mH, estados, PWM, Clarke/Park, dq, discreto; substitui a Nota 01 e o dimensionamento antigo de 4,7 Ω/6,8 mH), `PlanoIC03/` (IC da Alessandra) e `SimulacoesMatlab/` (ex-ConectadoRede: simulações
+  e `apresentacoes/<Nome>/` (index.qmd, `imgs/`, `analise/`); `00Bancada/` (uma apresentação só, `apresentacoes/BancadaInversor/`, desde 2026-11-10: inversor, braço,
+  tempo morto, estados, PWM; fonte trifásica, carga 25 Ω/10 mH, Clarke/Park, dq, discreto, atraso; placas, montagem,
+  pinos, sensores, proteção, ordem de ligação; PDFs da TI em `00Bancada/docs/`, fora do git). **A teoria fica só
+  ali**: as apresentações das etapas citam a Bancada em vez de repetir (a Nota 01 das simulações foi apagada). `PlanoIC03/` (IC da Alessandra) e `SimulacoesMatlab/` (ex-ConectadoRede: simulações
   MATLAB/Simulink VSI01–09, conteúdo intocado). Scripts de análise acham os dados e os scripts de outras etapas
   por `AQUI.parents[2] / "dados"` e `AQUI.parents[3] / "<etapa>/apresentacoes/<Nome>" / "analise"`.
 - Firmware: `Buck/Firmware/` e `InversorTrifasico/` são workspaces do CCS (`.theia/`); a numeração
@@ -38,37 +40,29 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   baixo** (0 liga o buffer; o VSI01 antigo estava invertido), como no
   MotorControl SDK `solutions/boostxl_3phganinv/f2837x`). Sem barramento, o BoosterPack fica
   sem 5 V/3,3 V (LM5017): INA240 e buffer desligados, os comparadores disparam. Outro *workspace* do CCS (pasta própria com `.theia/`).
-  `VSI01MalhaAberta/` = **primeiro experimento, para iniciantes** (reescrito em 2026-10-23 a
-  partir de uma proposta do professor, revisada): **um `main.c` só**, nomes descritivos em
-  português (`TOPO`, `TEMPO_MORTO`, `CONTAGENS_MORTO`, `razaoCiclica[3]`, `AtualizaPWM`,
-  `ConfiguraModuloPWM`, `EscreveRazao`, `ConfiguraPinos`), variáveis na janela **Watch**
-  (`modo` 0 = 50 % / 1 = 25-50-75 % / 2 = senoidal, `habilita`, `indice`, `frequencia`).
-  fPWM = 20 kHz, tempo morto 100 ns, razão limitada a 5–95 %, CBC6 (parada do emulador) força
-  A e B em 0, contadores sincronizados só pelo TBCLKSYNC (a cadeia de sync da proposta foi
-  retirada: faltava `setCountModeAfterSync`). Mede as tensões das fases do BoosterPack
-  (ADCINC3/B3/A3 = vA/vB/vC, ×24,7, filtro de 1 kHz) e o barramento (ADCIN14, ADCD), SOCA do
-  EPWM1 no zero, lidos na ISR depois do ADCINT1; `grava` = 1 → 2 (gravando) → 0 enche
-  `tensaoA/B/C` (2000 floats, `ramgs0..2`), exportados da Watch para CSV e lidos por
-  `InversorTrifasico/01MalhaAberta/apresentacoes/InversorMalhaAberta/analise/plota_tensoes.py`. Com o ADC, o `.text` do `main.obj`
-  passou de 2 K palavras: `--gen_func_subsections=on` no `.cproject` (como no VSI03).
-  `VSI01MalhaAbertaSemGravacao/` = cópia da versão **testada na placa** em 2026-10-23 (modos
-  0–3, sem ADC; código de máquina do `main.obj` idêntico ao build que funcionou). Na versão com
-  ADC, as funções do PWM (`ConfiguraPinos`, `ConfiguraModuloPWM`, `EscreveRazao`) têm código de
-  máquina idêntico ao testado; só entraram as chamadas a `ConfiguraADC`/`LeTensoes`. `TUTORIAL.md` na
-  pasta. Apresentação `InversorTrifasico/01MalhaAberta/apresentacoes/InversorMalhaAberta/` (revealjs, 31 slides, figuras e GIFs gerados
-  por `analise/figuras.py`, inclusive a montagem das placas a partir das figuras da TI e a
-  simulação da carga RL a 12 V). Modo 3 = razão manual (`razaoManual[3]`). A apresentação
-  inclui o mapa dos pinos (`imgs/pinos_launchpad.png`, serigrafia da SPRUI77C fig. 18 girada) e
-  um filtro RC de 10 kΩ/100 nF (corte de 159 Hz) para ver a senoide do modo 2, nos pinos J4 ou
-  nos bornes VA/VB/VC.
-  `VSI01MalhaAbertaCargaRL/` (2026-11-04, **testado na placa**): o `main.c` do VSI01MalhaAberta com um
-  modo só (senoides, `AMPLITUDE` = 0,4 fixa, sem `indice`), carga 25 Ω/10 mH, Vdc = 20 V. ADC: SOC0 =
-  tensão (ADCIN3, como no VSI01), SOC1 = corrente (ADCIN2), INT1 no fim do SOC1 da ADCA; zero dos INA240
-  por média móvel enquanto `habilita` = 0; `grava` enche `tensaoA/B/C` e `correnteA/B/C` (`ramgs0..5`).
-  **Sem proteção por software**: a de 1 A desligava no 1º período (iC lia −1,2 A falsos ao ligar), por
-  isso o inversor parecia não chavear. Mapeamento dos pinos conferido nos `.syscfg.json` do MotorControl
-  SDK (BOOSTXL-3PhGaNInv e LAUNCHXL_F28379D). Corrente medida a 20 V com a carga: 0,32 A de pico.
-  `VSI02IdentificacaoARX/` (2026-11-05, ainda não testado na placa): base `VSI01MalhaAbertaCargaRL`;
+  `VSI01MalhaAberta/` = **primeiro experimento, para iniciantes**, firmware único da etapa 01 desde 2026-11-10
+  (fusão do VSI01MalhaAberta de 2026-10-23, modos 0–3, com o VSI01MalhaAbertaCargaRL de 2026-11-04, **testado
+  na placa**; as duas cópias e a SemGravacao foram apagadas, ficam no histórico). **Um `main.c` só**, nomes
+  descritivos em português (`TOPO`, `TEMPO_MORTO`, `CONTAGENS_MORTO`, `razaoCiclica[3]`, `AtualizaPWM`,
+  `ConfiguraModuloPWM`, `EscreveRazao`, `ConfiguraPinos`, `LeMedidas`). Watch: `modo` 0 = 50 % / 1 = 25-50-75 % /
+  2 = senoides (`amplitude` 0,4, `frequencia`) / 3 = `razaoManual[3]`; `habilita`; `grava`. Padrão `modo` = 0.
+  fPWM = 20 kHz, tempo morto 100 ns, razão limitada a 5–95 %, CBC6 (parada do emulador) força A e B em 0,
+  contadores sincronizados só pelo TBCLKSYNC (a cadeia de sync da proposta foi retirada: faltava
+  `setCountModeAfterSync`). ADC: SOC0 = tensão (ADCINC3/B3/A3, ×24,7, filtro de 1 kHz), SOC1 = corrente
+  (ADCIN2), SOC2 = corrente no topo (SOCB), barramento ADCIN14 (ADCD); INT1 no fim do SOC1 da ADCA, lido na ISR;
+  zero dos INA240 por média móvel enquanto `habilita` = 0; `grava` enche 13 vetores (`ramgs0..6`, `ramgs8..13`).
+  `--gen_func_subsections=on` no `.cproject`. **Sem proteção por software**: a de 1 A desligava no 1º período
+  (iC lia −1,2 A falsos ao ligar). Mapeamento dos pinos conferido nos `.syscfg.json` do MotorControl SDK.
+  Corrente medida a 20 V com a carga (modo 2, 0,4): 0,32 A de pico. A versão testada não tinha `modo` (só as
+  senoides) e tinha um `A{` perdido na linha 131 (não compilava): corrigido na fusão; a fusão em si ainda
+  não foi compilada no CCS nem testada na placa. `TUTORIAL.md` na pasta.
+  Apresentações da etapa 01, em sequência: `RoteiroMalhaAberta` (modos, osciloscópio, filtro RC de 10 kΩ/100 nF,
+  carga RL, valores esperados a 20 V; `analise/figuras.py` importa PWM e cores de
+  `00Bancada/.../analise/figuras_placa.py`), `CodigoMalhaAberta` (o `main.c` parte por parte, **com números de
+  linha**: atualizar se o `main.c` mudar) e `EnsaioMalhaAberta` (ensaios 1 e 2; `analise/plota_medidas.py` lê o
+  Save Memory). Os CSV dos ensaios (`01MalhaAberta/dados/Dados01.csv`, `Dados02.csv`, `Dados02RB.csv`) nunca
+  foram versionados.
+  `VSI02IdentificacaoARX/` (2026-11-05, ainda não testado na placa): base `VSI01MalhaAberta` (versão carga RL);
   v_dq = (tensaoD0, tensaoQ0) + amplitudePRBS·PRBS (9 bits, **polinômios diferentes** em d e q:
   x^9+x^5+1 e x^9+x^4+1, |xcorr| < 0,09; mesmo polinômio com sementes diferentes repete a sequência
   com atraso de 382 bits), `eixoPRBS` 0 dq / 1 d / 2 q, `amostrasPorBit` = 4 → N = 2044 = um período;

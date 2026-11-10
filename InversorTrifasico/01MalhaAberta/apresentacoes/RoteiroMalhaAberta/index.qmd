@@ -26,6 +26,7 @@ format:
 
 ## O que vamos fazer
 
+::: {style="font-size:0.88em"}
 - Gravar um programa que liga e desliga as chaves do inversor (PWM), **sem controle**: as medidas
   não voltam para o cálculo, por isso o nome *malha aberta*;
 - Ver os sinais no osciloscópio e medir tensões e correntes pela própria placa, em duas etapas:
@@ -41,6 +42,7 @@ corrente, carga RL trifásica (25 Ω e 10 mH por fase), fita Kapton.
 **Antes**: a apresentação [Bancada do Inversor Trifásico](../../../00Bancada/apresentacoes/BancadaInversor/index.html)
 explica o braço, a razão cíclica, o PWM e o tempo morto, a montagem das placas, os pinos, a
 ordem de ligação e o cuidado com o terra do osciloscópio.
+:::
 
 ## Os quatro modos de teste
 
@@ -96,6 +98,7 @@ O código, parte por parte: [O Código do Inversor em Malha Aberta](../CodigoMal
 
 ## Variáveis da Watch
 
+::: {style="font-size:0.85em"}
 | Variável | Valores | Efeito ou o que mostra |
 |---|---|---|
 | `modo` | 0 a 3 | escolhe o teste |
@@ -108,6 +111,7 @@ O código, parte por parte: [O Código do Inversor em Malha Aberta](../CodigoMal
 | `tensaoBarramento`, `offsetCorrente` | — | V~dc~ [V]; zero dos sensores de corrente [contagens] |
 
 : {tbl-colwidths="[28,22,50]"}
+:::
 
 ## Etapa A: só a LaunchPad
 
@@ -239,6 +243,7 @@ a montagem.
 
 ## Se algo não funcionar
 
+::: {style="font-size:0.85em"}
 | Sintoma | Verificar |
 |---|---|
 | Nenhum pulso em J4 | o programa está rodando (*Resume*)? a ponta está no pino certo? |
@@ -248,6 +253,7 @@ a montagem.
 | Saídas vão a 0 sozinhas | o programa foi pausado (proteção) |
 | JTAG Communication Error (−1044) | encerrar, tirar USB e fonte, religar USB, depois fonte; J6 retirado? |
 | Corrente da fase C estranha | LaunchPad rev. 1.1: J3-29 em curto com a referência do ADC |
+:::
 
 ## Próximo passo
 

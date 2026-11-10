@@ -75,22 +75,21 @@ clássico e preditivo do inversor alimentando uma carga RL trifásica equilibrad
 [plano de trabalho](InversorTrifasico/PlanoIC03/PlanoIC03.qmd)
 ([PDF assinado](InversorTrifasico/PlanoIC03/PlanoIC03.pdf)).
 
-* [Bancada e modelo do inversor trifásico](InversorTrifasico/00Bancada/ModeloInversor/index.qmd) — do zero: fonte trifásica, carga RL de 25 Ω e 10 mH (fasores e escolha da carga), os 8 estados do inversor, PWM e limites, Clarke e Park, modelo em dq com acoplamento, modelo discreto e o atraso de 2 amostras.
+* [Bancada do inversor trifásico](InversorTrifasico/00Bancada/apresentacoes/BancadaInversor/index.qmd) — a referência de todos os ensaios: braço, tempo morto, 8 estados e vetores, PWM na placa; fonte trifásica, carga RL de 25 Ω e 10 mH, Clarke e Park, modelo em dq com acoplamento, modelo discreto e o atraso de 2 amostras; LaunchPad e BoosterPack (montagem, pinos, sensores, conversões, amostragem, proteção, ordem de ligação).
 
 ### Ensaios na bancada
 
-Carga RL trifásica em estrela (R = 4,7 Ω e L = 1 mH por fase).
+Carga RL trifásica em estrela (R = 25 Ω e L = 10 mH por fase), barramento de 20 V.
 
-* [Inversor trifásico em malha aberta](InversorTrifasico/01MalhaAberta/apresentacoes/InversorMalhaAberta/index.qmd) — primeiro experimento, para quem está começando: braço do inversor, PWM na placa (com animações), montagem das placas, osciloscópio e valores esperados.
-* [Inversor em malha aberta com carga RL](InversorTrifasico/01MalhaAberta/apresentacoes/MalhaAbertaCargaRL/index.qmd) — tensões e correntes das três fases medidas pela LaunchPad (carga de 25 Ω e 10 mH, 20 V): medido × esperado, plano αβ e o projeto `VSI01MalhaAbertaCargaRL`.
-* [O código do inversor em malha aberta](InversorTrifasico/01MalhaAberta/apresentacoes/CodigoMalhaAbertaCargaRL/index.qmd) — o `main.c` do `VSI01MalhaAbertaCargaRL` parte por parte, para quem está aprendendo C na LaunchPad: tipos, `volatile`, PWM, interrupção, ADC e gravação.
+* [Malha aberta: roteiro](InversorTrifasico/01MalhaAberta/apresentacoes/RoteiroMalhaAberta/index.qmd) — primeiro experimento, para quem está começando: os quatro modos de teste, osciloscópio na LaunchPad e nos bornes, filtro RC, carga RL, gravação das medidas e valores esperados (firmware `VSI01MalhaAberta`).
+* [Malha aberta: o código](InversorTrifasico/01MalhaAberta/apresentacoes/CodigoMalhaAberta/index.qmd) — o `main.c` do `VSI01MalhaAberta` parte por parte, para quem está aprendendo C na LaunchPad: tipos, `volatile`, `switch`, PWM, interrupção, ADC e gravação.
+* [Malha aberta: ensaio com carga RL](InversorTrifasico/01MalhaAberta/apresentacoes/EnsaioMalhaAberta/index.qmd) — tensões e correntes das três fases medidas pela LaunchPad (25 Ω e 10 mH, 20 V): medido × esperado, plano αβ, corrente no zero e no topo do contador.
 * [Identificação ARX: simulação do ensaio](InversorTrifasico/02IdentificacaoARX/apresentacoes/IdentificacaoARXSimulacao/index.qmd) — PRBS em v~d~ e v~q~ (projeto `VSI02IdentificacaoARX`) simulada com a lógica do firmware: correntes esperadas, ARX em dq, viés do LS e variável instrumental.
 * [Identificação ARX: dados reais](InversorTrifasico/02IdentificacaoARX/apresentacoes/IdentificacaoARXDados/index.qmd) — modelagem abc → dq e discretização, PRBS e correlação, estruturas SISO e MIMO por mínimos quadrados, o modelo escolhido (R ≈ 26 Ω, L ≈ 10 mH) e o projeto inicial do PI.
 * [Controle de corrente PI: ensaio](InversorTrifasico/03ControlePI/apresentacoes/ControlePIDados/index.qmd) — firmware `VSI03ControlePI`: PI em dq com desacoplamento sobre o modelo identificado; degraus em i~d~ e i~q~, medido × simulado (subida de 0,9 ms, sem sobressinal).
 * [Controle preditivo FCS-MPC](InversorTrifasico/04ControleFCS/apresentacoes/ControleFCS/index.qmd) — os 8 estados das chaves, predição em αβ com compensação do atraso, custo, simulação e **ensaio** contra o PI (subida de 0,15 ms contra 0,95 ms, ondulação de ±30 mA, chaveamento médio de 3,4 kHz); firmware `VSI04ControleFCS`.
 * [FCS-MPC adaptativo com RLS](InversorTrifasico/05FCSAdaptativoRLS/apresentacoes/ControleFCSRLS/index.qmd) — o modelo da carga atualizado em tempo real (RLS) e usado pelo FCS: modelo para o RLS com o atraso, simulação e **ensaio** (RLS corrige o modelo errado em ≈ 10 ms; erro em regime de −11 para +6 mA; interrupção de 16 µs de 50 µs); firmware `VSI05MPCAdaptativoRLS`.
 * [Controle baseado em dados: Koopman e EDMD](InversorTrifasico/06ControleKoopman/apresentacoes/ControleKoopman/index.qmd) — o modelo da carga aprendido dos ensaios reais por EDMD (aproximação do operador de Koopman): escolha do dicionário, autovalores, ensaio de identificação em malha aberta, Koopman-FCS simulado e o caso não linear; projeto em MATLAB e firmware `VSI06ControleKoopman`.
-* [Hardware do inversor trifásico](InversorTrifasico/00Bancada/HardwareInversor/index.qmd) — LaunchPad e BoosterPack a partir da documentação da TI: pinos, sensores, conversões para A e V, amostragem, proteção e tempo morto.
 
 ### Firmware {#firmware-inversor}
 
@@ -98,9 +97,7 @@ Projetos do Code Composer Studio em `InversorTrifasico/<etapa>/firmware/` (works
 
 | Projeto | Ensaio | Código |
 |---|---|---|
-| `VSI01MalhaAberta` | só o chaveamento: 50 % nas três fases, 25/50/75 % e senoidal, PWM de 20 kHz, tempo morto de 100 ns; grava as tensões das fases; roteiro em `TUTORIAL.md` | [.zip](downloads/VSI01MalhaAberta.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/01MalhaAberta/firmware/VSI01MalhaAberta) |
-| `VSI01MalhaAbertaSemGravacao` | a mesma versão sem a gravação das tensões, testada na placa em 23/10/2026 | [.zip](downloads/VSI01MalhaAbertaSemGravacao.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/01MalhaAberta/firmware/VSI01MalhaAbertaSemGravacao) |
-| `VSI01MalhaAbertaCargaRL` | malha aberta com carga RL (25 Ω, 10 mH): senoides nas três fases, grava tensões, correntes (zero e topo do contador), razões e barramento; testado na placa | [.zip](downloads/VSI01MalhaAbertaCargaRL.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/01MalhaAberta/firmware/VSI01MalhaAbertaCargaRL) |
+| `VSI01MalhaAberta` | malha aberta: modos 0 (50 %), 1 (25/50/75 %), 2 (senoides, amplitude e frequência na Watch) e 3 (manual); PWM de 20 kHz, tempo morto de 100 ns; grava tensões, correntes (zero e topo do contador), razões e barramento; roteiro em `TUTORIAL.md` | [.zip](downloads/VSI01MalhaAberta.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/01MalhaAberta/firmware/VSI01MalhaAberta) |
 | `VSI02IdentificacaoARX` | identificação: PRBS em v~d~ e v~q~, média síncrona de 16 períodos, zero dos sensores medido chaveando; grava a matriz `Dados3F` | [.zip](downloads/VSI02IdentificacaoARX.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/02IdentificacaoARX/firmware/VSI02IdentificacaoARX) |
 | `VSI03ControlePI` | controle de corrente PI em dq (base VSI02): ganhos pelo modelo identificado, desacoplamento ωL, limite de tensão com anti-windup, degraus de referência em d e q; grava referências, correntes e sinais de controle em `Dados3F` | [.zip](downloads/VSI03ControlePI.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/03ControlePI/firmware/VSI03ControlePI) |
 | `VSI04ControleFCS` | controle preditivo FCS-MPC (base VSI03): testa os 8 estados a cada 50 µs, predição em αβ com compensação do atraso, chaveia no topo do contador; mantém o PI (`modo` = 1) para comparar | [.zip](downloads/VSI04ControleFCS.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/InversorTrifasico/04ControleFCS/firmware/VSI04ControleFCS) |
@@ -124,7 +121,7 @@ $L_s$ = 10 mH; os da bancada (40 V, 20 kHz) ficam na struct `Bancada`.
 
 | Etapa | Estratégia | Status |
 |---|---|---|
-| [VSI01 — Malha aberta](InversorTrifasico/SimulacoesMatlab/VSI01MalhaAberta/index.qmd) | senoides trifásicas sem realimentação (bancada) | **simulação pronta** (firmware precisa de correção) |
+| [VSI01 — Malha aberta](InversorTrifasico/SimulacoesMatlab/VSI01MalhaAberta/index.qmd) | senoides trifásicas sem realimentação (bancada) | **simulação pronta** |
 | [VSI02 — Identificação ARX (RLS)](InversorTrifasico/SimulacoesMatlab/VSI02IdentificacaoARX/index.qmd) | ARX de $i_\alpha$, $i_\beta$ estimado por RLS | **simulação pronta** |
 | [VSI03 — Controle de corrente PI](InversorTrifasico/SimulacoesMatlab/VSI03ControleCorrentePI/index.qmd) | PI em $dq$ | planejada |
 | [VSI04 — Controle de corrente MPC](InversorTrifasico/SimulacoesMatlab/VSI04ControleCorrenteMPC/index.qmd) | MPC-FSC de corrente (Rodríguez et al., 2007) | planejada |
@@ -133,8 +130,6 @@ $L_s$ = 10 mH; os da bancada (40 V, 20 kHz) ficam na struct `Bancada`.
 | [VSI07 — Controle RST via ARX](InversorTrifasico/SimulacoesMatlab/VSI07ControleRST2ARX/index.qmd) | RST projetado sobre o ARX identificado | planejada |
 | [VSI08 — MPC adaptativo (RLS)](InversorTrifasico/SimulacoesMatlab/VSI08MPCAdaptativoRLS/index.qmd) | RLS → ARX → MPC-FSC em linha | em andamento |
 | [VSI09 — Aprendizagem por reforço](InversorTrifasico/SimulacoesMatlab/VSI09ControlePotenciaRL/index.qmd) | agente DQN no lugar do MPC-FSC | em andamento |
-
-* [Nota 01 — Malha aberta do VSI na bancada](InversorTrifasico/SimulacoesMatlab/Notas/Nota01MalhaAbertaBancada.qmd) — slides: a bancada, o modelo com carga RL, dimensionamento pelos limites da placa, amostragem e atraso, tempo morto, os modelos Simulink do VSI01 contra a teoria e o roteiro da primeira energização.
 
 Para rodar (MATLAB R2024a, Simscape Electrical; VSI09 precisa da Reinforcement Learning Toolbox),
 a partir de `InversorTrifasico/SimulacoesMatlab/`:
