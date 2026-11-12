@@ -1,0 +1,34 @@
+% Braco A do BOOSTXL-3PHGANINV como conversor buck (chave de baixo sempre aberta).
+% Compilar: pdflatex circuito_buck.tex && pdftocairo -png -r 250 -singlefile circuito_buck.pdf ../imgs/circuito_buck
+\documentclass[border=6pt]{standalone}
+\usepackage[siunitx,american]{circuitikz}
+\usepackage{xcolor}
+\definecolor{azul}{HTML}{1F5FBF}\definecolor{verm}{HTML}{D62828}\definecolor{verde}{HTML}{2A9D3A}
+\begin{document}
+\sffamily\large
+\begin{circuitikz}[line width=1pt]
+  % fonte de bancada no barramento
+  \draw (0,0) to[V, l=$V_{dc}$ = 20 V, invert] (0,5) -- (3,5);
+  \draw (0,0) -- (3,0);
+  % braco A: chave de cima (PWM) e chave de baixo (aberta), com a conducao reversa do GaN
+  \draw[color=azul] (3,5) to[nos, l=$S_A^+$ (PWM: $d$), color=azul] (3,2.5);
+  \draw[color=verm] (3,2.5) to[nos, l_=$S_A^-$ aberta, color=verm] (3,0);
+  \draw[color=verm] (3,0) -- (4.3,0) to[D, color=verm] (4.3,2.5) -- (3,2.5);
+  \node[verm, align=left, font=\small] at (5.9,1.2) {condução reversa\\do GaN: $\approx$ 2 V};
+  \fill (3,2.5) circle (2.5pt) node[left=3pt] {SW};
+  % shunt + INA240 em linha (fase A), indutor, capacitor e carga
+  \draw (4.3,2.5) to[R, l=5 m$\Omega$, a=shunt + INA240] (7.2,2.5) to[L, l=$L$, i>^=$i_L$] (9.8,2.5) -- (11,2.5);
+  \draw (11,2.5) to[C, l_=$C$, v^=$v_o$] (11,0);
+  \draw (11,2.5) -- (13,2.5) to[R, l=$R$, i>^=$i_o$] (13,0);
+  \draw (3,0) -- (13,0);
+  \node[ground] at (8,0) {};
+  % saida ligada ao borne da fase B (sensor de tensao)
+  \draw[color=verde, dashed] (13,2.5) -- (14.4,2.5) node[right, align=left, font=\small] {borne VB:\\sensor de tensão\\da fase B ($v_o$)};
+  \fill (11,2.5) circle (2.5pt); \fill (13,2.5) circle (2.5pt);
+  % placa
+  \draw[dashed, gray] (1.9,-0.7) rectangle (7.6,5.8);
+  \node[gray] at (4.75,6.2) {BOOSTXL-3PHGANINV (braço A)};
+  \draw[dashed, gray] (8.6,-0.7) rectangle (13.9,3.6);
+  \node[gray] at (11.25,4.0) {montado na bancada};
+\end{circuitikz}
+\end{document}

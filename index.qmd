@@ -44,6 +44,7 @@ comanda a razão cíclica pelo PWM e mede a tensão de saída no ADC. Iniciaçã
 ### Ensaios na bancada
 
 * [Identificação do conversor Buck](Buck/Ensaios/IdentificacaoBuckPRBS/index.qmd) — escolha de $T_s$ e da duração do bit da PRBS, identificação ARX(2,2,2) e validação, simuladas em MATLAB.
+* [Buck num braço do inversor GaN](Buck/Ensaios/BuckBracoInversor/index.qmd) — o braço A do BOOSTXL-3PHGANINV como buck (chave de baixo aberta): projeto de L, C e R (2,2 mH, 47 µF, 15 Ω a 20 V), medidas com os sensores da placa, ensaio com PRBS simulado e ARX (mínimos quadrados × Steiglitz–McBride).
 * Projeto do controlador PI (`Buck/Ensaios/ControleBuck/analise/projeto_pi.m`) — em preparação.
 
 ::: {.callout-note appearance="simple"}
@@ -61,6 +62,7 @@ Projetos do Code Composer Studio em `Buck/Firmware/` (descompactar o `.zip`, abr
 |---|---|---|
 | `BK01Degrau` | malha aberta: rampa até 10 V e onda quadrada 10 ↔ 12 V, PWM de 20 kHz, $T_s$ = 50 µs | [.zip](downloads/BK01Degrau.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/Buck/Firmware/BK01Degrau) |
 | `PWM_prbs` | malha aberta: PRBS de 9 bits na razão cíclica, $T_b$ = 200 µs, $T_s$ = 50 µs | [.zip](downloads/PWM_prbs.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/Buck/Firmware/PWM_prbs) |
+| `BK02IdentificacaoGaN` | buck no braço A do BOOSTXL-3PHGANINV: PRBS na razão cíclica, média síncrona, chave de baixo aberta ou síncrona (não testado na placa) | [.zip](downloads/BK02IdentificacaoGaN.zip) · [GitHub](https://github.com/raphateixeira/ConversoresPotencia/tree/main/Buck/Firmware/BK02IdentificacaoGaN) |
 
 ## Inversor trifásico {#inversor}
 
@@ -90,6 +92,7 @@ Carga RL trifásica em estrela (R = 25 Ω e L = 10 mH por fase), barramento de 2
 * [Controle preditivo FCS-MPC](InversorTrifasico/04ControleFCS/apresentacoes/ControleFCS/index.qmd) — os 8 estados das chaves, predição em αβ com compensação do atraso, custo, simulação e **ensaio** contra o PI (subida de 0,15 ms contra 0,95 ms, ondulação de ±30 mA, chaveamento médio de 3,4 kHz); firmware `VSI04ControleFCS`.
 * [FCS-MPC adaptativo com RLS](InversorTrifasico/05FCSAdaptativoRLS/apresentacoes/ControleFCSRLS/index.qmd) — o modelo da carga atualizado em tempo real (RLS) e usado pelo FCS: modelo para o RLS com o atraso, simulação e **ensaio** (RLS corrige o modelo errado em ≈ 10 ms; erro em regime de −11 para +6 mA; interrupção de 16 µs de 50 µs); firmware `VSI05MPCAdaptativoRLS`.
 * [Controle baseado em dados: Koopman e EDMD](InversorTrifasico/06ControleKoopman/apresentacoes/ControleKoopman/index.qmd) — o modelo da carga aprendido dos ensaios reais por EDMD (aproximação do operador de Koopman): escolha do dicionário, autovalores, ensaio de identificação em malha aberta, Koopman-FCS simulado e o caso não linear; projeto em MATLAB e firmware `VSI06ControleKoopman`.
+* [Controle preditivo direto dos dados: DeePC e SPC](InversorTrifasico/07ControleDeePC/apresentacoes/ControleDeePC/index.qmd) — do zero ao artigo: matriz de Hankel, lema de Willems, SPC e DeePC com os dados reais da PRBS; validação com o ensaio do PI e simulação chaveada; a lei como controlador linear (margens, mapas de estabilidade); robustez a carga, V~dc~, ruído e quantidade de dados (Monte Carlo, direto × indireto); restrições, custo computacional e o que cabe na LaunchPad; adaptação, limitações e protocolo de ensaios. Projeto em MATLAB (simulação).
 
 ### Firmware {#firmware-inversor}
 

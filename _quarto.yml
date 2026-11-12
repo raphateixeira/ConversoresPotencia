@@ -59,6 +59,8 @@ website:
           - text: "---"
           - text: "Identificação do conversor (ensaio)"
             href: Buck/Ensaios/IdentificacaoBuckPRBS/index.qmd
+          - text: "Buck num braço do inversor GaN (ARX)"
+            href: Buck/Ensaios/BuckBracoInversor/index.qmd
           - text: "Firmware"
             href: index.qmd#firmware-buck
       - text: "Inversor Trifásico"
@@ -91,6 +93,8 @@ website:
             href: InversorTrifasico/05FCSAdaptativoRLS/apresentacoes/ControleFCSRLS/index.qmd
           - text: "Controle baseado em dados (Koopman/EDMD)"
             href: InversorTrifasico/06ControleKoopman/apresentacoes/ControleKoopman/index.qmd
+          - text: "Controle preditivo direto dos dados (DeePC/SPC)"
+            href: InversorTrifasico/07ControleDeePC/apresentacoes/ControleDeePC/index.qmd
           - text: "Firmware"
             href: index.qmd#firmware-inversor
           - text: "---"
