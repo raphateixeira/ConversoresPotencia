@@ -140,7 +140,9 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
 
   DeePC/SPC (ex-`07ControleDeePC/`) saiu em 2026-11-13 para o repositório próprio `DeePC` (pasta `InversorTrifasico/`,
   com o histórico). Ele usa cópias do simulador FCS (06) e do ensaio do PI (03): ao mudar esses, avaliar se o DeePC precisa
-  da versão nova. O firmware `VSI07ControleDeePC`, quando existir, pode ficar aqui (base VSI03) ou lá.
+  da versão nova. **Divisão do VSI07 (decisão do autor, 2026-11-13):** o firmware `VSI07ControleDeePC` fica **aqui**, em
+  `InversorTrifasico/07ControleDeePC/firmware/VSI07ControleDeePC/` (base VSI03, linha na tabela de firmware do índice);
+  dados dos ensaios, análise, resultados e apresentação vão para o repositório `DeePC` (`InversorTrifasico/`).
 
 - `Buck/Firmware/` — projetos do CCS do conversor buck da IC (`Buck/`: Vin = 30 V,
   L = 525 µH, C = 41,7 µF, R = 1 Ω, MOSFET + diodo → uma chave só). Outro *workspace* do CCS
