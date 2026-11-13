@@ -138,29 +138,9 @@ cuidados com `-O2`) estão no CLAUDE.md do `ProjetosCCS`.
   double, laço principal) → `koopmanG`, `modeloPronto`; 2 Koopman-FCS média 16; 3 físico média 16; 4 Koopman cru.
   LFSR e EDMD conferidos com o MATLAB (idênticos). Dados em `06ControleKoopman/dados/Koopman0N.csv` (`k05_analisa_ensaio.m`).
 
-  `07ControleDeePC/` (2026-11-10, só simulação, sem firmware; **tema do primeiro artigo internacional da linha**,
-  prévia em português no modelo IEEE Access em `~/Artigos/ArtigoDeePC/PaperIEEEAccessDeePC_PT.tex`, fora do repositório
-  público): DeePC/SPC com os dados reais da PRBS (`dados/prbs_dq.csv`), forma incremental (Δv, Δi), Hankel circular,
-  T_ini = 2, N = 10, q = 1, r_u = 1e-2, λ_g = 3 (em `parametros.m`). `matlab/principal.m` roda t00 (testes) e d00–d12, cada
-  etapa em escopo próprio; números em `matlab/resultados/dNN.mat`; `salva.m` grava PNG em `imgs/` e PDF vetorial na
-  pasta do artigo, se existir. Funções: `simula_dq` (planta 'media' ou 'pwm' chaveada com tempo morto; opções alfa,
-  atraso, w, dv, troca; tipos mpc/mpcabs/pi/ma; `.fgm` = gradiente rápido projetado), `ganhos` (spc, spcc, deepc, arx,
-  fisico, oraculo), `malha_linear` (malha fechada como ss: rho, margens de disco, banda, ganhos H2 de ruído),
-  `gera_dados` (repete a PRBS em simulação), `desempenho` (nota J = erro rms de rastreamento no período),
-  `simula_adaptativo`. Cores fixas por entidade: DeePC/SPC azul, FCS laranja, prévia/2ª variante verde, modelo/indireto
-  magenta tracejado, PI cinza tracejado (paleta conferida para daltonismo; **sem eixo duplo**).
-  Resultados (simulação): o simulador PWM reproduz a PRBS real melhor que o médio (4,2 × 6,8 mA; a rotação do
-  referencial no atraso, 1,6°, explica i_q e v_q); PI 300 Hz medido × simulado: 2,1 mA rms; o preditor da PRBS prevê o
-  ensaio do PI com FIT 94 %; T_ini filtra ruído (10 passos: 8,9 → 3,4 mA de T_ini 2 a 6). Lei linear de ordem 6: SPC
-  dados reais = MPC modelo certo (banda 692 Hz, MG 9,7 dB, MF 54°); PI 500 Hz tem margem maior na mesma banda (12,2 dB).
-  Estável em 99 % da grade R, L de 0,15 a 6×; ganho até 5,5×; 3 amostras a mais de atraso. Monte Carlo: SPC = oráculo
-  até 8,5 mA e com 100 amostras; indiretos (ARX, físico) nunca perdem; **DeePC com λ_g fixo piora +35 % a 8,5 mA**
-  (+42 % com os dados reais de 1 período): recomendar a forma SPC. Dados de 60 Hz valem até ≈ 120 Hz. Cortar a tensão =
-  ótimo restrito; FGM converge em 3 iterações. Lei: 20 contas por amostra (56 com prévia); Gram + Cholesky em float32
-  dá os mesmos ganhos (erro 1e-6). Adaptação com dados de malha fechada é viesada; re-ensaio de 10 ms em malha aberta
-  (200 amostras) devolve J = 9,6 mA. Apresentação `apresentacoes/ControleDeePC` (55 slides, 7 partes, com protocolo de
-  ensaios E1–E8 e proposta do artigo). Falta: firmware `VSI07ControleDeePC` (base VSI03) e os ensaios na bancada;
-  referências marcadas "a conferir" foram citadas de memória.
+  DeePC/SPC (ex-`07ControleDeePC/`) saiu em 2026-11-13 para o repositório próprio `DeePC` (pasta `InversorTrifasico/`,
+  com o histórico). Ele usa cópias do simulador FCS (06) e do ensaio do PI (03): ao mudar esses, avaliar se o DeePC precisa
+  da versão nova. O firmware `VSI07ControleDeePC`, quando existir, pode ficar aqui (base VSI03) ou lá.
 
 - `Buck/Firmware/` — projetos do CCS do conversor buck da IC (`Buck/`: Vin = 30 V,
   L = 525 µH, C = 41,7 µF, R = 1 Ω, MOSFET + diodo → uma chave só). Outro *workspace* do CCS

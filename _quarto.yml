@@ -94,7 +94,7 @@ website:
           - text: "Controle baseado em dados (Koopman/EDMD)"
             href: InversorTrifasico/06ControleKoopman/apresentacoes/ControleKoopman/index.qmd
           - text: "Controle preditivo direto dos dados (DeePC/SPC)"
-            href: InversorTrifasico/07ControleDeePC/apresentacoes/ControleDeePC/index.qmd
+            href: https://raphateixeira.github.io/DeePC/InversorTrifasico/apresentacao/
           - text: "Firmware"
             href: index.qmd#firmware-inversor
           - text: "---"
