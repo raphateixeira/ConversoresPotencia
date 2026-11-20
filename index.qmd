@@ -4,7 +4,7 @@ pagetitle: "Conversores de Potência"
 
 <!-- Página única do repositório: cada sistema tem uma seção com links diretos para o conteúdo.
      Âncoras fixas (#buck, #inversor, #carga-rl, #conectado-rede, #firmware-buck,
-     #firmware-inversor, #dfig, #microrredes) usadas na navbar do _quarto.yml. -->
+     #firmware-inversor, #dfig) usadas na navbar do _quarto.yml. -->
 
 ::: {.rtx-hero}
 [Pesquisa · Eletrônica de potência]{.rtx-eyebrow}
@@ -12,13 +12,13 @@ pagetitle: "Conversores de Potência"
 # Conversores de Potência {.unnumbered .unlisted}
 
 Modelagem, identificação e controle de conversores de potência — do conversor Buck ao inversor
-trifásico conectado à rede, ao gerador DFIG e às microrredes —, da simulação ao firmware na plataforma
+trifásico conectado à rede e ao gerador DFIG —, da simulação ao firmware na plataforma
 LAUNCHXL-F28379D.
 
 [Prof. Dr. Raphael Teixeira · UFPA, Campus de Tucuruí]{.rtx-meta}
 
 ::: {.rtx-acoes}
-[Conversor Buck](#buck){.rtx-btn .rtx-btn-primario} [Inversor trifásico](#inversor){.rtx-btn} [DFIG](#dfig){.rtx-btn} [Microrredes](#microrredes){.rtx-btn} [GitHub](https://github.com/raphateixeira/ConversoresPotencia){.rtx-btn}
+[Conversor Buck](#buck){.rtx-btn .rtx-btn-primario} [Inversor trifásico](#inversor){.rtx-btn} [DFIG](#dfig){.rtx-btn} [GitHub](https://github.com/raphateixeira/ConversoresPotencia){.rtx-btn}
 :::
 :::
 
@@ -155,18 +155,6 @@ modelo de predição identificado por ARX e uma estratégia adaptativa por RST.
 * [Controle MPC-FCS de gerador DFIG](DFIG/Presents/02DFIG.qmd) — estratégia adaptativa de modelo ARX preditivo por RST.
 * [Identificação ARX e FCS-MPC do DFIG](DFIG/Presents/03ControleDFIGpFCS.qmd) — identificação do modelo ARX e controle preditivo de conjunto finito.
 
-## Microrredes {#microrredes}
-
-Sistemas elétricos de pequeno porte que agregam geração distribuída, armazenamento e cargas sob
-controle coordenado, conectados à rede ou ilhados. Como quase tudo se conecta por conversores de
-potência, a microrrede junta eletrônica de potência, controle clássico e preditivo e controle
-baseado em dados. Objetivos: arquiteturas CA/CC/híbridas; conversores formadores (*grid-forming*)
-e seguidores (*grid-following*) de rede; controle hierárquico (*droop*, secundário, terciário);
-MPC e controle baseado em dados (DeePC, Koopman); validação em simulação e depois na bancada C2000.
-
-* [Nota 01 — Introdução às microrredes](Microrredes/Notas/Nota01IntroducaoMicrorredes.qmd) — da rede convencional à microrrede: PCC, conversores como interface, controle centralizado/descentralizado/distribuído, arquiteturas, formadores e seguidores de rede, fluxo de potência, *droop* e controle hierárquico.
-* [Nota 02 — Controle descentralizado e hierárquico](Microrredes/Notas/Nota02ControleDescentralizadoHierarquico.qmd) *(rascunho)* — papéis dos conversores, *droop* para linhas quaisquer, impedância virtual, estabilidade de pequenos sinais, ilhamento e reconexão (Guerrero et al., 2013).
-
 ## Referências
 
 ::: {.callout-note collapse="true" appearance="simple"}
@@ -187,17 +175,6 @@ MPC e controle baseado em dados (DeePC, Koopman); validação em simulação e d
 * Aguirre, L. A. *Introdução à Identificação de Sistemas*. 4ª ed. Editora UFMG, 2015.
 * Texas Instruments. *LAUNCHXL-F28379D* e *BOOSTXL-3PHGANINV* — User's Guides.
 * Wolfspeed. *CCB021M12FM3 — 1200 V, 21 mΩ SiC six-pack power module*. Datasheet.
-:::
-
-::: {.callout-note collapse="true" appearance="simple"}
-## Microrredes
-
-* Lasseter, R. H. MicroGrids. *IEEE Power Engineering Society Winter Meeting*, 2002.
-* Hatziargyriou, N. et al. Microgrids. *IEEE Power and Energy Magazine*, v. 5, n. 4, 2007.
-* Guerrero, J. M. et al. Advanced control architectures for intelligent microgrids — Part I: decentralized and hierarchical control. *IEEE Trans. Industrial Electronics*, v. 60, n. 4, 2013.
-* Guerrero, J. M. et al. Hierarchical control of droop-controlled AC and DC microgrids — a general approach toward standardization. *IEEE Trans. Industrial Electronics*, v. 58, n. 1, 2011.
-* Rocabert, J. et al. Control of power converters in AC microgrids. *IEEE Trans. Power Electronics*, v. 27, n. 11, 2012.
-* Olivares, D. E. et al. Trends in microgrid control. *IEEE Trans. Smart Grid*, v. 5, n. 4, 2014.
 :::
 
 ## Relacionados

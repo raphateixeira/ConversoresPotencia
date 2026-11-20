@@ -5,7 +5,8 @@ Prof. Dr. Raphael Teixeira (UFPA, Campus de Tucuruí). Site: <https://raphateixe
 
 Reúne, desde 2026-10-25, os antigos repositórios `ControleBuck`, `ControleInversor3f`, `ControleVSI` e
 `MicroGrids` e a parte de conversor Buck e inversor trifásico do `ProjetosCCS`, com o histórico de commits
-de cada um.
+de cada um. As notas de microrredes (ex-`MicroGrids`) saíram em 2026-11-20 para o repositório privado
+`Microrrede` (`Fundamentos/`).
 
 | Pasta | Conteúdo | Origem |
 |---|---|---|
@@ -14,7 +15,6 @@ de cada um.
 | `InversorTrifasico/00Bancada/`, `InversorTrifasico/PlanoIC03/` | hardware, carga RL, modelagem; plano da IC (Alessandra) | ControleInversor3f |
 | `InversorTrifasico/SimulacoesMatlab/` | simulações MATLAB/Simulink, etapas VSI01–VSI09 | ControleVSI |
 | `InversorTrifasico/01MalhaAberta/` … `05FCSAdaptativoRLS/` | uma pasta por etapa de ensaio: `firmware/` (CCS), `dados/`, `apresentacoes/` | ProjetosCCS |
-| `Microrredes/` | notas em slides (tema Nova) | MicroGrids |
 
 - Tema `TemaRTx.scss` compartilhado (raphateixeira/.github), não versionado; extensão de slides Nova em `_extensions/nova/`.
 - `scripts/empacota_projetos.py` (pre-render) gera `downloads/<Projeto>.zip` de cada projeto do CCS (`Buck/Firmware/*`, `InversorTrifasico/*/firmware/*`).

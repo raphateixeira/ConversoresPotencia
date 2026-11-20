@@ -19,8 +19,6 @@ project:
     - InversorTrifasico/0*/apresentacoes/*/index.qmd
     # DFIG (ex-ControleDFIG)
     - DFIG/Presents/0*.qmd
-    # Microrredes (ex-MicroGrids)
-    - Microrredes/Notas/Nota*.qmd
 
 execute:
   freeze: auto
@@ -111,14 +109,6 @@ website:
             href: DFIG/Presents/02DFIG.qmd
           - text: "Identificação ARX e FCS-MPC"
             href: DFIG/Presents/03ControleDFIGpFCS.qmd
-      - text: "Microrredes"
-        menu:
-          - text: "Visão geral"
-            href: index.qmd#microrredes
-          - text: "Nota 01 — Introdução às microrredes"
-            href: Microrredes/Notas/Nota01IntroducaoMicrorredes.qmd
-          - text: "Nota 02 — Controle descentralizado e hierárquico"
-            href: Microrredes/Notas/Nota02ControleDescentralizadoHierarquico.qmd
       - icon: github
         href: https://github.com/raphateixeira/ConversoresPotencia
         aria-label: Repositório no GitHub

@@ -14,7 +14,6 @@
 # PDFs de terceiros (direitos autorais): uso local, nunca versionar
 **/Referencias/*.pdf
 **/referencias/*.pdf
-Microrredes/*.pdf
 InversorTrifasico/00Bancada/docs/
 
 # MATLAB/Simulink: caches e temporários (regeneráveis)

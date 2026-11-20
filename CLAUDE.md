@@ -9,9 +9,11 @@ arquivados com redirecionamento. `ControleCC2CC` ficou de fora (IC com colaborad
   Páginas novas entram em `project.render` e no menu do sistema em `website.navbar.right`.
 - **Uma só página índice** (`index.qmd` da raiz), com uma seção por sistema e links diretos para o
   conteúdo; não criar índices por subpasta. Âncoras fixas usadas na navbar: `#buck`, `#firmware-buck`,
-  `#inversor`, `#carga-rl`, `#firmware-inversor`, `#conectado-rede`, `#microrredes`.
+  `#inversor`, `#carga-rl`, `#firmware-inversor`, `#conectado-rede`.
 - Caminhos para a raiz: tema `TemaRTx.scss` e `imgs/ufpa-colorido.png` com `../` conforme a profundidade.
-- Bibliografia do Buck em `Buck/_metadata.yml`; as notas das SimulacoesMatlab e do Microrredes declaram a sua.
+- Bibliografia do Buck em `Buck/_metadata.yml`; as notas das SimulacoesMatlab declaram a sua.
+- **Microrredes saiu daqui em 2026-11-20**: as notas (ex-MicroGrids) foram, com histórico, para o repositório
+  privado `Microrrede` (`Fundamentos/`). Não recriar conteúdo de microrrede neste repositório.
 - Inversor (reorganizado em 2026-11-08): `InversorTrifasico/` tem uma pasta por etapa de ensaio,
   `01MalhaAberta/` … `06ControleKoopman/`, cada uma com `firmware/` (projetos do CCS), `dados/` (CSV exportados)
   e `apresentacoes/<Nome>/` (index.qmd, `imgs/`, `analise/`); `00Bancada/` (uma apresentação só, `apresentacoes/BancadaInversor/`, desde 2026-11-10: inversor, braço,
